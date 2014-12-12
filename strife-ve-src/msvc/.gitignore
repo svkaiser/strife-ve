@@ -1,0 +1,13 @@
+*.cfg
+*.ncb
+*.suo
+*.user
+savegames
+movies
+music
+strfsav*
+*.pcx
+*.wad
+*.png
+*.txt
+*.ogv

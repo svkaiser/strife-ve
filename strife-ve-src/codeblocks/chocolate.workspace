@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Chocolate">
+		<Project filename="strife.cbp">
+			<Depends filename="libtextscreen.cbp" />
+			<Depends filename="libopl.cbp" />
+			<Depends filename="libpcsound.cbp" />
+			<Depends filename="../../steam-service/api/SteamService/codeblocks/SteamService/SteamService.cbp" />
+		</Project>
+		<Project filename="server.cbp" />
+		<Project filename="setup.cbp">
+			<Depends filename="libtextscreen.cbp" />
+		</Project>
+		<Project filename="libtextscreen.cbp" />
+		<Project filename="libopl.cbp" />
+		<Project filename="libpcsound.cbp" />
+		<Project filename="../../steam-service/api/SteamService/codeblocks/SteamService/SteamService.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>

@@ -1,0 +1,276 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		41B30AC319CA167A0023A235 /* pcsound_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30ABE19CA167A0023A235 /* pcsound_internal.h */; };
+		41B30AC419CA167A0023A235 /* pcsound_linux.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30ABF19CA167A0023A235 /* pcsound_linux.c */; };
+		41B30AC519CA167A0023A235 /* pcsound_sdl.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30AC019CA167A0023A235 /* pcsound_sdl.c */; };
+		41B30AC619CA167A0023A235 /* pcsound.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30AC119CA167A0023A235 /* pcsound.c */; };
+		41B30AC719CA167A0023A235 /* pcsound.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30AC219CA167A0023A235 /* pcsound.h */; };
+		41B30AC919CA16860023A235 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41B30AC819CA16860023A235 /* SDL.framework */; };
+		41B30ACB19CA16C20023A235 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41B30ACA19CA16C20023A235 /* SDL_mixer.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		41B30AB619CA16540023A235 /* libpcsound.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libpcsound.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		41B30ABE19CA167A0023A235 /* pcsound_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pcsound_internal.h; path = ../../pcsound/pcsound_internal.h; sourceTree = "<group>"; };
+		41B30ABF19CA167A0023A235 /* pcsound_linux.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pcsound_linux.c; path = ../../pcsound/pcsound_linux.c; sourceTree = "<group>"; };
+		41B30AC019CA167A0023A235 /* pcsound_sdl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pcsound_sdl.c; path = ../../pcsound/pcsound_sdl.c; sourceTree = "<group>"; };
+		41B30AC119CA167A0023A235 /* pcsound.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pcsound.c; path = ../../pcsound/pcsound.c; sourceTree = "<group>"; };
+		41B30AC219CA167A0023A235 /* pcsound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pcsound.h; path = ../../pcsound/pcsound.h; sourceTree = "<group>"; };
+		41B30AC819CA16860023A235 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../../../../../Library/Frameworks/SDL.framework; sourceTree = "<group>"; };
+		41B30ACA19CA16C20023A235 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = ../../../../../Library/Frameworks/SDL_mixer.framework; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		41B30AB319CA16540023A235 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41B30AC919CA16860023A235 /* SDL.framework in Frameworks */,
+				41B30ACB19CA16C20023A235 /* SDL_mixer.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		41B30AAD19CA16540023A235 = {
+			isa = PBXGroup;
+			children = (
+				41B30ACA19CA16C20023A235 /* SDL_mixer.framework */,
+				41B30AC819CA16860023A235 /* SDL.framework */,
+				41B30ABD19CA166D0023A235 /* Src */,
+				41B30AB719CA16540023A235 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		41B30AB719CA16540023A235 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				41B30AB619CA16540023A235 /* libpcsound.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		41B30ABD19CA166D0023A235 /* Src */ = {
+			isa = PBXGroup;
+			children = (
+				41B30AC119CA167A0023A235 /* pcsound.c */,
+				41B30ABF19CA167A0023A235 /* pcsound_linux.c */,
+				41B30AC019CA167A0023A235 /* pcsound_sdl.c */,
+				41B30AC219CA167A0023A235 /* pcsound.h */,
+				41B30ABE19CA167A0023A235 /* pcsound_internal.h */,
+			);
+			name = Src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		41B30AB419CA16540023A235 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41B30AC319CA167A0023A235 /* pcsound_internal.h in Headers */,
+				41B30AC719CA167A0023A235 /* pcsound.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		41B30AB519CA16540023A235 /* pcsound */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 41B30ABA19CA16540023A235 /* Build configuration list for PBXNativeTarget "pcsound" */;
+			buildPhases = (
+				41B30AB219CA16540023A235 /* Sources */,
+				41B30AB319CA16540023A235 /* Frameworks */,
+				41B30AB419CA16540023A235 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = pcsound;
+			productName = pcsound;
+			productReference = 41B30AB619CA16540023A235 /* libpcsound.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		41B30AAE19CA16540023A235 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+			};
+			buildConfigurationList = 41B30AB119CA16540023A235 /* Build configuration list for PBXProject "pcsound" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 41B30AAD19CA16540023A235;
+			productRefGroup = 41B30AB719CA16540023A235 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				41B30AB519CA16540023A235 /* pcsound */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		41B30AB219CA16540023A235 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41B30AC519CA167A0023A235 /* pcsound_sdl.c in Sources */,
+				41B30AC419CA167A0023A235 /* pcsound_linux.c in Sources */,
+				41B30AC619CA167A0023A235 /* pcsound.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		41B30AB819CA16540023A235 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		41B30AB919CA16540023A235 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		41B30ABB19CA16540023A235 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../Chocolate/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../Chocolate/,
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					../Chocolate/Frameworks/SDL.framework/Headers,
+					../Chocolate/Frameworks/SDL_mixer.framework/Headers,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		41B30ABC19CA16540023A235 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../Chocolate/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../Chocolate/,
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					../Chocolate/Frameworks/SDL.framework/Headers,
+					../Chocolate/Frameworks/SDL_mixer.framework/Headers,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		41B30AB119CA16540023A235 /* Build configuration list for PBXProject "pcsound" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41B30AB819CA16540023A235 /* Debug */,
+				41B30AB919CA16540023A235 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		41B30ABA19CA16540023A235 /* Build configuration list for PBXNativeTarget "pcsound" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41B30ABB19CA16540023A235 /* Debug */,
+				41B30ABC19CA16540023A235 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 41B30AAE19CA16540023A235 /* Project object */;
+}

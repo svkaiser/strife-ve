@@ -1,0 +1,872 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{1145838b-175b-448f-ad0f-8dd32bc60cb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\strife">
+      <UniqueIdentifier>{09b224df-4ea8-4c88-a401-86ae12b19ab5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\opengl">
+      <UniqueIdentifier>{c1576702-1135-4cbb-b4af-9e4c06dff55b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{70837c7b-4a98-4bbc-8dfb-c3674cb4d6b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\strife">
+      <UniqueIdentifier>{1b97b3c1-5a63-4a83-bc54-d2dc43125f92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\opengl">
+      <UniqueIdentifier>{f09e6cfe-1903-4f82-91ee-e764d262a7cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{876a8a06-25bd-40fd-b250-0de639b18611}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\aes_prng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\d_event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\d_iwad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\d_loop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\d_mode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\d_ticcmd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\deh_io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\deh_main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\deh_mapping.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\deh_str.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\doomfeatures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\doomkeys.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\doomtype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gusconf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\i_endoom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\i_glscale.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\i_joystick.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\i_scale.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\i_sound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\i_swap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\i_system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\i_timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\i_video.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\m_argv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\m_bbox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\m_cheat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\m_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\m_controls.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\m_dllist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\m_fixed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\m_misc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\m_qstring.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\memio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\midifile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mus2mid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net_client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net_common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net_dedicated.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net_defs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net_gui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net_io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net_loop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net_packet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net_query.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net_sdl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net_server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net_structrw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\sha1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tables.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\v_patch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\v_video.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\w_checksum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\w_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\w_main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\w_merge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\w_wad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="win_opendir.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\z_zone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\am_map.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\d_englsh.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\d_items.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\d_main.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\d_net.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\d_player.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\d_textur.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\d_think.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\deh_defs.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\deh_io.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\deh_main.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\deh_mapping.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\deh_misc.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\doomdata.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\doomdef.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\doomstat.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\dstrings.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\f_finale.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\f_wipe.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\g_game.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\hu_lib.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\hu_stuff.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\info.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\m_menu.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\m_random.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\m_saves.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\p_dialog.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\p_inter.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\p_local.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\p_locations.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\p_mobj.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\p_pspr.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\p_saveg.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\p_setup.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\p_spec.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\p_tick.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\r_bsp.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\r_data.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\r_defs.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\r_draw.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\r_local.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\r_main.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\r_plane.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\r_segs.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\r_sky.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\r_state.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\r_things.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\s_sound.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\sounds.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\st_lib.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\st_stuff.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\strife\wi_stuff.h">
+      <Filter>Header Files\strife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\dgl.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_automap.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_bsp.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_clipper.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_common.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_config.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_data.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_decal.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_draw.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_drawlist.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_fbo.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_geom.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_gl.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_level.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_local.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_main.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_matrix.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_shader.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_sky.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_texture.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_things.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_view.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_wallshade.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_wipe.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_lightgrid.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opengl\rb_dynlights.h">
+      <Filter>Header Files\opengl</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\aes_prng.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\d_event.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\d_iwad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\d_loop.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\d_mode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deh_io.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deh_main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deh_mapping.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deh_str.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deh_text.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gusconf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\i_endoom.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\i_glscale.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\i_joystick.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\i_main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\i_oplmusic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\i_pcsound.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\i_scale.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\i_sdlmusic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\i_sdlsound.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\i_sound.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\i_system.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\i_timer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\i_video.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\icon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\m_argv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\m_bbox.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\m_cheat.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\m_config.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\m_controls.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\m_fixed.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\m_misc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\m_qstring.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\memio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\midifile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mus2mid.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net_client.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net_common.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net_dedicated.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net_gui.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net_io.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net_loop.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net_packet.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net_query.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net_sdl.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net_server.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net_structrw.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\SDL_win32_main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\sha1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tables.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\v_video.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\w_checksum.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\w_file.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\w_file_posix.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\w_file_stdc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\w_file_win32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\w_main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\w_merge.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\w_wad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="win_debug.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="win_opendir.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\z_zone.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\am_map.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\d_items.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\d_main.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\d_net.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\deh_ammo.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\deh_cheat.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\deh_frame.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\deh_misc.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\deh_ptr.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\deh_sound.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\deh_strife.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\deh_thing.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\deh_weapon.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\doomdef.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\doomstat.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\dstrings.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\f_finale.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\f_wipe.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\g_game.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\hu_lib.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\hu_stuff.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\info.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\m_menu.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\m_random.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\m_saves.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_ceilng.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_dialog.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_doors.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_enemy.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_floor.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_inter.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_lights.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_locations.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_map.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_maputl.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_mobj.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_plats.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_pspr.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_saveg.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_setup.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_sight.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_spec.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_switch.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_telept.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_tick.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\p_user.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\r_bsp.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\r_data.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\r_draw.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\r_main.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\r_plane.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\r_segs.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\r_sky.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\r_things.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\s_sound.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\sounds.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\st_lib.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\st_stuff.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\strife\wi_stuff.c">
+      <Filter>Source Files\strife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_automap.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_bsp.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_clipper.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_config.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_data.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_decal.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_draw.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_drawlist.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_fbo.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_geom.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_gl.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_main.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_matrix.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_shader.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_sky.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_texture.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_things.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_view.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_wallshade.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_wipe.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_lightgrid.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_dynlights.c">
+      <Filter>Source Files\opengl</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="win32.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

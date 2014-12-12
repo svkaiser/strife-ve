@@ -1,0 +1,430 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		41B30CC619CA1DB30023A235 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41B30CC519CA1DB30023A235 /* SDL.framework */; };
+		41B30CF519CA1DEA0023A235 /* textscreen.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CC819CA1DEA0023A235 /* textscreen.h */; };
+		41B30CF619CA1DEA0023A235 /* txt_button.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CC919CA1DEA0023A235 /* txt_button.c */; };
+		41B30CF719CA1DEA0023A235 /* txt_button.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CCA19CA1DEA0023A235 /* txt_button.h */; };
+		41B30CF819CA1DEA0023A235 /* txt_checkbox.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CCB19CA1DEA0023A235 /* txt_checkbox.c */; };
+		41B30CF919CA1DEA0023A235 /* txt_checkbox.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CCC19CA1DEA0023A235 /* txt_checkbox.h */; };
+		41B30CFA19CA1DEA0023A235 /* txt_desktop.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CCD19CA1DEA0023A235 /* txt_desktop.c */; };
+		41B30CFB19CA1DEA0023A235 /* txt_desktop.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CCE19CA1DEA0023A235 /* txt_desktop.h */; };
+		41B30CFC19CA1DEA0023A235 /* txt_dropdown.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CCF19CA1DEA0023A235 /* txt_dropdown.c */; };
+		41B30CFD19CA1DEA0023A235 /* txt_dropdown.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CD019CA1DEA0023A235 /* txt_dropdown.h */; };
+		41B30CFE19CA1DEA0023A235 /* txt_fileselect.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CD119CA1DEA0023A235 /* txt_fileselect.c */; };
+		41B30CFF19CA1DEA0023A235 /* txt_fileselect.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CD219CA1DEA0023A235 /* txt_fileselect.h */; };
+		41B30D0019CA1DEA0023A235 /* txt_font.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CD319CA1DEA0023A235 /* txt_font.h */; };
+		41B30D0119CA1DEA0023A235 /* txt_gui.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CD419CA1DEA0023A235 /* txt_gui.c */; };
+		41B30D0219CA1DEA0023A235 /* txt_gui.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CD519CA1DEA0023A235 /* txt_gui.h */; };
+		41B30D0319CA1DEA0023A235 /* txt_inputbox.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CD619CA1DEA0023A235 /* txt_inputbox.c */; };
+		41B30D0419CA1DEA0023A235 /* txt_inputbox.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CD719CA1DEA0023A235 /* txt_inputbox.h */; };
+		41B30D0519CA1DEA0023A235 /* txt_io.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CD819CA1DEA0023A235 /* txt_io.c */; };
+		41B30D0619CA1DEA0023A235 /* txt_io.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CD919CA1DEA0023A235 /* txt_io.h */; };
+		41B30D0719CA1DEA0023A235 /* txt_label.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CDA19CA1DEA0023A235 /* txt_label.c */; };
+		41B30D0819CA1DEA0023A235 /* txt_label.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CDB19CA1DEA0023A235 /* txt_label.h */; };
+		41B30D0919CA1DEA0023A235 /* txt_largefont.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CDC19CA1DEA0023A235 /* txt_largefont.h */; };
+		41B30D0A19CA1DEA0023A235 /* txt_main.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CDD19CA1DEA0023A235 /* txt_main.h */; };
+		41B30D0B19CA1DEA0023A235 /* txt_radiobutton.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CDE19CA1DEA0023A235 /* txt_radiobutton.c */; };
+		41B30D0C19CA1DEA0023A235 /* txt_radiobutton.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CDF19CA1DEA0023A235 /* txt_radiobutton.h */; };
+		41B30D0D19CA1DEA0023A235 /* txt_scrollpane.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CE019CA1DEA0023A235 /* txt_scrollpane.c */; };
+		41B30D0E19CA1DEA0023A235 /* txt_scrollpane.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CE119CA1DEA0023A235 /* txt_scrollpane.h */; };
+		41B30D0F19CA1DEA0023A235 /* txt_sdl.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CE219CA1DEA0023A235 /* txt_sdl.c */; };
+		41B30D1019CA1DEA0023A235 /* txt_sdl.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CE319CA1DEA0023A235 /* txt_sdl.h */; };
+		41B30D1119CA1DEA0023A235 /* txt_separator.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CE419CA1DEA0023A235 /* txt_separator.c */; };
+		41B30D1219CA1DEA0023A235 /* txt_separator.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CE519CA1DEA0023A235 /* txt_separator.h */; };
+		41B30D1319CA1DEA0023A235 /* txt_smallfont.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CE619CA1DEA0023A235 /* txt_smallfont.h */; };
+		41B30D1419CA1DEA0023A235 /* txt_spinctrl.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CE719CA1DEA0023A235 /* txt_spinctrl.c */; };
+		41B30D1519CA1DEA0023A235 /* txt_spinctrl.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CE819CA1DEA0023A235 /* txt_spinctrl.h */; };
+		41B30D1619CA1DEA0023A235 /* txt_strut.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CE919CA1DEA0023A235 /* txt_strut.c */; };
+		41B30D1719CA1DEA0023A235 /* txt_strut.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CEA19CA1DEA0023A235 /* txt_strut.h */; };
+		41B30D1819CA1DEA0023A235 /* txt_table.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CEB19CA1DEA0023A235 /* txt_table.c */; };
+		41B30D1919CA1DEA0023A235 /* txt_table.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CEC19CA1DEA0023A235 /* txt_table.h */; };
+		41B30D1A19CA1DEA0023A235 /* txt_utf8.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CED19CA1DEA0023A235 /* txt_utf8.c */; };
+		41B30D1B19CA1DEA0023A235 /* txt_utf8.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CEE19CA1DEA0023A235 /* txt_utf8.h */; };
+		41B30D1C19CA1DEA0023A235 /* txt_widget.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CEF19CA1DEA0023A235 /* txt_widget.c */; };
+		41B30D1D19CA1DEA0023A235 /* txt_widget.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CF019CA1DEA0023A235 /* txt_widget.h */; };
+		41B30D1E19CA1DEA0023A235 /* txt_window_action.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CF119CA1DEA0023A235 /* txt_window_action.c */; };
+		41B30D1F19CA1DEA0023A235 /* txt_window_action.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CF219CA1DEA0023A235 /* txt_window_action.h */; };
+		41B30D2019CA1DEA0023A235 /* txt_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30CF319CA1DEA0023A235 /* txt_window.c */; };
+		41B30D2119CA1DEA0023A235 /* txt_window.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30CF419CA1DEA0023A235 /* txt_window.h */; };
+		41B30D2319CA1E0B0023A235 /* doomkeys.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30D2219CA1E0B0023A235 /* doomkeys.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		41B30CBE19CA1D890023A235 /* libtextscreen.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libtextscreen.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		41B30CC519CA1DB30023A235 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../../../../../Library/Frameworks/SDL.framework; sourceTree = "<group>"; };
+		41B30CC819CA1DEA0023A235 /* textscreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = textscreen.h; path = ../../textscreen/textscreen.h; sourceTree = "<group>"; };
+		41B30CC919CA1DEA0023A235 /* txt_button.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_button.c; path = ../../textscreen/txt_button.c; sourceTree = "<group>"; };
+		41B30CCA19CA1DEA0023A235 /* txt_button.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_button.h; path = ../../textscreen/txt_button.h; sourceTree = "<group>"; };
+		41B30CCB19CA1DEA0023A235 /* txt_checkbox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_checkbox.c; path = ../../textscreen/txt_checkbox.c; sourceTree = "<group>"; };
+		41B30CCC19CA1DEA0023A235 /* txt_checkbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_checkbox.h; path = ../../textscreen/txt_checkbox.h; sourceTree = "<group>"; };
+		41B30CCD19CA1DEA0023A235 /* txt_desktop.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_desktop.c; path = ../../textscreen/txt_desktop.c; sourceTree = "<group>"; };
+		41B30CCE19CA1DEA0023A235 /* txt_desktop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_desktop.h; path = ../../textscreen/txt_desktop.h; sourceTree = "<group>"; };
+		41B30CCF19CA1DEA0023A235 /* txt_dropdown.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_dropdown.c; path = ../../textscreen/txt_dropdown.c; sourceTree = "<group>"; };
+		41B30CD019CA1DEA0023A235 /* txt_dropdown.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_dropdown.h; path = ../../textscreen/txt_dropdown.h; sourceTree = "<group>"; };
+		41B30CD119CA1DEA0023A235 /* txt_fileselect.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_fileselect.c; path = ../../textscreen/txt_fileselect.c; sourceTree = "<group>"; };
+		41B30CD219CA1DEA0023A235 /* txt_fileselect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_fileselect.h; path = ../../textscreen/txt_fileselect.h; sourceTree = "<group>"; };
+		41B30CD319CA1DEA0023A235 /* txt_font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_font.h; path = ../../textscreen/txt_font.h; sourceTree = "<group>"; };
+		41B30CD419CA1DEA0023A235 /* txt_gui.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_gui.c; path = ../../textscreen/txt_gui.c; sourceTree = "<group>"; };
+		41B30CD519CA1DEA0023A235 /* txt_gui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_gui.h; path = ../../textscreen/txt_gui.h; sourceTree = "<group>"; };
+		41B30CD619CA1DEA0023A235 /* txt_inputbox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_inputbox.c; path = ../../textscreen/txt_inputbox.c; sourceTree = "<group>"; };
+		41B30CD719CA1DEA0023A235 /* txt_inputbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_inputbox.h; path = ../../textscreen/txt_inputbox.h; sourceTree = "<group>"; };
+		41B30CD819CA1DEA0023A235 /* txt_io.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_io.c; path = ../../textscreen/txt_io.c; sourceTree = "<group>"; };
+		41B30CD919CA1DEA0023A235 /* txt_io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_io.h; path = ../../textscreen/txt_io.h; sourceTree = "<group>"; };
+		41B30CDA19CA1DEA0023A235 /* txt_label.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_label.c; path = ../../textscreen/txt_label.c; sourceTree = "<group>"; };
+		41B30CDB19CA1DEA0023A235 /* txt_label.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_label.h; path = ../../textscreen/txt_label.h; sourceTree = "<group>"; };
+		41B30CDC19CA1DEA0023A235 /* txt_largefont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_largefont.h; path = ../../textscreen/txt_largefont.h; sourceTree = "<group>"; };
+		41B30CDD19CA1DEA0023A235 /* txt_main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_main.h; path = ../../textscreen/txt_main.h; sourceTree = "<group>"; };
+		41B30CDE19CA1DEA0023A235 /* txt_radiobutton.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_radiobutton.c; path = ../../textscreen/txt_radiobutton.c; sourceTree = "<group>"; };
+		41B30CDF19CA1DEA0023A235 /* txt_radiobutton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_radiobutton.h; path = ../../textscreen/txt_radiobutton.h; sourceTree = "<group>"; };
+		41B30CE019CA1DEA0023A235 /* txt_scrollpane.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_scrollpane.c; path = ../../textscreen/txt_scrollpane.c; sourceTree = "<group>"; };
+		41B30CE119CA1DEA0023A235 /* txt_scrollpane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_scrollpane.h; path = ../../textscreen/txt_scrollpane.h; sourceTree = "<group>"; };
+		41B30CE219CA1DEA0023A235 /* txt_sdl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_sdl.c; path = ../../textscreen/txt_sdl.c; sourceTree = "<group>"; };
+		41B30CE319CA1DEA0023A235 /* txt_sdl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_sdl.h; path = ../../textscreen/txt_sdl.h; sourceTree = "<group>"; };
+		41B30CE419CA1DEA0023A235 /* txt_separator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_separator.c; path = ../../textscreen/txt_separator.c; sourceTree = "<group>"; };
+		41B30CE519CA1DEA0023A235 /* txt_separator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_separator.h; path = ../../textscreen/txt_separator.h; sourceTree = "<group>"; };
+		41B30CE619CA1DEA0023A235 /* txt_smallfont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_smallfont.h; path = ../../textscreen/txt_smallfont.h; sourceTree = "<group>"; };
+		41B30CE719CA1DEA0023A235 /* txt_spinctrl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_spinctrl.c; path = ../../textscreen/txt_spinctrl.c; sourceTree = "<group>"; };
+		41B30CE819CA1DEA0023A235 /* txt_spinctrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_spinctrl.h; path = ../../textscreen/txt_spinctrl.h; sourceTree = "<group>"; };
+		41B30CE919CA1DEA0023A235 /* txt_strut.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_strut.c; path = ../../textscreen/txt_strut.c; sourceTree = "<group>"; };
+		41B30CEA19CA1DEA0023A235 /* txt_strut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_strut.h; path = ../../textscreen/txt_strut.h; sourceTree = "<group>"; };
+		41B30CEB19CA1DEA0023A235 /* txt_table.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_table.c; path = ../../textscreen/txt_table.c; sourceTree = "<group>"; };
+		41B30CEC19CA1DEA0023A235 /* txt_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_table.h; path = ../../textscreen/txt_table.h; sourceTree = "<group>"; };
+		41B30CED19CA1DEA0023A235 /* txt_utf8.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_utf8.c; path = ../../textscreen/txt_utf8.c; sourceTree = "<group>"; };
+		41B30CEE19CA1DEA0023A235 /* txt_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_utf8.h; path = ../../textscreen/txt_utf8.h; sourceTree = "<group>"; };
+		41B30CEF19CA1DEA0023A235 /* txt_widget.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_widget.c; path = ../../textscreen/txt_widget.c; sourceTree = "<group>"; };
+		41B30CF019CA1DEA0023A235 /* txt_widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_widget.h; path = ../../textscreen/txt_widget.h; sourceTree = "<group>"; };
+		41B30CF119CA1DEA0023A235 /* txt_window_action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_window_action.c; path = ../../textscreen/txt_window_action.c; sourceTree = "<group>"; };
+		41B30CF219CA1DEA0023A235 /* txt_window_action.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_window_action.h; path = ../../textscreen/txt_window_action.h; sourceTree = "<group>"; };
+		41B30CF319CA1DEA0023A235 /* txt_window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = txt_window.c; path = ../../textscreen/txt_window.c; sourceTree = "<group>"; };
+		41B30CF419CA1DEA0023A235 /* txt_window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = txt_window.h; path = ../../textscreen/txt_window.h; sourceTree = "<group>"; };
+		41B30D2219CA1E0B0023A235 /* doomkeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = doomkeys.h; path = ../../src/doomkeys.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		41B30CBB19CA1D890023A235 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41B30CC619CA1DB30023A235 /* SDL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		41B30CB519CA1D890023A235 = {
+			isa = PBXGroup;
+			children = (
+				41B30CC719CA1DC30023A235 /* Src */,
+				41B30CC519CA1DB30023A235 /* SDL.framework */,
+				41B30CBF19CA1D890023A235 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		41B30CBF19CA1D890023A235 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				41B30CBE19CA1D890023A235 /* libtextscreen.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		41B30CC719CA1DC30023A235 /* Src */ = {
+			isa = PBXGroup;
+			children = (
+				41B30D2219CA1E0B0023A235 /* doomkeys.h */,
+				41B30CC919CA1DEA0023A235 /* txt_button.c */,
+				41B30CCB19CA1DEA0023A235 /* txt_checkbox.c */,
+				41B30CCD19CA1DEA0023A235 /* txt_desktop.c */,
+				41B30CCF19CA1DEA0023A235 /* txt_dropdown.c */,
+				41B30CD119CA1DEA0023A235 /* txt_fileselect.c */,
+				41B30CD419CA1DEA0023A235 /* txt_gui.c */,
+				41B30CD619CA1DEA0023A235 /* txt_inputbox.c */,
+				41B30CD819CA1DEA0023A235 /* txt_io.c */,
+				41B30CDA19CA1DEA0023A235 /* txt_label.c */,
+				41B30CDE19CA1DEA0023A235 /* txt_radiobutton.c */,
+				41B30CE019CA1DEA0023A235 /* txt_scrollpane.c */,
+				41B30CE219CA1DEA0023A235 /* txt_sdl.c */,
+				41B30CE419CA1DEA0023A235 /* txt_separator.c */,
+				41B30CE719CA1DEA0023A235 /* txt_spinctrl.c */,
+				41B30CE919CA1DEA0023A235 /* txt_strut.c */,
+				41B30CEB19CA1DEA0023A235 /* txt_table.c */,
+				41B30CED19CA1DEA0023A235 /* txt_utf8.c */,
+				41B30CEF19CA1DEA0023A235 /* txt_widget.c */,
+				41B30CF319CA1DEA0023A235 /* txt_window.c */,
+				41B30CF119CA1DEA0023A235 /* txt_window_action.c */,
+				41B30CC819CA1DEA0023A235 /* textscreen.h */,
+				41B30CCA19CA1DEA0023A235 /* txt_button.h */,
+				41B30CCC19CA1DEA0023A235 /* txt_checkbox.h */,
+				41B30CCE19CA1DEA0023A235 /* txt_desktop.h */,
+				41B30CD019CA1DEA0023A235 /* txt_dropdown.h */,
+				41B30CD219CA1DEA0023A235 /* txt_fileselect.h */,
+				41B30CD319CA1DEA0023A235 /* txt_font.h */,
+				41B30CD519CA1DEA0023A235 /* txt_gui.h */,
+				41B30CD719CA1DEA0023A235 /* txt_inputbox.h */,
+				41B30CD919CA1DEA0023A235 /* txt_io.h */,
+				41B30CDB19CA1DEA0023A235 /* txt_label.h */,
+				41B30CDC19CA1DEA0023A235 /* txt_largefont.h */,
+				41B30CDD19CA1DEA0023A235 /* txt_main.h */,
+				41B30CDF19CA1DEA0023A235 /* txt_radiobutton.h */,
+				41B30CE119CA1DEA0023A235 /* txt_scrollpane.h */,
+				41B30CE319CA1DEA0023A235 /* txt_sdl.h */,
+				41B30CE519CA1DEA0023A235 /* txt_separator.h */,
+				41B30CE619CA1DEA0023A235 /* txt_smallfont.h */,
+				41B30CE819CA1DEA0023A235 /* txt_spinctrl.h */,
+				41B30CEA19CA1DEA0023A235 /* txt_strut.h */,
+				41B30CEC19CA1DEA0023A235 /* txt_table.h */,
+				41B30CEE19CA1DEA0023A235 /* txt_utf8.h */,
+				41B30CF019CA1DEA0023A235 /* txt_widget.h */,
+				41B30CF419CA1DEA0023A235 /* txt_window.h */,
+				41B30CF219CA1DEA0023A235 /* txt_window_action.h */,
+			);
+			name = Src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		41B30CBC19CA1D890023A235 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41B30D2119CA1DEA0023A235 /* txt_window.h in Headers */,
+				41B30CFB19CA1DEA0023A235 /* txt_desktop.h in Headers */,
+				41B30D1D19CA1DEA0023A235 /* txt_widget.h in Headers */,
+				41B30D2319CA1E0B0023A235 /* doomkeys.h in Headers */,
+				41B30D1019CA1DEA0023A235 /* txt_sdl.h in Headers */,
+				41B30D1919CA1DEA0023A235 /* txt_table.h in Headers */,
+				41B30CFF19CA1DEA0023A235 /* txt_fileselect.h in Headers */,
+				41B30D1F19CA1DEA0023A235 /* txt_window_action.h in Headers */,
+				41B30D0A19CA1DEA0023A235 /* txt_main.h in Headers */,
+				41B30CFD19CA1DEA0023A235 /* txt_dropdown.h in Headers */,
+				41B30D0619CA1DEA0023A235 /* txt_io.h in Headers */,
+				41B30D1719CA1DEA0023A235 /* txt_strut.h in Headers */,
+				41B30D0E19CA1DEA0023A235 /* txt_scrollpane.h in Headers */,
+				41B30D1219CA1DEA0023A235 /* txt_separator.h in Headers */,
+				41B30D0219CA1DEA0023A235 /* txt_gui.h in Headers */,
+				41B30D0019CA1DEA0023A235 /* txt_font.h in Headers */,
+				41B30D0C19CA1DEA0023A235 /* txt_radiobutton.h in Headers */,
+				41B30D0919CA1DEA0023A235 /* txt_largefont.h in Headers */,
+				41B30CF919CA1DEA0023A235 /* txt_checkbox.h in Headers */,
+				41B30CF519CA1DEA0023A235 /* textscreen.h in Headers */,
+				41B30D0819CA1DEA0023A235 /* txt_label.h in Headers */,
+				41B30CF719CA1DEA0023A235 /* txt_button.h in Headers */,
+				41B30D1319CA1DEA0023A235 /* txt_smallfont.h in Headers */,
+				41B30D1519CA1DEA0023A235 /* txt_spinctrl.h in Headers */,
+				41B30D1B19CA1DEA0023A235 /* txt_utf8.h in Headers */,
+				41B30D0419CA1DEA0023A235 /* txt_inputbox.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		41B30CBD19CA1D890023A235 /* textscreen */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 41B30CC219CA1D890023A235 /* Build configuration list for PBXNativeTarget "textscreen" */;
+			buildPhases = (
+				41B30CBA19CA1D890023A235 /* Sources */,
+				41B30CBB19CA1D890023A235 /* Frameworks */,
+				41B30CBC19CA1D890023A235 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = textscreen;
+			productName = textscreen;
+			productReference = 41B30CBE19CA1D890023A235 /* libtextscreen.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		41B30CB619CA1D890023A235 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+			};
+			buildConfigurationList = 41B30CB919CA1D890023A235 /* Build configuration list for PBXProject "textscreen" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 41B30CB519CA1D890023A235;
+			productRefGroup = 41B30CBF19CA1D890023A235 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				41B30CBD19CA1D890023A235 /* textscreen */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		41B30CBA19CA1D890023A235 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41B30D2019CA1DEA0023A235 /* txt_window.c in Sources */,
+				41B30D1A19CA1DEA0023A235 /* txt_utf8.c in Sources */,
+				41B30D0519CA1DEA0023A235 /* txt_io.c in Sources */,
+				41B30D1E19CA1DEA0023A235 /* txt_window_action.c in Sources */,
+				41B30D0319CA1DEA0023A235 /* txt_inputbox.c in Sources */,
+				41B30D0D19CA1DEA0023A235 /* txt_scrollpane.c in Sources */,
+				41B30D1819CA1DEA0023A235 /* txt_table.c in Sources */,
+				41B30CF619CA1DEA0023A235 /* txt_button.c in Sources */,
+				41B30D0719CA1DEA0023A235 /* txt_label.c in Sources */,
+				41B30D1419CA1DEA0023A235 /* txt_spinctrl.c in Sources */,
+				41B30D1619CA1DEA0023A235 /* txt_strut.c in Sources */,
+				41B30CFA19CA1DEA0023A235 /* txt_desktop.c in Sources */,
+				41B30D1C19CA1DEA0023A235 /* txt_widget.c in Sources */,
+				41B30D1119CA1DEA0023A235 /* txt_separator.c in Sources */,
+				41B30D0119CA1DEA0023A235 /* txt_gui.c in Sources */,
+				41B30CF819CA1DEA0023A235 /* txt_checkbox.c in Sources */,
+				41B30D0F19CA1DEA0023A235 /* txt_sdl.c in Sources */,
+				41B30CFC19CA1DEA0023A235 /* txt_dropdown.c in Sources */,
+				41B30D0B19CA1DEA0023A235 /* txt_radiobutton.c in Sources */,
+				41B30CFE19CA1DEA0023A235 /* txt_fileselect.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		41B30CC019CA1D890023A235 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		41B30CC119CA1D890023A235 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		41B30CC319CA1D890023A235 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/Users/svillarreal/Library/Frameworks/SDL.framework/Headers,
+					../Chocolate/,
+					../Chocolate/Frameworks/SDL.framework/Headers,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		41B30CC419CA1D890023A235 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/Users/svillarreal/Library/Frameworks/SDL.framework/Headers,
+					../Chocolate/,
+					../Chocolate/Frameworks/SDL.framework/Headers,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		41B30CB919CA1D890023A235 /* Build configuration list for PBXProject "textscreen" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41B30CC019CA1D890023A235 /* Debug */,
+				41B30CC119CA1D890023A235 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		41B30CC219CA1D890023A235 /* Build configuration list for PBXNativeTarget "textscreen" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41B30CC319CA1D890023A235 /* Debug */,
+				41B30CC419CA1D890023A235 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 41B30CB619CA1D890023A235 /* Project object */;
+}

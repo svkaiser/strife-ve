@@ -1,0 +1,13 @@
+*.cfg
+*.ncb
+*.suo
+*.user
+savegames
+strfsav*
+*.pcx
+*.wad
+*.sln
+*.vsp
+*.psess
+*.suo
+*.sdf

@@ -1,0 +1,310 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		41B30A4819CA14730023A235 /* dbopl.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30A3B19CA14730023A235 /* dbopl.c */; };
+		41B30A4919CA14730023A235 /* dbopl.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30A3C19CA14730023A235 /* dbopl.h */; };
+		41B30A4A19CA14730023A235 /* ioperm_sys.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30A3D19CA14730023A235 /* ioperm_sys.c */; };
+		41B30A4B19CA14730023A235 /* ioperm_sys.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30A3E19CA14730023A235 /* ioperm_sys.h */; };
+		41B30A4C19CA14730023A235 /* opl_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30A3F19CA14730023A235 /* opl_internal.h */; };
+		41B30A4D19CA14730023A235 /* opl_linux.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30A4019CA14730023A235 /* opl_linux.c */; };
+		41B30A4E19CA14730023A235 /* opl_queue.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30A4119CA14730023A235 /* opl_queue.c */; };
+		41B30A4F19CA14730023A235 /* opl_queue.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30A4219CA14730023A235 /* opl_queue.h */; };
+		41B30A5019CA14730023A235 /* opl_sdl.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30A4319CA14730023A235 /* opl_sdl.c */; };
+		41B30A5119CA14730023A235 /* opl_timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30A4419CA14730023A235 /* opl_timer.c */; };
+		41B30A5219CA14730023A235 /* opl_timer.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30A4519CA14730023A235 /* opl_timer.h */; };
+		41B30A5319CA14730023A235 /* opl.c in Sources */ = {isa = PBXBuildFile; fileRef = 41B30A4619CA14730023A235 /* opl.c */; };
+		41B30A5419CA14730023A235 /* opl.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30A4719CA14730023A235 /* opl.h */; };
+		41B30A5619CA14D20023A235 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B30A5519CA14D20023A235 /* config.h */; };
+		41B30A5919CA151E0023A235 /* SDL_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41B30A5719CA151E0023A235 /* SDL_net.framework */; };
+		41B30A5A19CA151E0023A235 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41B30A5819CA151E0023A235 /* SDL.framework */; };
+		41B30AAC19CA161B0023A235 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41B30AAB19CA161B0023A235 /* SDL_mixer.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		41B30A3319CA143F0023A235 /* liblibopl.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibopl.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		41B30A3B19CA14730023A235 /* dbopl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dbopl.c; path = ../../opl/dbopl.c; sourceTree = "<group>"; };
+		41B30A3C19CA14730023A235 /* dbopl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dbopl.h; path = ../../opl/dbopl.h; sourceTree = "<group>"; };
+		41B30A3D19CA14730023A235 /* ioperm_sys.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ioperm_sys.c; path = ../../opl/ioperm_sys.c; sourceTree = "<group>"; };
+		41B30A3E19CA14730023A235 /* ioperm_sys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ioperm_sys.h; path = ../../opl/ioperm_sys.h; sourceTree = "<group>"; };
+		41B30A3F19CA14730023A235 /* opl_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = opl_internal.h; path = ../../opl/opl_internal.h; sourceTree = "<group>"; };
+		41B30A4019CA14730023A235 /* opl_linux.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = opl_linux.c; path = ../../opl/opl_linux.c; sourceTree = "<group>"; };
+		41B30A4119CA14730023A235 /* opl_queue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = opl_queue.c; path = ../../opl/opl_queue.c; sourceTree = "<group>"; };
+		41B30A4219CA14730023A235 /* opl_queue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = opl_queue.h; path = ../../opl/opl_queue.h; sourceTree = "<group>"; };
+		41B30A4319CA14730023A235 /* opl_sdl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = opl_sdl.c; path = ../../opl/opl_sdl.c; sourceTree = "<group>"; };
+		41B30A4419CA14730023A235 /* opl_timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = opl_timer.c; path = ../../opl/opl_timer.c; sourceTree = "<group>"; };
+		41B30A4519CA14730023A235 /* opl_timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = opl_timer.h; path = ../../opl/opl_timer.h; sourceTree = "<group>"; };
+		41B30A4619CA14730023A235 /* opl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = opl.c; path = ../../opl/opl.c; sourceTree = "<group>"; };
+		41B30A4719CA14730023A235 /* opl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = opl.h; path = ../../opl/opl.h; sourceTree = "<group>"; };
+		41B30A5519CA14D20023A235 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../../opl/config.h; sourceTree = "<group>"; };
+		41B30A5719CA151E0023A235 /* SDL_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_net.framework; path = ../../../../../Library/Frameworks/SDL_net.framework; sourceTree = "<group>"; };
+		41B30A5819CA151E0023A235 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../../../../../Library/Frameworks/SDL.framework; sourceTree = "<group>"; };
+		41B30AAB19CA161B0023A235 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = ../../../../../Library/Frameworks/SDL_mixer.framework; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		41B30A3019CA143F0023A235 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41B30AAC19CA161B0023A235 /* SDL_mixer.framework in Frameworks */,
+				41B30A5919CA151E0023A235 /* SDL_net.framework in Frameworks */,
+				41B30A5A19CA151E0023A235 /* SDL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		41B30A2A19CA143F0023A235 = {
+			isa = PBXGroup;
+			children = (
+				41B30AAB19CA161B0023A235 /* SDL_mixer.framework */,
+				41B30A5719CA151E0023A235 /* SDL_net.framework */,
+				41B30A5819CA151E0023A235 /* SDL.framework */,
+				41B30A3A19CA14680023A235 /* Src */,
+				41B30A3419CA143F0023A235 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		41B30A3419CA143F0023A235 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				41B30A3319CA143F0023A235 /* liblibopl.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		41B30A3A19CA14680023A235 /* Src */ = {
+			isa = PBXGroup;
+			children = (
+				41B30A5519CA14D20023A235 /* config.h */,
+				41B30A3B19CA14730023A235 /* dbopl.c */,
+				41B30A3D19CA14730023A235 /* ioperm_sys.c */,
+				41B30A4619CA14730023A235 /* opl.c */,
+				41B30A4019CA14730023A235 /* opl_linux.c */,
+				41B30A4119CA14730023A235 /* opl_queue.c */,
+				41B30A4319CA14730023A235 /* opl_sdl.c */,
+				41B30A4419CA14730023A235 /* opl_timer.c */,
+				41B30A3C19CA14730023A235 /* dbopl.h */,
+				41B30A3E19CA14730023A235 /* ioperm_sys.h */,
+				41B30A4719CA14730023A235 /* opl.h */,
+				41B30A3F19CA14730023A235 /* opl_internal.h */,
+				41B30A4219CA14730023A235 /* opl_queue.h */,
+				41B30A4519CA14730023A235 /* opl_timer.h */,
+			);
+			name = Src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		41B30A3119CA143F0023A235 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41B30A5419CA14730023A235 /* opl.h in Headers */,
+				41B30A5219CA14730023A235 /* opl_timer.h in Headers */,
+				41B30A4F19CA14730023A235 /* opl_queue.h in Headers */,
+				41B30A4B19CA14730023A235 /* ioperm_sys.h in Headers */,
+				41B30A4C19CA14730023A235 /* opl_internal.h in Headers */,
+				41B30A4919CA14730023A235 /* dbopl.h in Headers */,
+				41B30A5619CA14D20023A235 /* config.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		41B30A3219CA143F0023A235 /* libopl */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 41B30A3719CA143F0023A235 /* Build configuration list for PBXNativeTarget "libopl" */;
+			buildPhases = (
+				41B30A2F19CA143F0023A235 /* Sources */,
+				41B30A3019CA143F0023A235 /* Frameworks */,
+				41B30A3119CA143F0023A235 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = libopl;
+			productName = libopl;
+			productReference = 41B30A3319CA143F0023A235 /* liblibopl.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		41B30A2B19CA143F0023A235 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+			};
+			buildConfigurationList = 41B30A2E19CA143F0023A235 /* Build configuration list for PBXProject "libopl" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 41B30A2A19CA143F0023A235;
+			productRefGroup = 41B30A3419CA143F0023A235 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				41B30A3219CA143F0023A235 /* libopl */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		41B30A2F19CA143F0023A235 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41B30A4819CA14730023A235 /* dbopl.c in Sources */,
+				41B30A5119CA14730023A235 /* opl_timer.c in Sources */,
+				41B30A4D19CA14730023A235 /* opl_linux.c in Sources */,
+				41B30A5319CA14730023A235 /* opl.c in Sources */,
+				41B30A4A19CA14730023A235 /* ioperm_sys.c in Sources */,
+				41B30A4E19CA14730023A235 /* opl_queue.c in Sources */,
+				41B30A5019CA14730023A235 /* opl_sdl.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		41B30A3519CA143F0023A235 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		41B30A3619CA143F0023A235 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		41B30A3819CA143F0023A235 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../Chocolate/Frameworks";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					../Chocolate/,
+					../Chocolate/Frameworks/SDL.framework/Headers,
+					../Chocolate/Frameworks/SDL_mixer.framework/Headers,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		41B30A3919CA143F0023A235 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../Chocolate/Frameworks";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					../Chocolate/,
+					../Chocolate/Frameworks/SDL.framework/Headers,
+					../Chocolate/Frameworks/SDL_mixer.framework/Headers,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		41B30A2E19CA143F0023A235 /* Build configuration list for PBXProject "libopl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41B30A3519CA143F0023A235 /* Debug */,
+				41B30A3619CA143F0023A235 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		41B30A3719CA143F0023A235 /* Build configuration list for PBXNativeTarget "libopl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41B30A3819CA143F0023A235 /* Debug */,
+				41B30A3919CA143F0023A235 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 41B30A2B19CA143F0023A235 /* Project object */;
+}
