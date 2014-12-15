@@ -95,6 +95,14 @@ static unsigned int *unscaled_data = NULL;
 static rbfbo_t scaled_framebuffer;
 static int scaled_w, scaled_h;
 
+enum
+{
+    GLSCALE_PIPELINE_FBO, // use FBO
+    GLSCALE_PIPELINE_IMM  // use immediate mode
+};
+
+static int glscale_pipeline;
+
 // Check we have all the required extensions, otherwise this
 // isn't going to work.
 static boolean CheckExtensions(void)
@@ -201,7 +209,10 @@ static boolean CreateTextures(void)
     // Unscaled texture for input:
     if (unscaled_data == NULL)
     {
-        unscaled_data = malloc(SCREENWIDTH * SCREENHEIGHT * sizeof(int));
+        if(glscale_pipeline == GLSCALE_PIPELINE_FBO)
+            unscaled_data = malloc(SCREENWIDTH * SCREENHEIGHT * sizeof(int));
+        else
+            unscaled_data = calloc(512 * 256, sizeof(int));
     }
     
     if (unscaled_texture == 0)
@@ -212,6 +223,12 @@ static boolean CreateTextures(void)
     dglBindTexture(GL_TEXTURE_2D, unscaled_texture);
     dglTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     dglTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    if(glscale_pipeline == GLSCALE_PIPELINE_IMM)
+    {
+        dglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        dglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    }
 
     return true;
 }
@@ -231,22 +248,49 @@ static void SetInputData(byte *screen, SDL_Color *palette)
 {
     SDL_Color *c;
     byte *s;
-    unsigned int i;
 
     // TODO: Maybe support GL_RGB as well as GL_RGBA?
-    s = (byte *) unscaled_data;
-    for (i = 0; i < SCREENWIDTH * SCREENHEIGHT; ++i)
+    if(glscale_pipeline == GLSCALE_PIPELINE_FBO)
     {
-        c = &palette[screen[i]];
-        *s++ = c->r;
-        *s++ = c->g;
-        *s++ = c->b;
-        *s++ = 0xff;
+        unsigned int i;
+        s = (byte *) unscaled_data;
+        for (i = 0; i < SCREENWIDTH * SCREENHEIGHT; ++i)
+        {
+            c = &palette[screen[i]];
+            *s++ = c->r;
+            *s++ = c->g;
+            *s++ = c->b;
+            *s++ = 0xff;
+        }
     }
-
+    else
+    {
+        int x, y;
+        for(y = 0; y < SCREENHEIGHT; y++)
+        {
+            s = (byte *)(unscaled_data + y * 512);
+            for(x = 0; x < SCREENWIDTH; x++)
+            {
+                c = &palette[screen[y * SCREENWIDTH + x]];
+                *s++ = c->r;
+                *s++ = c->g;
+                *s++ = c->b;
+                *s++ = 0xff;
+            }
+        }
+    }
+        
     dglBindTexture(GL_TEXTURE_2D, unscaled_texture);
-    dglTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCREENWIDTH, SCREENHEIGHT, 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, unscaled_data);
+    if(glscale_pipeline == GLSCALE_PIPELINE_FBO)
+    {
+        dglTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, SCREENWIDTH, SCREENHEIGHT, 0,
+                      GL_RGBA, GL_UNSIGNED_BYTE, unscaled_data);
+    }
+    else
+    {
+        dglTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 512, 256, 0,
+                      GL_RGBA, GL_UNSIGNED_BYTE, unscaled_data);
+    }
 }
 
 // Draw fake scanlines.
@@ -275,6 +319,9 @@ static void DrawScanlines(void)
 // second scaled_texture texture.
 static void DrawUnscaledToScaled(void)
 {
+    if(glscale_pipeline != GLSCALE_PIPELINE_FBO)
+        return;
+
     // Render into scaled_texture through framebuffer.
     FBO_Bind(&scaled_framebuffer);
 
@@ -317,38 +364,64 @@ static void DrawScreen(void)
     dglLoadIdentity();
 
     dglViewport(0, 0, screen_w, screen_h);
-    FBO_BindImage(&scaled_framebuffer);
 
     w = (float) window_w / screen_w;
     h = (float) window_h / screen_h;
 
-    dglBegin(GL_QUADS);
-    dglTexCoord2f(0, 0); dglVertex2f(-w, h);
-    dglTexCoord2f(1, 0); dglVertex2f(w, h);
-    dglTexCoord2f(1, 1); dglVertex2f(w, -h);
-    dglTexCoord2f(0, 1); dglVertex2f(-w, -h);
-    dglEnd();
+    if(glscale_pipeline == GLSCALE_PIPELINE_FBO)
+    {
+        FBO_BindImage(&scaled_framebuffer);
+
+        dglBegin(GL_QUADS);
+        dglTexCoord2f(0, 0); dglVertex2f(-w,  h);
+        dglTexCoord2f(1, 0); dglVertex2f( w,  h);
+        dglTexCoord2f(1, 1); dglVertex2f( w, -h);
+        dglTexCoord2f(0, 1); dglVertex2f(-w, -h);
+        dglEnd();
+    }
+    else
+    {
+        float smax = (320.f / 512.0f);
+        float tmax = (200.f / 256.0f);
+        
+        dglBindTexture(GL_TEXTURE_2D, unscaled_texture);
+
+        dglBegin(GL_QUADS);
+        dglTexCoord2f(0,    0   ); dglVertex2f(-w,  h);
+        dglTexCoord2f(smax, 0   ); dglVertex2f( w,  h);
+        dglTexCoord2f(smax, tmax); dglVertex2f( w, -h);
+        dglTexCoord2f(0,    tmax); dglVertex2f(-w, -h);
+        dglEnd();
+
+        RB_UnbindTexture();
+    }
 }
 
 boolean I_GL_InitScale(int w, int h)
 {
-    if (!CheckExtensions())
-    {
-        return false;
-    }
+    if(CheckExtensions())
+        glscale_pipeline = GLSCALE_PIPELINE_FBO;
+    else
+        glscale_pipeline = GLSCALE_PIPELINE_IMM;
 
     // Scanline hack. Don't enable at less than half the 1600x1200
     // intermediate buffer size or horrible aliasing effects will
     // occur.
-    scanline_mode = M_ParmExists("-scanline")
-                 && h > (SCREENHEIGHT * 3);
+    scanline_mode = 
+        glscale_pipeline == GLSCALE_PIPELINE_FBO && M_ParmExists("-scanline") 
+        && h > (SCREENHEIGHT * 3);
 
     screen_w = w;
     screen_h = h;
     CalculateWindowSize();
-    if (!CreateTextures() || !SetupFramebuffer())
+    if(!CreateTextures()) 
     {
         return false;
+    }
+    if(glscale_pipeline == GLSCALE_PIPELINE_FBO)
+    {
+        if(!SetupFramebuffer())
+            return false;
     }
 
     return true;

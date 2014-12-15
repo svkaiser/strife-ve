@@ -19,6 +19,7 @@
 #include "v_patch.h"
 
 void RB_PatchBufferInit(void);
+void RB_SetPatchBufferPalette(void);
 void RB_PatchBufferShutdown(void);
 void RB_BlitPatch(int x, int y, patch_t *patch, byte alpha);
 void RB_BlitBlock(int x, int y, int width, int height, byte *data, byte alpha);

@@ -1340,6 +1340,7 @@ void P_SetupLevel(int map, int playermask, skill_t skill)
     char    lumpname[9];
     int     lumpnum;
     int     gllumpnum;
+    wad_file_t *mapwadfile; // [SVE] svillarreal
 
     // haleyjd 20110205 [STRIFE]: removed totalitems and wminfo
     totalkills =  totalsecret = 0;
@@ -1398,13 +1399,19 @@ void P_SetupLevel(int map, int playermask, skill_t skill)
         DEH_snprintf(lumpname, 9, "map%i", map);
 
     lumpnum = W_GetNumForName(lumpname);
+    mapwadfile = W_WadFileForLumpNum(lumpnum);
     gllumpnum = -1;
 
     // [SVE] svillarreal
     if(use3drenderer)
     {
         DEH_snprintf(lumpname, 9, "GL_MAP%02d", map);
-        gllumpnum = W_GetNumForName(lumpname);
+        if((gllumpnum = W_CheckNumForName(lumpname)) == -1 ||
+            W_WadFileForLumpNum(gllumpnum) != mapwadfile)
+        {
+            I_Error("P_SetupLevel: No GL nodes found (required for high quality renderer)\n");
+            return;
+        }
     }
 
     leveltime = 0;
@@ -1439,7 +1446,7 @@ void P_SetupLevel(int map, int playermask, skill_t skill)
         lightmapCount = 0;
         memset(&lightgrid, 0, sizeof(lightGridInfo_t));
 
-        if(lmlumpnum != -1)
+        if(lmlumpnum != -1 && W_WadFileForLumpNum(lmlumpnum) == mapwadfile)
         {
             P_LoadSunLight(lmlumpnum + ML_LM_SUN);
             P_LoadTextureCoordinates(lmlumpnum + ML_LM_TXCRD);

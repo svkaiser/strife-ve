@@ -490,7 +490,8 @@ void D_BindVariables(void)
     // * screenblocks -> screensize
     // * Added nickname, comport
 
-    M_BindVariable("mouse_sensitivity",      &mouseSensitivity);
+    M_BindVariable("mouse_sensitivity_X",    &mouseSensitivityX);
+    M_BindVariable("mouse_sensitivity_Y",    &mouseSensitivityY);
     M_BindVariable("sfx_volume",             &sfxVolume);
     M_BindVariable("music_volume",           &musicVolume);
     M_BindVariable("voice_volume",           &voiceVolume); 
@@ -535,6 +536,7 @@ void D_BindVariables(void)
     M_BindVariable("startmap",    &startmap);
     M_BindVariable("startskill",  &startskill);
     M_BindVariable("timelimit",   &timelimit);
+    M_BindVariable("d_fpslimit",  &d_fpslimit);
 }
 
 //
@@ -577,7 +579,7 @@ static boolean D_WarpMouseCallback(void)
 }
 
 static int d_ticcount;
-int d_fpslimit = 60;
+boolean    d_fpslimit = false;
 
 //
 // D_updateTics
@@ -600,7 +602,7 @@ static void D_updateTics(void)
 //
 static boolean D_capFrameRate(void)
 {
-    float frameMillis = 1000.0f / d_fpslimit;
+    float frameMillis = 1000.0f / 60.0f;
     int   curTics = I_GetTimeMS();
     float elapsed = (float)(curTics - d_ticcount);
     
@@ -669,7 +671,7 @@ void D_DoomLoop (void)
             D_Display();
 
         // Must cap framerate if interpolating
-        if(d_interpolate)
+        if(d_interpolate && d_fpslimit && !(use3drenderer && rbVsync))
         {
             while(D_capFrameRate());
         }

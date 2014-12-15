@@ -45,6 +45,7 @@
 
 // [SVE]
 #include "net_client.h"
+#include "p_spec.h"
 
 //
 // Locally used constants, shortcuts.
@@ -116,10 +117,20 @@ static int              message_counter;
 
 static boolean          headsupactive = false;
 
+// [SVE] haleyjd: notification positions for notification widget
+enum notificationpos_e
+{
+    NOTIFY_POS_STATBAR,
+    NOTIFY_POS_FULLSCREEN
+};
+
 // [SVE] svillarreal
 static hu_stext_t       w_notification;
 static boolean          notification_on;
 static int              notification_counter;
+static int              notification_pos;
+static int              notification_y;
+static boolean          showfragschart;
 
 #ifndef _USE_STEAM_
 // haleyjd 20130915 [STRIFE]: need nickname
@@ -297,9 +308,20 @@ void HU_Start(void)
                         hu_font,
                         HU_FONTSTART, &chat_on);
 
+        if(screenblocks > 10)
+        {
+            notification_pos = NOTIFY_POS_FULLSCREEN;
+            notification_y   = HU_NOTIFICATIONY + 24;
+        }
+        else
+        {
+            notification_pos = NOTIFY_POS_STATBAR;
+            notification_y   = HU_NOTIFICATIONY;
+        }
+
         // [SVE] svillarreal - create the notification widget
         HUlib_initSText(&w_notification,
-                        -1, HU_NOTIFICATIONY, HU_MSGHEIGHT,
+                        -1, notification_y, netgame ? 1 : HU_MSGHEIGHT,
                         ffont,
                         HU_FONTSTART, &notification_on);
 
@@ -339,7 +361,7 @@ void HU_Drawer(void)
     if (automapactive)
         HUlib_drawTextLine(&w_title, false, false);
 
-    if(deathmatch && players[consoleplayer].health <= 0 && screenblocks >= 10)
+    if(deathmatch && (showfragschart || players[consoleplayer].health <= 0) && screenblocks >= 10)
         HUlib_drawFrags();
 
     hudchanged = (screenblocks > 10);
@@ -348,15 +370,11 @@ void HU_Drawer(void)
     // if the hud changed at all
     if(lasthudchanged != hudchanged)
     {
-        int i;
+        notification_pos = hudchanged ? NOTIFY_POS_FULLSCREEN : NOTIFY_POS_STATBAR;
+        notification_y   = hudchanged ? HU_NOTIFICATIONY + 24 : HU_NOTIFICATIONY;
 
-        for(i = 0; i < w_notification.h; i++)
-        {
-            if(hudchanged)
-                w_notification.l[i].y += 24;
-            else
-                w_notification.l[i].y -= 24;
-        }
+        HUlib_initSText(&w_notification, -1, notification_y, netgame ? 1 : HU_MSGHEIGHT,
+                        ffont, HU_FONTSTART, &notification_on);
 
         lasthudchanged = hudchanged;
     }
@@ -418,6 +436,33 @@ void HU_NotifyCheating(player_t *pl)
             pl->cheats |= CF_CHEATING;
     }
 #endif
+}
+
+// 
+// HU_ShowTime
+//
+// [SVE] haleyjd 20141213: show timer countdown
+//
+void HU_ShowTime(void)
+{
+    char timestr[90];
+    int minutes;
+    int seconds;
+
+    if(!levelTimer || levelTimeCount <= 0)
+        return;
+
+    // [SVE]: enhanced output
+    minutes = ((levelTimeCount/TICRATE) / 60) % 60;
+    seconds = (levelTimeCount/TICRATE) % 60;
+
+    M_snprintf(timestr, sizeof(timestr), "%02d:%02d", minutes, seconds);
+
+    notification_on = true;
+    notification_counter = 2;
+
+    HUlib_addMessageToSText(&w_notification, NULL, timestr);
+    w_notification.l[w_notification.cl].x = (SCREENWIDTH/2) - (HUlib_yellowTextWidth(timestr)/2);
 }
 
 //
@@ -521,6 +566,9 @@ void HU_Ticker(void)
     int i, rc;
     char c;
 
+    // [SVE]: show time limit if active
+    HU_ShowTime();
+    
     // tick down message counter if message is up
     if(message_counter && !--message_counter)
     {
@@ -689,6 +737,15 @@ boolean HU_Responder(event_t *ev)
     {
         altdown = ev->type == ev_keydown;
         return false;
+    }
+
+    // [SVE]: frags chart
+    if(netgame && ev->data1 == key_menu_save)
+    {
+        if(ev->type == ev_keydown)
+            showfragschart = true;
+        else if(ev->type == ev_keyup)
+            showfragschart = false;
     }
 
     if (ev->type != ev_keydown)

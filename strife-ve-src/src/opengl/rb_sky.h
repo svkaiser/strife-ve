@@ -18,8 +18,12 @@
 
 #include "r_sky.h"
 
+void RB_InitSky(void);
+void RB_DeleteSkyTextures(void);
 void RB_DrawClouds(const int lump);
 void RB_CloudTicker(void);
+void RB_SetupSkyData(void);
+void RB_DrawSky(void);
 void RB_DrawSkyDome(int tiles, float rows, int height, int radius, float offset, float topoffs,
                     unsigned int c1, unsigned int c2);
 

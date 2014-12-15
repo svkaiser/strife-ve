@@ -1713,7 +1713,7 @@ boolean P_ReadSaveGameHeader(void)
     for(i = 0; i < 20; i++)
         oldDigest[i] = saveg_read8();
 
-    if(savegame_error || memcmp(curDigest, oldDigest, 20))
+    if(savegame_error /*|| memcmp(curDigest, oldDigest, 20)*/)
         return false; // wad digest mismatch
 
     gameskill = saveg_read8();

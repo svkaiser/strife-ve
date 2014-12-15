@@ -1580,7 +1580,7 @@ mobj_t* P_SpawnPlayerMissile(mobj_t* source, mobjtype_t type)
 // villsa [STRIFE] new function
 // Spawn a high-arcing ballistic projectile
 //
-mobj_t* P_SpawnMortar(mobj_t *source, mobjtype_t type)
+mobj_t* P_SpawnMortar(mobj_t *source, mobj_t *target, mobjtype_t type)
 {
     mobj_t* th;
     angle_t an;
@@ -1589,7 +1589,7 @@ mobj_t* P_SpawnMortar(mobj_t *source, mobjtype_t type)
     an = source->angle;
 
     th = P_SpawnMobj(source->x, source->y, source->z, type);
-    P_SetTarget(&th->target, source);
+    P_SetTarget(&th->target, target); // [SVE]: use target
     th->angle = an;
     an >>= ANGLETOFINESHIFT;
 

@@ -179,6 +179,7 @@ static int *weapon_keys[] = {
 // Set to -1 or +1 to switch to the previous or next weapon.
 
 static int next_weapon = 0;
+static int next_inv    = 0; // [SVE]
 
 // Used for prev/next weapon keys.
 // STRIFE-TODO: Check this table makes sense.
@@ -398,7 +399,7 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
         cmd->buttons2 |= BT2_LOOKDOWN;
 
     // villsa [STRIFE] inventory use key
-    if(gamekeydown[key_invuse] || joybuttons[joybinvuse])
+    if(gamekeydown[key_invuse] || joybuttons[joybinvuse] || mousebuttons[mousebinvuse])
     {
         player_t* player = &players[consoleplayer];
         if(player->numinventory > 0)
@@ -540,7 +541,17 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
         cmd->buttons |= BT_USE;
         // clear double clicks if hit use button 
         dclicks = 0;
-    } 
+    }
+
+    // [SVE]: inventory scrolling
+    if(next_inv != 0)
+    {
+        if(next_inv < 0)
+            ST_InvLeft();
+        else
+            ST_InvRight();
+        next_inv = 0;
+    }
 
     // If the previous or next weapon button is pressed, the
     // next_weapon variable is set to change weapons when
@@ -894,6 +905,16 @@ static void SetMouseButtons(unsigned int buttons_mask)
             {
                 next_weapon = 1;
             }
+
+            // [SVE]: inventory scrolling
+            if(i == mousebinvprev)
+            {
+                next_inv = -1;
+            }
+            else if(i == mousebinvnext)
+            {
+                next_inv = 1;
+            }
         }
 
 	mousebuttons[i] = button_on;
@@ -1007,8 +1028,8 @@ boolean G_Responder (event_t* ev)
         return false;   // always let key up events filter down 
 
     case ev_mouse:
-        mousex = ev->data2*(mouseSensitivity+5)/10; 
-        mousey = ev->data3*(mouseSensitivity+5)/10; 
+        mousex = ev->data2*(mouseSensitivityX+5)/10; 
+        mousey = ev->data3*(mouseSensitivityY+5)/10; 
         return true;    // eat events
             
     case ev_mousebutton:

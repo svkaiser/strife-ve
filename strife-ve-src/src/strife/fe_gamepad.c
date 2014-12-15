@@ -309,6 +309,7 @@ static femenuitem_t gamepadMovementItems[] =
     { FE_MITEM_JBIND, "Jump",            "joyb_jump"        },
     { FE_MITEM_JBIND, "Previous Weapon", "joyb_prevweapon"  },
     { FE_MITEM_JBIND, "Next Weapon",     "joyb_nextweapon"  },
+    { FE_MITEM_JBIND, "Center View",     "joyb_centerview"  },
     { FE_MITEM_END, "", "" }
 };
 
@@ -507,15 +508,20 @@ void FE_JoyBindResponder(void)
     // ignoring input?
     if(fe_joybwaittics)
     {
-        int i = I_GetJoystickEventID();
+        if(fe_joybwaittics <= 10)
+        {
+            int i = I_JoystickGetButtonsEvent();
 
-        if(i >= 0 && i < FE_IGNORE_LIMIT)
-            fe_ignorebuttons[i] = 1;
+            if(i >= 0 && i < FE_IGNORE_LIMIT)
+            {
+                fe_ignorebuttons[i] = 1;
+            }
+        }
     }
     else
     {
         char buf[33];
-        int i = I_GetJoystickEventID();
+        int i = I_JoystickGetButtonsEvent();
         int curVal = M_GetIntVariable(fe_joybitem->verb);
 
         if(i >= 0 && i < FE_IGNORE_LIMIT && fe_ignorebuttons[i])
@@ -535,6 +541,10 @@ void FE_JoyBindResponder(void)
             }
             frontend_state = FE_STATE_MAINMENU;
             S_StartSound(NULL, sfx_swtchn);
+
+            // svillarreal: pump more joystick events just so we know what buttons are
+            // held down or not
+            I_JoystickGetButtons();
         }
     }
 }
@@ -570,6 +580,7 @@ void FE_JoyBindStart(femenuitem_t *item)
     fe_joybtimeout  = frontend_fpslimit * 5;
     fe_joybitem     = item;
 
+    I_JoystickResetOldButtons();
     memset(fe_ignorebuttons, 0, sizeof(fe_ignorebuttons)); 
 }
 
@@ -866,23 +877,23 @@ static const char *x360Buttons[] =
 
 static const char *x360Axes[] =
 {
-    "Left X", "Left Y", "L Trigger", "Right Y", "Right X", "R Trigger"
+    "Left X", "Left Y", "L Trigger", "Right X", "Right Y", "R Trigger"
 };
 
 static const int x360Profile[FE_JOYPROF_MAX] =
 {
-     1,  4,  0,  3, // axes     LY RX LX RY
+     1,  3,  0,  4, // axes     LY RX LX RY
      0,  0,  0,  0, // invert 
 
      6, 21, 16, 15, // map      BACK A1- A1+ A0+
-    20, 29, 17, 10, //          A0-  A6+ A2+ RSTICK
+    20, 29, 17, 10, //          A0-  A5+ A2+ RSTICK
     -1, -1,
 
      7, -1, -1, -1, // menus    START
     -1,  1,  0,  0, //          - B A A
      1,             //          B
     
-    -1, -1, -1, 29, // gameplay - -  -  A6+
+    -1, -1, -1, 29, // gameplay - -  -  A5+
      0, -1,  5, 10, //          A -  R  RSTICK
      2,  3, 28, 26, //          X Y  HL HR
      1, 27, 25,  4, //          B HD HU L
@@ -899,6 +910,49 @@ static fepad_t pads[] =
     },
     {
         "Xbox 360", // wireless version
+        x360Buttons, arrlen(x360Buttons),
+        x360Axes,    arrlen(x360Axes),
+        x360Profile
+    },
+};
+#elif defined(__APPLE__) || defined(__MACOSX__)
+// Apple Pad Mappings
+
+static const char *x360Buttons[] =
+{
+    "DPAD U", "DPAD D", "DPAD R", "DPAD L", "START", "BACK", "L STICK", "R STICK",
+    "L", "R", "GUIDE", "A", "B", "X", "Y"
+};
+
+static const char *x360Axes[] =
+{
+    "Left X", "Left Y", "Right X", "Right Y", "L Trigger", "R Trigger"
+};
+
+static const int x360Profile[FE_JOYPROF_MAX] =
+{
+     1,  2,  0,  3, // axes     LY RX LX RY
+     0,  0,  0,  0, // invert 
+
+     5, 21, 16, 15, // map      BACK A1- A1+ A0+
+    20, 29, 17,  7, //          A0-  A5+ A2+ RSTICK
+    -1, -1,
+
+     4, -1, -1, -1, // menus    START
+    -1, 12, 11, 11, //          - B A A
+    12,             //          B
+    
+    -1, -1, -1, 29, // gameplay - -  -  A5+
+    11, -1,  9,  7, //          A -  R  RSTICK
+    13, 14,  3,  2, //          X Y  HL HR
+    12,  1,  0,  8, //          B HD HU L
+    -1
+};
+
+static fepad_t pads[] =
+{
+    { 
+        "Controller",
         x360Buttons, arrlen(x360Buttons),
         x360Axes,    arrlen(x360Axes),
         x360Profile
@@ -944,7 +998,7 @@ const char *FE_ButtonNameForNum(int button)
         static const char *axisUp[5]   = { "A0+", "A1+", "A2+", "A3+", "A4+" };
         static const char *axisDown[5] = { "A0-", "A1-", "A2-", "A3-", "A4-" };
         static const char *hatPos[4]   = { "HAT UP", "HAT RIGHT", "HAT DOWN", "HAT LEFT" };
-        static const char *axis6UD[2]  = { "A6+", "A6-" };
+        static const char *axis6UD[2]  = { "A5+", "A5-" };
         if(button >= NUM_VIRTUAL_BUTTONS && button < NUM_VIRTUAL_BUTTONS + 5)
         {
             return axisUp[button - NUM_VIRTUAL_BUTTONS];

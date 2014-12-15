@@ -1,6 +1,7 @@
 //
 // Copyright(C) 1993-1996 Id Software, Inc.
 // Copyright(C) 2005-2014 Simon Howard
+// Copyright(C) 2014 Night Dive Studios, Inc.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -74,5 +75,9 @@ void    W_ReleaseLumpNum(int lump);
 void    W_ReleaseLumpName(char *name);
 
 void W_CheckCorrectIWAD(GameMission_t mission);
+
+// [SVE]
+wad_file_t *W_WadFileForLumpName(const char *name);
+wad_file_t *W_WadFileForLumpNum(int lumpnum);
 
 #endif

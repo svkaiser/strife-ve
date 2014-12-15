@@ -24,6 +24,7 @@
 #include "z_zone.h"
 
 #include "doomtype.h"
+#include "d_main.h"
 #include "i_video.h"
 #include "hu_lib.h"
 #include "m_menu.h"
@@ -352,6 +353,7 @@ static femenuitem_t optionsKeyboardMoveItems[] =
     { FE_MITEM_KEYBIND, "Jump",           "key_jump"        },
     { FE_MITEM_KEYBIND, "Look Up",        "key_lookUp"      },
     { FE_MITEM_KEYBIND, "Look Down",      "key_lookDown"    },
+    { FE_MITEM_KEYBIND, "Center View",    "key_centerview"  },
     { FE_MITEM_END, "", "" }
 };
 
@@ -360,7 +362,7 @@ static femenu_t optionsKeyboardMove =
     optionsKeyboardMoveItems,
     arrlen(optionsKeyboardMoveItems),
     70,
-    32,
+    26,
     2,
     "Movement",
     FE_BG_RSKULL,
@@ -419,12 +421,16 @@ void FE_CmdKeyboardWeapons(void)
 
 static femenuitem_t optionsMouseItems[] =
 {
-    { FE_MITEM_SLIDER, "Sensitivity",       "mouse_sensitivity"  },
-    { FE_MITEM_SLIDER, "Acceleration",      "mouse_acceleration" },
-    { FE_MITEM_SLIDER, "Threshold",         "mouse_threshold"    },
-    { FE_MITEM_TOGGLE, "Mouselook",         "novert", FE_FONT_SMALL, FE_TOGGLE_INVERT },
-    { FE_MITEM_TOGGLE, "Invert Mouselook",  "mouse_invert", FE_FONT_SMALL },
-    { FE_MITEM_CMD,    "Bind Buttons...",   "mbuttons" },
+    { FE_MITEM_SLIDER, "Sensitivity X",         "mouse_sensitivity_X"  },
+    { FE_MITEM_SLIDER, "Sensitivity Y",         "mouse_sensitivity_Y"  },
+    { FE_MITEM_TOGGLE, "Enable Acceleration",   "mouse_enable_acceleration" },
+    { FE_MITEM_SLIDER, "Acceleration",          "mouse_acceleration" },
+    { FE_MITEM_SLIDER, "Threshold",             "mouse_threshold"    },
+    { FE_MITEM_SLIDER, "Overall Scale",         "mouse_scale"        },
+    { FE_MITEM_TOGGLE, "Smoothing",             "mouse_smooth"       },
+    { FE_MITEM_TOGGLE, "Mouselook",             "novert", FE_FONT_SMALL, FE_TOGGLE_INVERT },
+    { FE_MITEM_TOGGLE, "Invert Mouselook",      "mouse_invert", FE_FONT_SMALL },
+    { FE_MITEM_CMD,    "Bind Buttons...",       "mbuttons" },
     { FE_MITEM_END, "", "" }
 };
 
@@ -432,8 +438,8 @@ static femenu_t optionsMouse =
 {
     optionsMouseItems,
     arrlen(optionsMouseItems),
-    64,
-    42,
+    40,
+    30,
     2,
     "Mouse Options",
     FE_BG_RSKULL,
@@ -453,16 +459,19 @@ void FE_CmdMouse(void)
 
 static femenuitem_t optionsMouseButtonItems[] =
 {
-    { FE_MITEM_MBIND, "Attack",       "", FE_FONT_SMALL, FE_MVAR_FIRE        },
-    { FE_MITEM_MBIND, "Use",          "", FE_FONT_SMALL, FE_MVAR_USE         },
-    { FE_MITEM_MBIND, "Jump",         "", FE_FONT_SMALL, FE_MVAR_JUMP        },
-    { FE_MITEM_MBIND, "Prev Weapon",  "", FE_FONT_SMALL, FE_MVAR_PREVWEAPON  },
-    { FE_MITEM_MBIND, "Next Weapon",  "", FE_FONT_SMALL, FE_MVAR_NEXTWEAPON  },
-    { FE_MITEM_MBIND, "Strafe On",    "", FE_FONT_SMALL, FE_MVAR_STRAFEON    },
-    { FE_MITEM_MBIND, "Strafe Left",  "", FE_FONT_SMALL, FE_MVAR_STRAFELEFT  },
-    { FE_MITEM_MBIND, "Strafe Right", "", FE_FONT_SMALL, FE_MVAR_STRAFERIGHT },
-    { FE_MITEM_MBIND, "Forward",      "", FE_FONT_SMALL, FE_MVAR_FORWARD     },
-    { FE_MITEM_MBIND, "Backward",     "", FE_FONT_SMALL, FE_MVAR_BACKWARD    },
+    { FE_MITEM_MBIND, "Attack",          "", FE_FONT_SMALL, FE_MVAR_FIRE        },
+    { FE_MITEM_MBIND, "Use",             "", FE_FONT_SMALL, FE_MVAR_USE         },
+    { FE_MITEM_MBIND, "Jump",            "", FE_FONT_SMALL, FE_MVAR_JUMP        },
+    { FE_MITEM_MBIND, "Prev Weapon",     "", FE_FONT_SMALL, FE_MVAR_PREVWEAPON  },
+    { FE_MITEM_MBIND, "Next Weapon",     "", FE_FONT_SMALL, FE_MVAR_NEXTWEAPON  },
+    { FE_MITEM_MBIND, "Strafe On",       "", FE_FONT_SMALL, FE_MVAR_STRAFEON    },
+    { FE_MITEM_MBIND, "Strafe Left",     "", FE_FONT_SMALL, FE_MVAR_STRAFELEFT  },
+    { FE_MITEM_MBIND, "Strafe Right",    "", FE_FONT_SMALL, FE_MVAR_STRAFERIGHT },
+    { FE_MITEM_MBIND, "Forward",         "", FE_FONT_SMALL, FE_MVAR_FORWARD     },
+    { FE_MITEM_MBIND, "Backward",        "", FE_FONT_SMALL, FE_MVAR_BACKWARD    },
+    { FE_MITEM_MBIND, "Use Inventory",   "", FE_FONT_SMALL, FE_MVAR_INVUSE      },
+    { FE_MITEM_MBIND, "Inventory Left",  "", FE_FONT_SMALL, FE_MVAR_INVPREV     },
+    { FE_MITEM_MBIND, "Inventory Right", "", FE_FONT_SMALL, FE_MVAR_INVNEXT     },
     { FE_MITEM_END,   "", "" }
 };
 
@@ -471,7 +480,7 @@ static femenu_t optionsMouseButtons =
     optionsMouseButtonItems,
     arrlen(optionsMouseButtonItems),
     64,
-    42,
+    30,
     2,
     "Mouse Buttons",
     FE_BG_RSKULL,
@@ -526,6 +535,7 @@ static femenuitem_t optionsGraphicsBasicItems[] =
     { FE_MITEM_TOGGLE,  "High Quality",     "gl_enable_renderer", FE_FONT_SMALL, FE_TOGGLE_DEFAULT },
     { FE_MITEM_TOGGLE,  "Linear Filtering", "gl_linear_filtering" },
     { FE_MITEM_TOGGLE,  "Interpolation",    "interpolate_frames"  },
+    { FE_MITEM_TOGGLE,  "Cap Framerate",    "d_fpslimit"          },
     { FE_MITEM_TOGGLE,  "Textured Automap", "gl_textured_automap" },  
     { FE_MITEM_SLIDER,  "Field of View",    "gl_fov"              },
     { FE_MITEM_END,     "", "" }
@@ -616,6 +626,7 @@ void FE_CmdGfxSprites(void)
 
 static femenuitem_t optionsGraphicsAdvancedItems[] =
 {
+    { FE_MITEM_TOGGLE, "Enable VSync",        "gl_enable_vsync"           },
     { FE_MITEM_TOGGLE, "Force Frame Finish",  "gl_force_sync"             },
     { FE_MITEM_TOGGLE, "Fullscreen AA",       "gl_enable_fxaa"            },
     { FE_MITEM_TOGGLE, "Motion Blur",         "gl_enable_motion_blur"     },

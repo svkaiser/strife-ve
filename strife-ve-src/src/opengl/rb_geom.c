@@ -761,6 +761,8 @@ boolean RB_GenerateSpritePlane(vtxlist_t* vl, int* drawcount)
                     alpha = 192;
                 }
             }
+            else if(thing->flags & MF_MVIS)
+                alpha = 24; // ALMOST totally invisible.
 
             RB_SetVertexColor(vertex, rbSectorLightTable[lightlevel],
                                       rbSectorLightTable[lightlevel],

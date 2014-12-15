@@ -51,6 +51,7 @@ extern  boolean         isregistered;   // villsa [STRIFE]
 extern  boolean        isdemoversion;  // haleyjd [STRIFE]
 extern  boolean         stonecold;      // villsa [STRIFE]
 extern  boolean         workparm;       // villsa [STRIFE]
+extern  boolean         d_fpslimit;    // haleyjd [STRIFE]
 
 #endif
 

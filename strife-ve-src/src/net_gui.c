@@ -46,6 +46,10 @@
 
 #include "textscreen.h"
 
+#if defined(_USE_STEAM_)
+#include "steamService.h"
+#endif
+
 static txt_window_t *window;
 static int old_max_players;
 static txt_label_t *player_labels[NET_MAXPLAYERS];
@@ -477,6 +481,11 @@ void NET_WaitForSteamLaunch(void)
         CheckAutoLaunch();
 
         I_StartTic();
+
+#if defined(_USE_STEAM_)
+        // RUN CALLBACKS
+        I_SteamUpdate();
+#endif
         
         while((ev = D_PopEvent()))
         {
@@ -513,6 +522,11 @@ void NET_WaitForSteamLaunch(void)
         if(!net_client_connected)
             I_Error("Lost connection to server");
 
+#if defined(_USE_STEAM_)
+        // RUN CALLBACKS
+        I_SteamUpdate();
+#endif
+
         I_FinishUpdate();
         I_Sleep(100);        
     }
@@ -537,6 +551,11 @@ void NET_RenderSteamServerStart(void)
     
     if(net_SteamNodeType != NET_STEAM_SERVER)
         M_WriteText((SCREENWIDTH - strWaitWidth)/2, 100, strWait);
+
+#if defined(_USE_STEAM_)
+    // RUN CALLBACKS
+    I_SteamUpdate();
+#endif
 
     I_FinishUpdate();
 }

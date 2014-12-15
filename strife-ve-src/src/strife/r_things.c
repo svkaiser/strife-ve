@@ -447,7 +447,12 @@ R_DrawVisSprite
             dc_translation = translationtables - 256 + (translation >> (MF_TRANSSHIFT - 8));
         }
     }
-    else if (translation)     // villsa [STRIFE] new translation tables
+    else if(vis->mobjflags & MF_MVIS)
+    {
+        // [STRIFE] 20141213: things that are *just* MF_MVIS are totally invisible.
+        return;
+    }
+    else if(translation)     // villsa [STRIFE] new translation tables
     {
         colfunc = transcolfunc;
         dc_translation = translationtables - 256 + (translation >> (MF_TRANSSHIFT - 8));

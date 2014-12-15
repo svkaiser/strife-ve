@@ -826,6 +826,9 @@ void FE_ClientCheckForGameStart(void)
         net_SteamNodeType = NET_STEAM_CLIENT;
         net_SteamNumNodes = I_SteamLobbyGetNumMembers();
         I_SteamClientGetServerFromLobby();   // record server
+        I_SteamUpdate();                     // run callbacks
+        I_Sleep(300);                        // wait a bit
+        I_SteamUpdate();                     // run callbacks
         net_SteamServerID = M_Strdup(I_SteamClientGetServerAddr());
         frontend_state = FE_STATE_GAMESTART; // netgame is starting
         FE_ExecCmd("go"); // exit frontend
@@ -844,6 +847,9 @@ void FE_CmdStartGame(void)
     net_SteamNodeType = NET_STEAM_SERVER;
     net_SteamNumNodes = I_SteamServerGetClientsFromLobby(); // record clients from lobby
     I_SteamLobbyStartGame();             // notify lobby of game start
+    I_SteamUpdate();                     // run callbacks
+    I_Sleep(300);                        // wait a bit
+    I_SteamUpdate();                     // run callbacks
     frontend_state = FE_STATE_GAMESTART; // netgame is starting
     FE_ExecCmd("go");                    // exit frontend
 #endif

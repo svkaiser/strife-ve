@@ -115,5 +115,8 @@ extern cheatseq_t cheat_dev;     // [STRIFE]: new cheat
 
 extern cheatseq_t cheat_powerup[];
 
+// [SVE]
+void ST_InvLeft(void);
+void ST_InvRight(void);
 
 #endif

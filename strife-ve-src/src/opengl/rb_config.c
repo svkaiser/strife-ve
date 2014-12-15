@@ -31,6 +31,7 @@ boolean rbDynamicLights = true;
 boolean rbDynamicLightFastBlend = false;
 boolean rbForceSync = false;
 boolean rbCrosshair = false;
+boolean rbVsync = false;
 boolean rbDecals = true;
 int     rbMaxDecals = 128;
 float   rbFOV = 74.0f;
@@ -45,7 +46,7 @@ boolean rbEnableFXAA = true;
 
 // bloom
 boolean rbEnableBloom = true;
-float   rbBloomThreshold = 0.485f;
+float   rbBloomThreshold = 0.5f;
 
 //
 // RB_BindVariables
@@ -64,6 +65,7 @@ void RB_BindVariables(void)
     M_BindVariable("gl_dynamic_light_fast_blend", &rbDynamicLightFastBlend);
     M_BindVariable("gl_force_sync", &rbForceSync);
     M_BindVariable("gl_show_crosshair", &rbCrosshair);
+    M_BindVariable("gl_enable_vsync", &rbVsync);
     M_BindVariable("gl_decals", &rbDecals);
     M_BindVariable("gl_max_decals", &rbMaxDecals);
     M_BindVariable("gl_fov", &rbFOV);

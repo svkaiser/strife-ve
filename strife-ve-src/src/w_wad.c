@@ -1,6 +1,7 @@
 //
 // Copyright(C) 1993-1996 Id Software, Inc.
 // Copyright(C) 2005-2014 Simon Howard
+// Copyright(C) 2014 Night Dive Studios, Inc.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -571,4 +572,34 @@ void W_CheckCorrectIWAD(GameMission_t mission)
         }
     }
 }
+
+//
+// [SVE]
+// Get the wad_file_t for a lump by name.
+// Returns NULL if not found.
+//
+wad_file_t *W_WadFileForLumpName(const char *name)
+{
+    int lumpnum;
+    
+    if((lumpnum = W_CheckNumForName((char *)name)) <= 0)
+        return NULL;
+    
+    return lumpinfo[lumpnum].wad_file;
+}
+
+//
+// [SVE]
+// Get the wad_file_t for a lump by number.
+// Returns NULL if lumpnum is invalid.
+//
+wad_file_t *W_WadFileForLumpNum(int lumpnum)
+{
+    if(lumpnum < 0 || (unsigned int)lumpnum >= numlumps)
+        return NULL;
+
+    return lumpinfo[lumpnum].wad_file;
+}
+
+// EOF
 

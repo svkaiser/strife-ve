@@ -39,6 +39,8 @@
 #include "steamService.h"
 #endif
 
+#include "m_controls.h"
+
 // [SVE]: Track whether or not we're seeing joystick events.
 boolean i_seejoysticks;
 
@@ -66,13 +68,13 @@ static int joystick_index = -1;
 // Which joystick axis to use for horizontal movement, and whether to
 // invert the direction:
 
-static int joystick_x_axis = 0;
+static int joystick_x_axis = -1;
 static int joystick_x_invert = 0;
 
 // Which joystick axis to use for vertical movement, and whether to
 // invert the direction:
 
-static int joystick_y_axis = 1;
+static int joystick_y_axis = -1;
 static int joystick_y_invert = 0;
 
 // Which joystick axis to use for strafing?
@@ -94,6 +96,9 @@ static int joystick_oldbuttons = 0;
 static int joystick_physical_buttons[NUM_VIRTUAL_BUTTONS] = {
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
 };
+
+// [SVE] svillarreal
+static int joystick_axisoffset[6] = { 0, 0, 0, 0, 0, 0 };
 
 //
 // I_CloseJoystickDevice
@@ -179,7 +184,7 @@ void I_InitJoystick(void)
 
     // [SVE] svillarreal - just pick whatever profile is available if
     // no configs are present
-    if(extra_config_fresh)
+    if(extra_config_fresh || M_CheckGamepadButtonVars())
     {
         FE_AutoApplyPadProfile();
     }
@@ -240,6 +245,43 @@ const char *I_QueryActiveJoystickName(void)
 }
 
 //
+// I_JoystickCalibrateAxis
+//
+
+static void I_JoystickCalibrateAxis(void)
+{
+    int numaxis;
+    int i;
+
+    if(!joystick)
+    {
+        return;
+    }
+
+    numaxis = MIN(SDL_JoystickNumAxes(joystick), 6);
+
+    for(i = 0; i < numaxis; ++i)
+    {
+        joystick_axisoffset[i] = SDL_JoystickGetAxis(joystick, i);
+    }
+}
+
+//
+// I_GetJoystickAxis
+//
+
+static int I_GetJoystickAxis(const int index)
+{
+    if(index < 0 || index >= 6)
+    {
+        return 0;
+    }
+
+    return MAX(MIN(SDL_JoystickGetAxis(joystick, index) -
+        joystick_axisoffset[index], 32767), -32768);
+}
+
+//
 // I_ActivateJoystickDevice
 //
 // haleyjd 20141020: [SVE] Activate a selected joystick device.
@@ -267,6 +309,7 @@ void I_ActivateJoystickDevice(int index)
 
     // allow event polling
     SDL_JoystickEventState(SDL_ENABLE);
+    I_JoystickCalibrateAxis();
 }
 
 static boolean IsAxisButton(int physbutton)
@@ -391,7 +434,7 @@ int I_GetJoystickEventID(void)
             break;
         }
 
-        axis = SDL_JoystickGetAxis(joystick, i);
+        axis = I_GetJoystickAxis(i);
 
         if(axis > DEAD_ZONE*2 || axis < -DEAD_ZONE*2)
         {
@@ -444,7 +487,7 @@ int I_GetJoystickAxisID(int *axisvalue)
     // check for axis movement
     for(i = 0; i < SDL_JoystickNumAxes(joystick); ++i)
     {
-        axis = SDL_JoystickGetAxis(joystick, i);
+        axis = I_GetJoystickAxis(i);
 
         if(axis > DEAD_ZONE || axis < -DEAD_ZONE)
         {
@@ -488,7 +531,7 @@ static int GetButtonsState(void)
             break;
         }
 
-        axis = SDL_JoystickGetAxis(joystick, i);
+        axis = I_GetJoystickAxis(i);
 
         if(axis > DEAD_ZONE || axis < -DEAD_ZONE)
         {
@@ -506,7 +549,7 @@ static int GetButtonsState(void)
     // haleyjd: axis 6 is needed for Xbox 360 on Linux 9_9
     if(SDL_JoystickNumAxes(joystick) >= 6)
     {
-        axis = SDL_JoystickGetAxis(joystick, 5);
+        axis = I_GetJoystickAxis(5);
 
         if(axis > DEAD_ZONE || axis < -DEAD_ZONE)
         {
@@ -615,7 +658,7 @@ static int GetAxisState(int axis, int invert)
     }
     else if(axis >= 0 && axis < SDL_JoystickNumAxes(joystick))
     {
-        result = SDL_JoystickGetAxis(joystick, axis);
+        result = I_GetJoystickAxis(axis);
 
         if (result < DEAD_ZONE && result > -DEAD_ZONE)
         {
@@ -643,7 +686,7 @@ int I_JoystickGetButtons(void)
     int ret = 0;
 
     if(!joystick)
-        return 0;
+        return -1;
     
     data = GetButtonsState();        
 
@@ -657,6 +700,46 @@ int I_JoystickGetButtons(void)
 
     joystick_oldbuttons = data;
     return ret;
+}
+
+//
+// I_JoystickGetButtonsEvent
+//
+
+int I_JoystickGetButtonsEvent(void)
+{
+    int bits;
+    int data;
+    int ret = 0;
+
+    if(!joystick)
+        return -1;
+    
+    data = I_GetJoystickEventID();        
+
+    if(data >= 0)
+    {
+        bits = data;
+
+        bits &= ~joystick_oldbuttons;
+        ret = bits;
+    }
+    else
+    {
+        return -1;
+    }
+
+    joystick_oldbuttons = data;
+    return ret;
+}
+
+//
+// I_JoystickResetOldButtons
+//
+
+void I_JoystickResetOldButtons(void)
+{
+    joystick_oldbuttons = 0;
 }
 
 //

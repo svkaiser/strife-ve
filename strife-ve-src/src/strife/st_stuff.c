@@ -520,6 +520,23 @@ void ST_Stop(void);
 // [STRIFE]
 static char st_msgbuf[ST_MSGWIDTH];
 
+// [SVE]: For calling from g_game
+void ST_InvLeft(void)
+{
+    if(players[consoleplayer].inventorycursor > 0)
+        players[consoleplayer].inventorycursor--;
+    st_invtics = 50;
+}
+
+// [SVE]: For calling from g_game
+void ST_InvRight(void)
+{
+    if(players[consoleplayer].inventorycursor < players[consoleplayer].numinventory - 1)
+        players[consoleplayer].inventorycursor++;
+    st_invtics = 50;
+}
+
+
 // Respond to keyboard input events,
 //  intercept cheats.
 boolean ST_Responder(event_t* ev)

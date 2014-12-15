@@ -2092,7 +2092,7 @@ void A_SpectreCAttack(mobj_t* actor)
     for(i = 0; i < 20; i++)
     {
         actor->angle += (ANG90 / 10);
-        mo = P_SpawnMortar(actor, MT_SIGIL_C_SHOT);
+        mo = P_SpawnMortar(actor, actor, MT_SIGIL_C_SHOT);
         mo->health = -2;
         mo->z = actor->z + (32*FRACUNIT);
     }
@@ -2140,14 +2140,13 @@ void A_AlertSpectreC(mobj_t* actor)
 void A_Sigil_E_Action(mobj_t* actor)
 {
     actor->angle += ANG90;
-    P_SpawnMortar(actor, MT_SIGIL_E_OFFSHOOT);
+    P_SpawnMortar(actor, actor->target, MT_SIGIL_E_OFFSHOOT);
 
     actor->angle -= ANG180;
-    P_SpawnMortar(actor, MT_SIGIL_E_OFFSHOOT);
+    P_SpawnMortar(actor, actor->target, MT_SIGIL_E_OFFSHOOT);
 
     actor->angle += ANG90;
-    P_SpawnMortar(actor, MT_SIGIL_E_OFFSHOOT);
-
+    P_SpawnMortar(actor, actor->target, MT_SIGIL_E_OFFSHOOT);
 }
 
 //
@@ -2558,6 +2557,10 @@ void A_Fall (mobj_t *actor)
     // actor is on ground, it can be walked over
     // villsa [STRIFE] remove nogravity/shadow flags as well
     actor->flags &= ~(MF_SOLID|MF_NOGRAVITY|MF_SHADOW);
+
+    // [SVE]: clear MVIS too, outside classic mode; fixes glitch with Shadow Acolytes
+    if(!classicmode)
+        actor->flags &= ~MF_MVIS;
 
     // haleyjd 20140907: [SVE] max gore blood spray
     if(!classicmode && d_maxgore && !(actor->flags & MF_NOBLOOD))
@@ -3136,7 +3139,8 @@ void A_MissileTick(mobj_t* actor)
 //
 void A_SpawnGrenadeFire(mobj_t* actor)
 {
-    P_SpawnMobj(actor->x, actor->y, actor->z, MT_PFLAME);
+    mobj_t *mo = P_SpawnMobj(actor->x, actor->y, actor->z, MT_PFLAME);
+    P_SetTarget(&mo->target, actor->target);
 }
 
 //
@@ -3206,6 +3210,7 @@ void A_BurnSpread(mobj_t* actor)
 
     // spawn child
     mo = P_SpawnMobj(x, y, actor->z + (4*FRACUNIT), MT_PFLAME);
+    P_SetTarget(&mo->target, actor->target);
 
     t = P_Random();
     mo->momx += ((t & 7) - (P_Random() & 7)) << FRACBITS;

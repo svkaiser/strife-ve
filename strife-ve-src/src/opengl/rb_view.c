@@ -383,12 +383,21 @@ void RB_RenderPlayerView(player_t *player)
     // setup draw lists
     DL_BeginDrawList();
 
+    // check for new console commands.
+    NetUpdate ();
+
     // render nodes and determine sprite distances
     RB_RenderBSPNode(numnodes-1);
     RB_SetupSprites();
 
+    // check for new console commands.
+    NetUpdate ();
+
     // draw scene
     RB_DrawScene();
+
+    // check for new console commands.
+    NetUpdate ();
 
     // set interpolated sector heights
     if(viewlerp != FRACUNIT)
@@ -433,4 +442,7 @@ void RB_RenderPlayerView(player_t *player)
     {
         RB_DrawDamageMarkers(player);
     }
+
+    // check for new console commands.
+    NetUpdate ();
 }

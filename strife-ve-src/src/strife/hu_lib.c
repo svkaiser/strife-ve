@@ -526,7 +526,7 @@ HUlib_keyInIText
 
     if (ch >= ' ' && ch <= '_') 
         HUlib_addCharToTextLine(&it->l, (char) ch);
-    else if (ch == KEY_BACKSPACE) 
+    else if (ch == KEY_BACKSPACE || ch == KEY_DEL) // [SVE] 20141213: due to Steamworks bug
         HUlib_delCharFromIText(it);
     else if (ch != KEY_ENTER) 
         return false; // did not eat key

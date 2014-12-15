@@ -201,12 +201,27 @@ static febackground_t backgrounds[FE_NUM_BGS] =
 static void FE_InitTexture(rbTexture_t *texture, const char *pic)
 {
     byte *data = (byte*)W_CacheLumpName((char *)pic, PU_STATIC);
+    int w, h;
     
     texture->colorMode  = TCR_RGB;
     texture->origwidth  = SCREENWIDTH;
     texture->origheight = SCREENHEIGHT;
     texture->width      = SCREENWIDTH;
     texture->height     = SCREENHEIGHT;
+
+    for(h = 0; h < SCREENHEIGHT; ++h)
+    {
+        for(w = 0; w < SCREENWIDTH; ++w)
+        {
+            byte r = data[(h * SCREENWIDTH + w) * 3 + 0];
+            byte g = data[(h * SCREENWIDTH + w) * 3 + 1];
+            byte b = data[(h * SCREENWIDTH + w) * 3 + 2];
+
+            data[(h * SCREENWIDTH + w) * 3 + 0] = gammatable[usegamma][r];
+            data[(h * SCREENWIDTH + w) * 3 + 1] = gammatable[usegamma][g];
+            data[(h * SCREENWIDTH + w) * 3 + 2] = gammatable[usegamma][b];
+        }
+    }
     
     RB_UploadTexture(texture, data, TC_CLAMP, TF_NEAREST);
 
@@ -239,6 +254,19 @@ void FE_DestroyBackgrounds(void)
 
     for(i = 0; i < FE_NUM_BGS; i++)
         RB_DeleteTexture(&backgrounds[i].texture);
+}
+
+//
+// FE_RefreshBackgrounds
+//
+
+void FE_RefreshBackgrounds(void)
+{
+    if(!use3drenderer)
+        return;
+
+    FE_DestroyBackgrounds();
+    FE_InitBackgrounds();
 }
 
 //

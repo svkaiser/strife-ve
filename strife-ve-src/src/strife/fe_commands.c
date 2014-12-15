@@ -68,6 +68,11 @@ static fehelpstr_t helpStrs[] =
         "\"Strife: Quest for the Sigil\", even including some bugs." 
     },
     {
+        "d_fpslimit",
+        "If enabled along with interpolation, the game will cap to 60 FPS. "
+        "Uses less CPU, saves laptop battery power. Vsync overrides this."
+    },
+    {
         "damage_indicator",
         "A directional HUD arrow to help you figure out where those bullets "
         "came from, so you can get some payback."
@@ -139,6 +144,11 @@ static fehelpstr_t helpStrs[] =
         "You must restart for this setting to take effect."
     },
     {
+        "gl_enable_vsync",
+        "Avoids screen tearing in high quality renderer but limits FPS. "
+        "You must restart for this setting to take effect.",
+    },
+    {
         "gl_fix_sprite_clipping",
         "Clip sprites in the high quality renderer in the same way the original "
         "game did in software."
@@ -197,7 +207,7 @@ static fehelpstr_t helpStrs[] =
     },
     {
         "interpolate_frames",
-        "When enabled, the renderer will update at 60 frames per second. If "
+        "When enabled, the renderer will update at a high framerate. If "
         "turned off, it will use the original 35 FPS rate."
     },
     {
@@ -271,19 +281,37 @@ static fehelpstr_t helpStrs[] =
         "Select this option to configure your mouse button bindings."
     },
     {
+        "mouse_enable_acceleration",
+        "Toggles mouse acceleration."
+    },
+    {
         "mouse_acceleration",
         "When the speed of mouse movement exceeds the threshold, it will be "
         "multiplied by this value. Adds more speed for fast movements."
     },
     {
-        "mouse_sensitivity",
-        "Basic scale factor for mouse motion. A higher value means faster "
-        "motion for less mouse movement."
+        "mouse_sensitivity_X",
+        "Basic scale factor for horizontal mouse motion."
+        "A higher value means faster motion for less mouse movement."
+    },
+    {
+        "mouse_sensitivity_Y",
+        "Basic scale factor for vertical mouse motion."
+        "A higher value means faster motion for less mouse movement."
     },
     {
         "mouse_threshold",
         "Determines when mouse acceleration kicks in. A lower value means "
         "higher speed, but less accuracy."
+    },
+    {
+        "mouse_scale",
+        "Overall scale multiplier for mouse motion. A higher value means faster "
+        "motion for less mouse movement."
+    },
+    {
+        "mouse_smooth",
+        "Toggles smooth mouse movement."
     },
     {
         "mouse_invert",
@@ -527,14 +555,16 @@ static void FE_SetMusicVolume(int volume)
 
 static fevar_t feVariables[] =
 {
-    { "gl_bloom_threshold",        FE_VAR_FLOAT,   0,    0, 0, 0.4f, 1.0f, 0.06f   },
+    { "gl_bloom_threshold",        FE_VAR_FLOAT,   0,    0, 0, 0.5f, 1.0f, 0.05f   },
     { "gl_max_decals",             FE_VAR_INT,     16, 128, 8                      },
     { "gl_fov",                    FE_VAR_FLOAT,   0,    0, 0, 74.0f, 110.0f, 1.5f },
     { "gl_motion_blur_ramp_speed", FE_VAR_FLOAT,   0,    0, 0, 0.0f, 1.0f, 0.0625f },
     { "gl_motion_blur_samples",    FE_VAR_INT_PO2, 3,    6, 1                      },
-    { "mouse_acceleration",        FE_VAR_FLOAT,   0,    0, 0, 0.0f, 5.0f, 0.5f    },
-    { "mouse_sensitivity",         FE_VAR_INT,     0,    9, 1                      },
+    { "mouse_acceleration",        FE_VAR_FLOAT,   0,    0, 0, 1.0f, 5.0f, 0.25f   },
+    { "mouse_sensitivity_X",       FE_VAR_INT,     0,    9, 1                      },
+    { "mouse_sensitivity_Y",       FE_VAR_INT,     0,    9, 1                      },
     { "mouse_threshold",           FE_VAR_INT,     0,   32, 1                      },
+    { "mouse_scale",               FE_VAR_INT,     0,   4,  1                      },
     { "music_volume",              FE_VAR_INT,     0,   15, 1, 0.0f, 0.0f, 0.0f,   FE_SetMusicVolume },
     { "sfx_volume",                FE_VAR_INT,     0,   15, 1, 0.0f, 0.0f, 0.0f,   FE_SetSfxVolume   },
     { "timelimit",                 FE_VAR_INT,     0,   15, 1                      },

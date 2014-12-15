@@ -621,7 +621,7 @@ void A_FireGrenade(player_t* player, pspdef_t* pspr)
         player->recoilpitch = (6*FRACUNIT);
 
     player->mo->z += 32*FRACUNIT; // ugh
-    mo = P_SpawnMortar(player->mo, type);
+    mo = P_SpawnMortar(player->mo, player->mo, type);
     player->mo->z -= 32*FRACUNIT; // ugh
 
     x = mo->x;
@@ -896,7 +896,7 @@ void A_FireSigil(player_t* player, pspdef_t* pspr)
         for(i = 0; i < 20; i++)     // increment by 1/10 of 90, 20 times.
         {
             player->mo->angle += (ANG90 / 10);
-            mo = P_SpawnMortar(player->mo, MT_SIGIL_C_SHOT);
+            mo = P_SpawnMortar(player->mo, player->mo, MT_SIGIL_C_SHOT);
             mo->health = -1;
             mo->z = player->mo->z + (32*FRACUNIT);
         }
@@ -996,7 +996,7 @@ void A_TorpedoExplode(mobj_t* actor)
     for(i = 0; i < 80; i++)
     {
         actor->angle += (ANG90 / 20);
-        P_SetTarget(&(P_SpawnMortar(actor, MT_TORPEDOSPREAD)->target), actor->target);
+        P_SpawnMortar(actor, actor->target, MT_TORPEDOSPREAD);
     }
 }
 

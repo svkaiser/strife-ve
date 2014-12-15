@@ -38,7 +38,7 @@ int *feMVars[FE_MVAR_NUMVARS] =
 {
     &mousebfire, &mousebuse, &mousebjump, &mousebprevweapon, &mousebnextweapon,
     &mousebstrafe, &mousebstrafeleft, &mousebstraferight, &mousebforward,
-    &mousebbackward
+    &mousebbackward, &mousebinvuse, &mousebinvprev, &mousebinvnext
 };
 
 //
@@ -48,7 +48,7 @@ const char *feMVarNames[FE_MVAR_NUMVARS] =
 {
     "mouseb_fire", "mouseb_use", "mouseb_jump", "mouseb_prevweapon", "mouseb_nextweapon",
     "mouseb_strafe", "mouseb_strafeleft", "mouseb_straferight", "mouseb_forward",
-    "mouseb_backward"
+    "mouseb_backward", "mouseb_invuse", "mouseb_invprev", "mouseb_invnext"
 };
 
 //

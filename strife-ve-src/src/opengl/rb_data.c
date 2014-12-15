@@ -21,6 +21,7 @@
 #include "rb_decal.h"
 #include "rb_hudtext.h"
 #include "rb_draw.h"
+#include "rb_sky.h"
 #include "r_data.h"
 #include "r_draw.h"
 #include "w_wad.h"
@@ -123,6 +124,8 @@ void RB_InitData(void)
 
     RB_InitDecals();
     RB_HudTextInit();
+    RB_InitExtraHudTextures();
+    RB_InitSky();
 
     // bind a dummy texture
     RB_BindTexture(&whiteTexture);
@@ -147,10 +150,10 @@ void RB_DeleteTextureData(rbTextureData_t *texData)
 }
 
 //
-// RB_DeleteData
+// RB_DeleteDoomData
 //
 
-void RB_DeleteData(void)
+void RB_DeleteDoomData(void)
 {
     int i;
 
@@ -171,6 +174,31 @@ void RB_DeleteData(void)
         for(j = 0; j < numspritelumps; ++j)
         {
             RB_DeleteTextureData(&spriteTextures[i][j]);
+        }
+    }
+
+    RB_DeleteExtraHudTextures();
+    RB_DeleteSkyTextures();
+}
+
+//
+// RB_DeleteData
+//
+
+void RB_DeleteData(void)
+{
+    RB_DeleteDoomData();
+
+    if(patchTextures != NULL)
+    {
+        int i;
+
+        for(i = 0; i < numlumps; ++i)
+        {
+            if(patchTextures[i].texture.texid > 0)
+            {
+                RB_DeleteTexture(&patchTextures[i].texture);
+            }
         }
     }
 

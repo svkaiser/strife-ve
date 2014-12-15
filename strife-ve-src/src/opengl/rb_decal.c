@@ -55,7 +55,7 @@ void RB_InitDecals(void)
     lexer_t *lexer;
 
     numDecalDefs = 0;
-    if(!(lexer = M_ParserOpen("DECALDEF")))
+    if(!(lexer = M_ParserOpen("DECLDEF")))
     {
         return;
     }

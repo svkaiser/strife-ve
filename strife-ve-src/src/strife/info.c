@@ -1793,6 +1793,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_SHOOTABLE|MF_DROPOFF|MF_NOTDMATCH|MF_ALLY,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_SHOPKEEPER_W*/
@@ -1820,7 +1821,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_SHOOTABLE|MF_NOTDMATCH,      //flags
         "Weapon_Smith",     //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_SHOPKEEPER_B*/
@@ -1848,7 +1849,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_ambppl,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_NOTDMATCH|MF_COLORSWAP1|MF_COLORSWAP3,      //flags
         "Bar_Keep",     //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_SHOPKEEPER_A*/
@@ -1876,7 +1877,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_SHOOTABLE|MF_NOTDMATCH|MF_COLORSWAP2|MF_COLORSWAP3,      //flags
         "Armorer",      //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_SHOPKEEPER_M*/
@@ -1905,7 +1906,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_NOTDMATCH|MF_COLORSWAP1|MF_COLORSWAP2
         |MF_COLORSWAP3,     //flags
         "Medic",        //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT2_A*/
@@ -1933,7 +1934,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL,      //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT2_B*/
@@ -1961,7 +1962,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL,      //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT2_C*/
@@ -1989,7 +1990,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL,      //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT5_A*/
@@ -2017,7 +2018,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP1,        //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT5_B*/
@@ -2045,7 +2046,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP1,        //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT5_C*/
@@ -2073,7 +2074,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP1,        //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT4_A*/
@@ -2102,7 +2103,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP1
         |MF_COLORSWAP2,     //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT4_B*/
@@ -2131,7 +2132,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP1
         |MF_COLORSWAP2,     //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT4_C*/
@@ -2160,7 +2161,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP1
         |MF_COLORSWAP2,     //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT6_A*/
@@ -2188,7 +2189,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP2,        //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT6_B*/
@@ -2216,7 +2217,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP2,        //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT6_C*/
@@ -2244,7 +2245,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP2,        //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT3_A*/
@@ -2272,7 +2273,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP3,        //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT3_B*/
@@ -2300,7 +2301,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP3,        //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT3_C*/
@@ -2328,7 +2329,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP3,        //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT8_A*/
@@ -2357,7 +2358,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP2
         |MF_COLORSWAP3,     //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT8_B*/
@@ -2386,7 +2387,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP2
         |MF_COLORSWAP3,     //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT8_C*/
@@ -2415,7 +2416,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP2
         |MF_COLORSWAP3,     //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT7_A*/
@@ -2444,7 +2445,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP1
         |MF_COLORSWAP3,     //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT7_B*/
@@ -2473,7 +2474,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP1
         |MF_COLORSWAP3,     //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT7_C*/
@@ -2502,7 +2503,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP1
         |MF_COLORSWAP3,     //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PEASANT1*/
@@ -2531,7 +2532,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL|MF_COLORSWAP1
         |MF_COLORSWAP2|MF_COLORSWAP3,       //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_ZOMBIE*/
@@ -2559,7 +2560,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_COLORSWAP1, //flags
         NULL,       //namepointer
-        MF2_NOREBELATTACK
+        MF2_NOREBELATTACK|MF2_DRAWBILLBOARD
     },
 
     {       /*MT_BECOMING*/
@@ -2726,6 +2727,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_TANK_5*/
@@ -2753,6 +2755,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_TANK_6*/
@@ -2780,6 +2783,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_KNEELING_GUY*/
@@ -2807,7 +2811,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_chant,      //activesound
         MF_SOLID|MF_SHOOTABLE|MF_NODIALOG|MF_NOBLOOD|MF_COUNTKILL,      //flags
         NULL,       //namepointer
-        MF2_NOREBELATTACK
+        MF2_NOREBELATTACK|MF2_DRAWBILLBOARD
     },
 
     {       /*MT_BEGGAR1*/
@@ -2835,7 +2839,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL,      //flags
         "Beggar",       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_BEGGAR2*/
@@ -2863,7 +2867,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL,      //flags
         "Beggar",       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_BEGGAR3*/
@@ -2891,7 +2895,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL,      //flags
         "Beggar",       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_BEGGAR4*/
@@ -2919,7 +2923,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL,      //flags
         "Beggar",       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_BEGGAR5*/
@@ -2947,7 +2951,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_SHOOTABLE|MF_JUSTHIT|MF_COUNTKILL,      //flags
         "Beggar",       //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_REBEL1*/
@@ -2975,7 +2979,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_ALLY,     //flags
         "Rebel",        //namepointer
-        MF2_NOSTONECOLD, // flags2
+        MF2_NOSTONECOLD|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_REBEL2*/
@@ -3003,7 +3007,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_ALLY,     //flags
         "Rebel",        //namepointer
-        MF2_NOSTONECOLD, // flags2
+        MF2_NOSTONECOLD|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_REBEL3*/
@@ -3031,7 +3035,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_ALLY,     //flags
         "Rebel",        //namepointer
-        MF2_NOSTONECOLD, // flags2
+        MF2_NOSTONECOLD|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_REBEL4*/
@@ -3059,7 +3063,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_ALLY,     //flags
         "Rebel",        //namepointer
-        MF2_NOSTONECOLD, // flags2
+        MF2_NOSTONECOLD|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_REBEL5*/
@@ -3087,7 +3091,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_ALLY,     //flags
         "Rebel",        //namepointer
-        MF2_NOSTONECOLD, // flags2
+        MF2_NOSTONECOLD|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_REBEL6*/
@@ -3115,7 +3119,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_ALLY,     //flags
         "Rebel",        //namepointer
-        MF2_NOSTONECOLD, // flags2
+        MF2_NOSTONECOLD|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_RLEADER*/
@@ -3143,7 +3147,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_NOTDMATCH,     //flags
         "MACIL",        //namepointer
-        MF2_NOSTONECOLD|MF2_NOREBELATTACK, // flags2
+        MF2_NOSTONECOLD|MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_RLEADER2*/
@@ -3171,7 +3175,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rebact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_NOTDMATCH|MF_SPECTRAL,     //flags
         "MACIL",        //namepointer
-        MF2_NOSTONECOLD, // flags2
+        MF2_NOSTONECOLD|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_MISSILESMOKE*/
@@ -3226,6 +3230,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_revact,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_NODIALOG|MF_NOBLOOD|MF_COUNTKILL,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_GUARD1*/
@@ -3253,6 +3258,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_agrac1,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL,     //flags
         "ACOLYTE",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_GUARD2*/
@@ -3280,6 +3286,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_agrac2,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_COLORSWAP1,       //flags
         "ACOLYTE",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_GUARD3*/
@@ -3307,6 +3314,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_agrac3,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_COLORSWAP2,       //flags
         "ACOLYTE",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_GUARD4*/
@@ -3334,6 +3342,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_agrac1,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_COLORSWAP1|MF_COLORSWAP2,     //flags
         "ACOLYTE",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_GUARD5*/
@@ -3361,6 +3370,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_agrac2,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_COLORSWAP3,       //flags
         "ACOLYTE",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_GUARD6*/
@@ -3388,6 +3398,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_agrac3,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_COLORSWAP1|MF_COLORSWAP3,     //flags
         "ACOLYTE",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_GUARD7*/
@@ -3415,6 +3426,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_agrac3,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_COLORSWAP2|MF_COLORSWAP3,     //flags
         "ACOLYTE",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_GUARD8*/
@@ -3443,7 +3455,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_COLORSWAP1|MF_COLORSWAP2
         |MF_COLORSWAP3|MF_NODIALOG,     //flags - haleyjd 20140820: [SVE] Added NODIALOG
         "ACOLYTE",      //namepointer
-        MF2_NOSTONECOLD, // [SVE] flags2
+        MF2_NOSTONECOLD|MF2_DRAWBILLBOARD, // [SVE] flags2
     },
 
     {       /*MT_SHADOWGUARD*/
@@ -3471,6 +3483,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_agrac2,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL,     //flags
         "ACOLYTE",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_PGUARD*/
@@ -3498,6 +3511,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_pgract,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_NOBLOOD|MF_COUNTKILL,      //flags
         "TEMPLAR",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_CRUSADER*/
@@ -3525,6 +3539,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_rb2act,     //activesound
         MF_SOLID|MF_SHOOTABLE|MF_NODIALOG|MF_NOBLOOD|MF_COUNTKILL,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_BISHOP*/
@@ -3581,7 +3596,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_SHOOTABLE|MF_NOBLOOD|MF_COUNTKILL|MF_NOTDMATCH,      //flags
         "ORACLE",       //namepointer
-        MF2_NOSTONECOLD, // flags2
+        MF2_NOSTONECOLD|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_PRIEST*/
@@ -3610,6 +3625,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_NOGRAVITY|MF_GIVEQUEST|MF_FLOAT
         |MF_NODIALOG|MF_NOBLOOD|MF_COUNTKILL|MF_NOTDMATCH,       //flags
         "PRIEST",       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_SPECTRE_A*/
@@ -3895,6 +3911,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_NOTDMATCH,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_POD*/
@@ -3922,6 +3939,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_NOTDMATCH,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_SIGIL_B_SHOT*/
@@ -4301,6 +4319,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_SPAWNCEILING|MF_NOGRAVITY|MF_GIVEQUEST
         |MF_FLOAT|MF_NODIALOG|MF_NOBLOOD|MF_COUNTKILL,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_STALKER*/
@@ -4329,6 +4348,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_SPAWNCEILING|MF_NOGRAVITY|MF_DROPOFF
         |MF_NODIALOG|MF_NOBLOOD|MF_COUNTKILL,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_INQUISITOR*/
@@ -4412,6 +4432,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_NOGRAVITY|MF_GIVEQUEST|MF_FLOAT
         |MF_NOBLOOD|MF_COUNTKILL|MF_NOTDMATCH,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_PROGRAMMERBASE*/
@@ -4439,6 +4460,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP|MF_NOCLIP|MF_NOBLOOD,     //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_HOOKSHOT*/
@@ -4792,6 +4814,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_TORPEDO*/
@@ -5391,6 +5414,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         0,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_11*/
@@ -5418,6 +5442,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         0,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_KEY_BASE*/
@@ -6365,6 +6390,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SPECIAL|MF_DROPPED,      //flags
         "Teleporter_Beacon",        //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_INV_TARGETER*/
@@ -6582,6 +6608,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SPECIAL|MF_GIVEQUEST|MF_DROPPED,     //flags
         "Offering_Chalice",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_TOKEN_EAR*/
@@ -6988,6 +7015,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SPECIAL,     //flags
         "assault_gun",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_FLAMETHROWER*/
@@ -7314,7 +7342,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         // haleyjd 20140820: [SVE] Added NODIALOG
         MF_SOLID|MF_SHOOTABLE|MF_NOGRAVITY|MF_GIVEQUEST|MF_NOBLOOD|MF_NODIALOG, //flags
         NULL,       //namepointer
-        MF2_NOSTONECOLD, // flags2
+        MF2_NOSTONECOLD|MF2_DRAWBILLBOARD, // flags2
     },
 
     {       /*MT_RAT*/
@@ -7342,6 +7370,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_ratact,     //activesound
         MF_NODIALOG|MF_NOBLOOD|MF_COUNTKILL,        //flags
         "rat_buddy",        //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_05*/
@@ -7369,6 +7398,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_SHOOTABLE|MF_NODIALOG|MF_NOBLOOD,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_06*/
@@ -7396,7 +7426,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_SHOOTABLE|MF_NODIALOG|MF_NOBLOOD,       //flags
         NULL,       //namepointer
-        MF2_NOREBELATTACK, // flags2 - [SVE] rebels have unhealthy habits.
+        MF2_NOREBELATTACK|MF2_DRAWBILLBOARD, // flags2 - [SVE] rebels have unhealthy habits.
     },
 
     {       /*MT_MISC_15*/
@@ -7424,6 +7454,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_SHOOTABLE|MF_NODIALOG|MF_NOBLOOD,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_LIGHT14*/
@@ -7647,6 +7678,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_PILLAR6*/
@@ -7898,6 +7930,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         0,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_LIGHT3*/
@@ -8034,6 +8067,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_wsplsh,     //activesound
         MF_NOBLOCKMAP,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_BIO2*/
@@ -8061,6 +8095,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_TELEPORTSTAND*/
@@ -8116,6 +8151,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         0,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_DEADTHING2*/
@@ -8143,6 +8179,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         0,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_DEADTHING3*/
@@ -8170,6 +8207,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         0,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_DEADTHING4*/
@@ -8197,6 +8235,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         0,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_DEADTHING5*/
@@ -8224,6 +8263,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         0,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_DEADTHING6*/
@@ -8251,6 +8291,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         0,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_BIO1*/
@@ -8278,6 +8319,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         0,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_GIBS*/
@@ -8305,6 +8347,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         0,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_04*/
@@ -8332,6 +8375,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_LIGHT11*/
@@ -8359,6 +8403,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_smfire,     //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_LIGHT10*/
@@ -8386,6 +8431,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_smfire,     //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_LIGHT9*/
@@ -8497,6 +8543,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP|MF_SPAWNCEILING|MF_NOGRAVITY,     //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_PILLAR8*/
@@ -8718,6 +8765,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_ROCK4*/
@@ -8745,6 +8793,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_TREE7*/
@@ -8772,6 +8821,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_wriver,     //activesound
         MF_NOBLOCKMAP,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_RUBBLE1*/
@@ -8799,6 +8849,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP|MF_NOCLIP,        //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_RUBBLE2*/
@@ -8826,6 +8877,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP|MF_NOCLIP,        //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_RUBBLE3*/
@@ -8853,6 +8905,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP|MF_NOCLIP,        //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_RUBBLE4*/
@@ -8880,6 +8933,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP|MF_NOCLIP,        //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_RUBBLE5*/
@@ -8907,6 +8961,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP|MF_NOCLIP,        //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_RUBBLE6*/
@@ -8934,6 +8989,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP|MF_NOCLIP,        //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_RUBBLE7*/
@@ -8961,6 +9017,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP|MF_NOCLIP,        //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_RUBBLE8*/
@@ -8988,6 +9045,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP|MF_NOCLIP,        //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_08*/
@@ -9015,6 +9073,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID|MF_SPAWNCEILING|MF_NOGRAVITY,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_LIGHT6*/
@@ -9154,6 +9213,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_TREE1*/
@@ -9293,6 +9353,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_10*/
@@ -9320,6 +9381,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_09*/
@@ -9347,6 +9409,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_17*/
@@ -9374,6 +9437,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_18*/
@@ -9401,6 +9465,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_19*/
@@ -9428,6 +9493,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_20*/
@@ -9455,6 +9521,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_LIGHT16*/
@@ -9538,6 +9605,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_12*/
@@ -9565,6 +9633,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_26*/
@@ -9620,6 +9689,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_24*/
@@ -9647,6 +9717,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MISC_25*/
@@ -9674,6 +9745,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_NOBLOCKMAP,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_COUPLING*/
@@ -9702,6 +9774,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         MF_SOLID|MF_SHOOTABLE|MF_GIVEQUEST|MF_NODIALOG|MF_DROPPED
         |MF_NOBLOOD|MF_NOTDMATCH,        //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_COUPLING_BROKEN*/
@@ -9734,6 +9807,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SPECIAL|MF_GIVEQUEST|MF_DROPPED,     //flags
         "BROKEN_POWER_COUPLING",        //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_PILLAR10*/
@@ -9789,6 +9863,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_amaln6,     //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_PILLAR12*/
@@ -9816,6 +9891,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_amaln4,     //activesound
         MF_SOLID|MF_SPAWNCEILING|MF_NOGRAVITY,      //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_PILLAR13*/
@@ -9871,6 +9947,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_amaln1,     //activesound
         MF_SOLID,       //flags
         NULL,       //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_MEAT*/
@@ -11254,6 +11331,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SPECIAL|MF_DROPPED,     //flags
         "Offering_Chalice",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /* MT_CTC_FLAGSPOT_BLUE */
@@ -11281,6 +11359,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SPECIAL,     //flags
         "Blue_Flag_Spot",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /* MT_CTC_FLAGSPOT_RED */
@@ -11308,6 +11387,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         sfx_None,       //activesound
         MF_SPECIAL,     //flags
         "Red_Flag_Spot",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /* MT_AZTECARTI_RED */
@@ -11333,8 +11413,9 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         100,        //mass
         0,      //damage
         sfx_None,       //activesound
-        MF_SPECIAL,     //flags
+        MF_SPECIAL|MF_DROPPED,     //flags
         "Red_Talisman",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /* MT_AZTECARTI_GREEN */
@@ -11360,8 +11441,9 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         100,        //mass
         0,      //damage
         sfx_None,       //activesound
-        MF_SPECIAL,     //flags
+        MF_SPECIAL|MF_DROPPED,     //flags
         "Green_Talisman",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /* MT_AZTECARTI_BLUE */
@@ -11387,8 +11469,9 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         100,        //mass
         0,      //damage
         sfx_None,       //activesound
-        MF_SPECIAL,     //flags
+        MF_SPECIAL|MF_DROPPED,     //flags
         "Blue_Talisman",      //namepointer
+        MF2_DRAWBILLBOARD
     },
 
     {       /*MT_TOKEN_DOOR4*/

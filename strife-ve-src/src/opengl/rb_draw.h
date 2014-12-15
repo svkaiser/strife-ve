@@ -32,7 +32,9 @@ extern rbfbo_t spriteFBO;
 extern boolean skyvisible;
 
 void RB_InitDrawer(void);
+void RB_InitExtraHudTextures(void);
 void RB_ShutdownDrawer(void);
+void RB_DeleteExtraHudTextures(void);
 void RB_SetQuadAspectDimentions(vtx_t *v, const int x, const int y,
                                 const int width, const int height);
 void RB_DrawTexture(rbTexture_t *texture, const float x, const float y,

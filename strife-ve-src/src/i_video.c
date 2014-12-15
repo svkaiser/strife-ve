@@ -318,6 +318,9 @@ static int shiftdown = 0;
 float mouse_acceleration = 2.0;
 int mouse_threshold = 10;
 boolean mouse_invert = false;   // [SVE] svillarreal
+boolean mouse_enable_acceleration = false; // [SVE] svillarreal
+boolean mouse_smooth = false; // [SVE] svillarreal
+int mouse_scale = 2;
 
 // Gamma correction level to use
 
@@ -707,6 +710,9 @@ static void UpdateMouseButtonState(unsigned int button, boolean on)
 
 static int AccelerateMouse(int val)
 {
+    if(mouse_acceleration <= 0 || !mouse_enable_acceleration)
+        return val;
+
     if (val < 0)
         return -AccelerateMouse(-val);
 
@@ -974,6 +980,7 @@ static void CenterMouse(void)
 
 static void I_ReadMouse(void)
 {
+    static int last_x = 0, last_y = 0;
     int x, y;
     event_t ev;
 
@@ -983,18 +990,29 @@ static void I_ReadMouse(void)
     SDL_GetRelativeMouseState(&x, &y);
 #endif
 
-    if (x != 0 || y != 0) 
+    // [SVE] svillarreal
+    if(mouse_scale > 4) mouse_scale = 4;
+    if(mouse_scale < 0) mouse_scale = 0;
+
+    if(x != 0 || y != 0) 
     {
+        // [SVE] svillarreal
+        if(mouse_scale > 0)
+        {
+            x *= (1 + mouse_scale);
+            y *= (0 + mouse_scale);
+        }
+
         ev.type = ev_mouse;
         ev.data1 = 0;
-        ev.data2 = AccelerateMouse(x);
+        ev.data2 = AccelerateMouse(mouse_smooth ? ((x + last_x) / 2) : x);
 
         // [SVE]: "novert" not supported with this meaning; instead we disable
         // mouse look, since we don't support moving forward with the mouse, and
         // we require it to be active in the menus.
         //if (!novert)
         {
-            ev.data3 = -AccelerateMouse(y);
+            ev.data3 = -AccelerateMouse(mouse_smooth ? ((y + last_y) / 2) : y);
         }
         /*
         else
@@ -1006,6 +1024,9 @@ static void I_ReadMouse(void)
         D_PostEvent(&ev);
         i_seemouses = true;
         i_seejoysticks = false;
+
+        last_x = x;
+        last_y = y;
     }
 
     if (MouseShouldBeGrabbed())
@@ -2465,7 +2486,10 @@ void I_BindVideoVariables(void)
     M_BindVariable("grabmouse",                 &grabmouse);
     M_BindVariable("mouse_acceleration",        &mouse_acceleration);
     M_BindVariable("mouse_threshold",           &mouse_threshold);
+    M_BindVariable("mouse_scale",               &mouse_scale);
     M_BindVariable("mouse_invert",              &mouse_invert);
+    M_BindVariable("mouse_enable_acceleration", &mouse_enable_acceleration);
+    M_BindVariable("mouse_smooth",              &mouse_smooth);
     M_BindVariable("video_driver",              &video_driver);
     M_BindVariable("window_position",           &window_position);
     M_BindVariable("usegamma",                  &usegamma);

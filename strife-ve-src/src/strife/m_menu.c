@@ -22,7 +22,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-
 #include "doomdef.h"
 #include "doomkeys.h"
 #include "dstrings.h"
@@ -65,6 +64,12 @@
 
 // [SVE]
 #include "fe_frontend.h"
+#include "fe_graphics.h"
+
+// declared here because the rb_** headers causes msvc to throw a big fuss
+void RB_InitExtraHudTextures(void);
+void RB_DeleteDoomData(void);
+void RB_SetPatchBufferPalette(void);
 
 extern void M_QuitStrife(int);
 
@@ -76,7 +81,8 @@ extern boolean          sendsave;       // [STRIFE]
 //
 // defaulted values
 //
-int			mouseSensitivity = 5;
+int			mouseSensitivityX = 5;
+int         mouseSensitivityY = 5;
 
 // [STRIFE]: removed this entirely
 // Show messages has default, 0 = off, 1 = on
@@ -443,8 +449,6 @@ enum
     sfx_empty2,
     voice_vol,
     sfx_empty3,
-    sfx_mouse,
-    sfx_empty4,
     sound_end
 } sound_e;
 
@@ -460,8 +464,6 @@ menuitem_t SoundMenu[]=
     {-1,"",0,'\0'},
     {2,"M_VOIVOL",M_VoiceVol,'v'}, 
     {-1,"",0,'\0'},
-    {2,"M_MSENS",M_ChangeSensitivity,'m'},
-    {-1,"",0,'\0'}
 };
 
 menu_t  SoundDef =
@@ -998,9 +1000,6 @@ void M_DrawSound(void)
 
     M_DrawThermo(SoundDef.x,SoundDef.y+LINEHEIGHT*(voice_vol+1),
                  16,voiceVolume);
-
-    M_DrawThermo(SoundDef.x,SoundDef.y+LINEHEIGHT*(sfx_mouse+1),
-                 16,mouseSensitivity);
 }
 
 void M_Sound(int choice)
@@ -1407,14 +1406,14 @@ void M_ChangeSensitivity(int choice)
     switch(choice)
     {
     case 0:
-        mouseSensitivity--;
-        if(mouseSensitivity < 0)
-            mouseSensitivity = 9;
+        mouseSensitivityX--;
+        if(mouseSensitivityX < 0)
+            mouseSensitivityX = 9;
         break;
     case 1:
-        mouseSensitivity++;
-        if(mouseSensitivity > 9)
-            mouseSensitivity = 0;
+        mouseSensitivityX++;
+        if(mouseSensitivityX > 9)
+            mouseSensitivityX = 0;
         break;
     }
 }
@@ -2188,8 +2187,7 @@ boolean M_Responder (event_t* ev)
 
             if(netgame)
             {
-                players[consoleplayer].message = DEH_String("You can't save a netgame."); // [SVE]
-                S_StartSound(NULL, sfx_oof);
+                return false; // [SVE]: Don't eat F2 in multiplayer
             }                
             else if(players[consoleplayer].health <= 0 ||
                     players[consoleplayer].cheats & CF_ONFIRE)
@@ -2302,6 +2300,16 @@ boolean M_Responder (event_t* ev)
             usegamma++;
             if (usegamma > 4)
                 usegamma = 0;
+
+            // [SVE] svillarreal
+            if(use3drenderer)
+            {
+                RB_DeleteDoomData();
+                RB_InitExtraHudTextures(); // reload them
+                FE_RefreshBackgrounds();
+                RB_SetPatchBufferPalette();
+            }
+
             players[consoleplayer].message = DEH_String(gammamsg[usegamma]);
             I_SetPalette (W_CacheLumpName (DEH_String("PLAYPAL"),PU_CACHE));
             return true;

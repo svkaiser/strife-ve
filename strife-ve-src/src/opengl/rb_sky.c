@@ -23,6 +23,9 @@
 #include "rb_texture.h"
 #include "rb_sky.h"
 #include "rb_config.h"
+#include "w_wad.h"
+#include "deh_str.h"
+#include "rb_wallshade.h"
 
 #define CLOUD_SIZE          768
 #define CLOUD_OUTER_SIZE    (CLOUD_SIZE * 0.0625f)
@@ -34,8 +37,43 @@
 static float sky_cloudpan1 = 0;
 static float sky_cloudpan2 = 0;
 
+// cloud lumps
+static int cloudlump1;
+static int cloudlump2;
+static int currentCloudLump;
+
+// cloud color stuff
+static float clearColor[4];
+static unsigned int skyDomeColor1;
+static unsigned int skyDomeColor2;
+
+//
+// RB_InitSky
+//
+
+void RB_InitSky(void)
+{
+    cloudlump1 = W_GetNumForName(DEH_String("CLOUD1"));
+    cloudlump2 = W_GetNumForName(DEH_String("CLOUD2"));
+}
+
+//
+// RB_DeleteSkyTextures
+//
+
+void RB_DeleteSkyTextures(void)
+{
+    rbTexture_t *t1 = RB_GetTexture(RDT_PATCH, cloudlump1, 0);
+    rbTexture_t *t2 = RB_GetTexture(RDT_PATCH, cloudlump2, 0);
+
+    RB_DeleteTexture(t1);
+    RB_DeleteTexture(t2);
+}
+
 //
 // RB_DrawSkyDome
+//
+// Draws a cylinder-ish dome with upper/lower color gradients
 //
 
 void RB_DrawSkyDome(int tiles, float rows, int height,
@@ -72,6 +110,7 @@ void RB_DrawSkyDome(int tiles, float rows, int height,
     RB_BindDrawPointers(drawVertex);
     vtx = drawVertex;
 
+    // excuse the mess......
 #define SKYDOME_VERTEX() vtx->x = FIXED2FLOAT(x); vtx->y = FIXED2FLOAT(y); vtx->z = FIXED2FLOAT(z)
 #define SKYDOME_UV(u, v) vtx->tu = u; vtx->tv = v
 #define SKYDOME_LEFT(v, h)                      \
@@ -239,4 +278,58 @@ void RB_CloudTicker(void)
     
     if(sky_cloudpan1 > 1) sky_cloudpan1 -= 1;
     if(sky_cloudpan2 > 1) sky_cloudpan2 -= 1;
+}
+
+//
+// RB_SetupSkyData
+//
+
+void RB_SetupSkyData(void)
+{
+    if(((gamemap >= 9 && gamemap < 32) || gamemap == 35) ||
+       (!deathmatch && players[0].weaponowned[wp_sigil]))
+    {
+        clearColor[0] = 0.25f;
+        clearColor[1] = clearColor[2] = 0;
+        clearColor[3] = 1;
+        currentCloudLump = cloudlump2;
+        skyDomeColor1 = D_RGBA(64, 0, 0, 0xff);
+        skyDomeColor2 = D_RGBA(160, 8, 8, 0xff);
+        RB_SetSkyShade(255, 236, 227);
+    }
+    else
+    {
+        clearColor[0] = clearColor[1] = 0.14f;
+        clearColor[2] = 0.235f;
+        clearColor[3] = 1;
+        currentCloudLump = cloudlump1;
+        skyDomeColor1 = D_RGBA(36, 36, 60, 0xff);
+        skyDomeColor2 = D_RGBA(224, 224, 255, 0xff);
+        RB_SetSkyShade(255, 252, 227);
+    }
+
+    dglClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
+}
+
+//
+// RB_DrawSky
+//
+
+void RB_DrawSky(void)
+{
+    if(!skyvisible)
+    {
+        // don't draw skybox if no sky flats are visible
+        return;
+    }
+    
+    dglMatrixMode(GL_MODELVIEW);
+    dglLoadMatrixf(rbPlayerView.rotation);
+    
+    RB_BindTexture(&whiteTexture);
+    
+    RB_DrawSkyDome(4, 1, 320, 2048, -256, 0, skyDomeColor1, skyDomeColor2);
+    RB_DrawClouds(currentCloudLump);
+    
+    skyvisible = false;
 }

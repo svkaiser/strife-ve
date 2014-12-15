@@ -274,7 +274,7 @@ static void FE_Drawer(void)
     case FE_STATE_KEYINPUT:
         FE_DrawBox(64, 84, 192, 32);
         FE_WriteYellowTextCentered(90,  "Press a key...");
-        FE_WriteYellowTextCentered(102, "(Backspace to unbind)");
+        FE_WriteYellowTextCentered(102, "(Press bound key to unbind)");
         break;
     case FE_STATE_MBINPUT:
         FE_DrawBox(64, 84, 192, 32);
@@ -984,7 +984,7 @@ static void FE_Responder(void)
     }
 
     // poll gamepad
-    if((joybuttons = I_JoystickGetButtons()))
+    if((joybuttons = I_JoystickGetButtons()) >= 0)
         FE_HandleJoyButtons(joybuttons);
 
     FE_HandleJoyAxes();

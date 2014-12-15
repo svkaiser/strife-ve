@@ -76,16 +76,6 @@ static int lightGridIndex;
 static word indicecnt = 0;
 static word drawIndices[MAXINDICES];
 
-// cloud lumps
-static int cloudlump1;
-static int cloudlump2;
-static int currentCloudLump;
-
-// cloud color stuff
-static float clearColor[4];
-static unsigned int skyDomeColor1;
-static unsigned int skyDomeColor2;
-
 //=============================================================================
 //
 // FBOs, shaders and special textures
@@ -116,6 +106,9 @@ static rbTexture_t lightPointTexture;
 
 // mouse cursor
 static rbTexture_t mouseCursorTexture;
+
+// extra hud pics
+static rbTexture_t *extraHudTextures[3];
 
 //=============================================================================
 //
@@ -202,6 +195,28 @@ static void RB_InitMouseCursor(void)
 }
 
 //
+// RB_InitExtraHudTextures
+//
+
+void RB_InitExtraHudTextures(void)
+{
+    extraHudTextures[0] = RB_GetTexture(RDT_PATCH, W_GetNumForName(DEH_String("INVB_WL")), 0);
+    extraHudTextures[1] = RB_GetTexture(RDT_PATCH, W_GetNumForName(DEH_String("INVB_WR")), 0);
+    extraHudTextures[2] = RB_GetTexture(RDT_PATCH, W_GetNumForName(DEH_String("INVB_54")), 0);
+}
+
+//
+// RB_DeleteExtraHudTextures
+//
+
+void RB_DeleteExtraHudTextures(void)
+{
+    RB_DeleteTexture(extraHudTextures[0]);
+    RB_DeleteTexture(extraHudTextures[1]);
+    RB_DeleteTexture(extraHudTextures[2]);
+}
+
+//
 // RB_InitDrawer
 //
 
@@ -216,9 +231,6 @@ void RB_InitDrawer(void)
     RB_InitWhiteTexture();
     RB_InitLightPointTexture();
     RB_InitMouseCursor();
-
-    cloudlump1 = W_GetNumForName(DEH_String("CLOUD1"));
-    cloudlump2 = W_GetNumForName(DEH_String("CLOUD2"));
 
     w = SDL_GetVideoSurface()->w;
     h = SDL_GetVideoSurface()->h;
@@ -636,7 +648,7 @@ void RB_DrawPSprite(pspdef_t *psp, sector_t *sector, player_t *player)
     spriteframe_t   *sprframe;
     int             spritenum;
     int             flip;
-    byte            alpha;
+    byte            alpha = 0xff;
     float           x;
     float           y;
     float           width;
@@ -655,18 +667,17 @@ void RB_DrawPSprite(pspdef_t *psp, sector_t *sector, player_t *player)
     sprdef = &sprites[psp->state->sprite];
     sprframe = &sprdef->spriteframes[psp->state->frame & FF_FRAMEMASK];
 
-    if(player->powers[pw_invisibility] > 4*32
-        || (player->powers[pw_invisibility] & 8))
+    if(player->mo->flags & (MF_SHADOW|MF_MVIS))
     {
-        alpha = 96;
-    }
-    else if(player->powers[pw_invisibility] & 4)
-    {
-        alpha = 32;
-    }
-    else
-    {
-        alpha = 0xff;
+        if(player->powers[pw_invisibility] > 4*32
+            || (player->powers[pw_invisibility] & 8))
+        {
+            alpha = (player->mo->flags & MF_MVIS) ? 24 : 64;
+        }
+        else if(player->powers[pw_invisibility] & 4)
+        {
+            alpha = (player->mo->flags & MF_MVIS) ? 64 : 192;
+        }
     }
     
     lightlevel = sector->lightlevel + 64; // haleyjd: slightly brighter
@@ -939,9 +950,9 @@ void RB_DrawExtraHudPics(void)
         if(((screen_width * FRACUNIT) / screen_height) != (4 * FRACUNIT / 3))
         {
             // draw side hud pics for non-4:3 aspects
-            RB_DrawTextureForName(DEH_String("INVB_WL"), -64, 161, 0, 0, 0xff);
-            RB_DrawTextureForName(DEH_String("INVB_WR"), 320, 160, 0, 0, 0xff);
-            RB_DrawTextureForName(DEH_String("INVB_54"), 0, 200, 0, 0, 0xff);
+            RB_DrawTexture(extraHudTextures[0], -64, 161, 0, 0, 0xff);
+            RB_DrawTexture(extraHudTextures[1], 320, 160, 0, 0, 0xff);
+            RB_DrawTexture(extraHudTextures[2], 0, 200, 0, 0, 0xff);
         }
     }
 }
@@ -1014,7 +1025,10 @@ void RB_DrawPlayerNames(void)
         if(mo->player->powers[pw_invisibility] > 4*32 ||
             (mo->player->powers[pw_invisibility] & 8))
         {
-            alpha *= 0.376f;
+            if(mo->flags & MF_MVIS) // almost totally invisible
+                alpha *= 0.0941f;
+            else
+                alpha *= 0.376f;
         }
         else if(mo->player->powers[pw_invisibility] & 4)
         {
@@ -1190,7 +1204,7 @@ void RB_RenderBloom(void)
     bloomThreshold = (curthreshold - bloomThreshold) * rendertic_msec + bloomThreshold;
 
     // clamp down the threshold
-    if(bloomThreshold < 0.4f) bloomThreshold = 0.4f;
+    if(bloomThreshold < 0.5f) bloomThreshold = 0.5f;
     if(bloomThreshold > 1.0f) bloomThreshold = 1.0f;
 
     // pass 1: bloom
@@ -1403,58 +1417,6 @@ void RB_RenderMotionBlur(void)
 //=============================================================================
 
 //
-// RB_SetupSkyData
-//
-
-static void RB_SetupSkyData(void)
-{
-    if(((gamemap >= 9 && gamemap < 32) || gamemap == 35) ||
-       (!deathmatch && players[0].weaponowned[wp_sigil]))
-    {
-        clearColor[0] = 0.25f;
-        clearColor[1] = clearColor[2] = 0;
-        clearColor[3] = 1;
-        currentCloudLump = cloudlump2;
-        skyDomeColor1 = D_RGBA(64, 0, 0, 0xff);
-        skyDomeColor2 = D_RGBA(160, 8, 8, 0xff);
-        RB_SetSkyShade(255, 236, 227);
-    }
-    else
-    {
-        clearColor[0] = clearColor[1] = 0.14f;
-        clearColor[2] = 0.235f;
-        clearColor[3] = 1;
-        currentCloudLump = cloudlump1;
-        skyDomeColor1 = D_RGBA(36, 36, 60, 0xff);
-        skyDomeColor2 = D_RGBA(224, 224, 255, 0xff);
-        RB_SetSkyShade(255, 252, 227);
-    }
-}
-
-//
-// RB_DrawSky
-//
-
-static void RB_DrawSky(void)
-{
-    if(!skyvisible)
-    {
-        // don't draw skybox if no sky flats are visible
-        return;
-    }
-    
-    dglMatrixMode(GL_MODELVIEW);
-    dglLoadMatrixf(rbPlayerView.rotation);
-    
-    RB_BindTexture(&whiteTexture);
-    
-    RB_DrawSkyDome(4, 1, 320, 2048, -256, 0, skyDomeColor1, skyDomeColor2);
-    RB_DrawClouds(currentCloudLump);
-    
-    skyvisible = false;
-}
-
-//
 // RB_DrawSprites
 //
 
@@ -1546,8 +1508,6 @@ static void RB_FixSpriteClippingPreProcess(void)
 void RB_DrawScene(void)
 {
     RB_SetupSkyData();
-    dglClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
-
     RB_ClearBuffer(GLCB_ALL);
 
     // load projection

@@ -764,11 +764,12 @@ boolean FE_SetKeybinding(femenuitem_t *item, int key)
     const char *keyname;
     boolean res = false;
     boolean cleared = false;
+    int curkey = M_GetIntVariable(item->verb);
 
     if(!key)
         return false;
 
-    if(key == KEY_BACKSPACE) // clear binding
+    if(curkey && key == curkey) // clear binding
     {
         res = M_SetVariable(item->verb, "");
         cleared = true;

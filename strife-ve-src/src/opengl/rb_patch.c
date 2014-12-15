@@ -38,12 +38,12 @@ static rbTexture_t patchTexture;
 static byte *patchBuffer;
 
 //
-// RB_ConvertPalette
+// RB_SetPatchBufferPalette
 //
 // haleyjd 20141111: Precache converted palette
 //
 
-static void RB_ConvertPalette(void)
+void RB_SetPatchBufferPalette(void)
 {
     int i;
     byte *paldata = W_CacheLumpNum(playpallump, PU_CACHE);
@@ -52,7 +52,9 @@ static void RB_ConvertPalette(void)
     for(i = 0; i < 256; i++)
     {
         RB_GetPaletteRGB(tempcol, paldata, i, 0);
-        rbPalette[i] = D_RGBA(tempcol[0], tempcol[1], tempcol[2], 0);
+        rbPalette[i] = D_RGBA(gammatable[usegamma][tempcol[0]],
+                              gammatable[usegamma][tempcol[1]],
+                              gammatable[usegamma][tempcol[2]], 0);
     }
 }
 
@@ -73,7 +75,7 @@ void RB_PatchBufferInit(void)
     RB_UploadTexture(&patchTexture, patchBuffer, TC_CLAMP_BORDER, TF_NEAREST);
     
     playpallump = W_GetNumForName(DEH_String("PLAYPAL"));
-    RB_ConvertPalette();
+    RB_SetPatchBufferPalette();
 }
 
 //

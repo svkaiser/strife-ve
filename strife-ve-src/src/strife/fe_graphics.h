@@ -51,6 +51,7 @@ enum
 
 void FE_InitBackgrounds(void);
 void FE_DestroyBackgrounds(void);
+void FE_RefreshBackgrounds(void);
 void FE_DrawBackground(int bgnum);
 
 #endif

@@ -29,6 +29,7 @@ extern boolean  rbDynamicLights;
 extern boolean  rbDynamicLightFastBlend;
 extern boolean  rbForceSync;
 extern boolean  rbCrosshair;
+extern boolean  rbVsync;
 extern boolean  rbDecals;
 extern int      rbMaxDecals;
 extern float    rbFOV;
@@ -53,6 +54,7 @@ void RB_BindVariables(void);
     CONFIG_VARIABLE_INT(gl_dynamic_light_fast_blend),   \
     CONFIG_VARIABLE_INT(gl_force_sync),                 \
     CONFIG_VARIABLE_INT(gl_show_crosshair),             \
+    CONFIG_VARIABLE_INT(gl_enable_vsync),               \
     CONFIG_VARIABLE_INT(gl_decals),                     \
     CONFIG_VARIABLE_INT(gl_max_decals),                 \
     CONFIG_VARIABLE_FLOAT(gl_fov),                      \

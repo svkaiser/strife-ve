@@ -133,7 +133,8 @@ static default_t	doom_defaults_list[] =
     // the game to crash when entering the options menu.
     //
 
-    CONFIG_VARIABLE_INT(mouse_sensitivity),
+    CONFIG_VARIABLE_INT(mouse_sensitivity_X),
+    CONFIG_VARIABLE_INT(mouse_sensitivity_Y),
 
     //!
     // Volume of sound effects, range 0-15.
@@ -766,6 +767,14 @@ static default_t extra_defaults_list[] =
     //!
     // @game strife [SVE]
     //
+    // If non-zero, limit game to 60 FPS
+    //
+
+    CONFIG_VARIABLE_INT(d_fpslimit),
+
+    //!
+    // @game strife [SVE]
+    //
     // If non-zero, intro movies will not play and instead skip
     // directly to the frontend
     //
@@ -928,6 +937,9 @@ static default_t extra_defaults_list[] =
 
     // [SVE] svillarreal
     CONFIG_VARIABLE_INT(mouse_invert),
+    CONFIG_VARIABLE_INT(mouse_scale),
+    CONFIG_VARIABLE_INT(mouse_enable_acceleration),
+    CONFIG_VARIABLE_INT(mouse_smooth),
 
     //!
     // Sound output sample rate, in Hz.  Typical values to use are
@@ -1268,6 +1280,27 @@ static default_t extra_defaults_list[] =
     //
 
     CONFIG_VARIABLE_INT(mouseb_jump),
+    
+    //!
+    // [SVE] haleyjd
+    // Mouse button to use inventory
+    //
+
+    CONFIG_VARIABLE_INT(mouseb_invuse),
+    
+    //!
+    // [SVE] haleyjd
+    // Mouse button to scroll to prev inventory
+    //
+
+    CONFIG_VARIABLE_INT(mouseb_invprev),
+    
+    //!
+    // [SVE] haleyjd
+    // Mouse button to scroll to next inventory
+    //
+
+    CONFIG_VARIABLE_INT(mouseb_invnext),
 
     //!
     // If non-zero, double-clicking a mouse button acts like pressing

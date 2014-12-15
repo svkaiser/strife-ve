@@ -108,6 +108,9 @@ int mousebuse = 1;
 int mousebprevweapon = 4;
 int mousebnextweapon = 3;
 
+int mousebinvuse  = -1;
+int mousebinvprev = -1;
+int mousebinvnext = -1;
 
 int key_message_refresh = KEY_ENTER;
 int key_pause = KEY_PAUSE;
@@ -142,7 +145,7 @@ int key_map_zoomin    = '=';
 int key_map_zoomout   = '-';
 int key_map_toggle    = KEY_TAB;
 int key_map_maxzoom   = '0';
-int key_map_follow    = 'f';
+int key_map_follow    = 'l';
 int key_map_grid      = 'g';
 int key_map_mark      = 'm';
 int key_map_clearmark = 'c';
@@ -179,10 +182,10 @@ int key_menu_screenshot = 0;
 // Joystick controls
 //
 
-int joybfire = 0;
-int joybstrafe = 1;
-int joybuse = 3;
-int joybspeed = 2;
+int joybfire = -1;
+int joybstrafe = -1;
+int joybuse = -1;
+int joybspeed = -1;
 
 int joybstrafeleft = -1;
 int joybstraferight = -1;
@@ -193,15 +196,15 @@ int joybprevweapon = -1;
 int joybnextweapon = -1;
 
 // [SVE] svillarreal - much needed joy buttons for menus
-int joybmenu           = 4;
-int joybmenu_up        = 0;
-int joybmenu_down      = 1;
-int joybmenu_left      = 2;
-int joybmenu_right     = 3;
-int joybmenu_back      = 5;
-int joybmenu_forward   = 10;
-int joybmenu_confirm   = 4;
-int joybmenu_abort     = 5;
+int joybmenu           = -1;
+int joybmenu_up        = -1;
+int joybmenu_down      = -1;
+int joybmenu_left      = -1;
+int joybmenu_right     = -1;
+int joybmenu_back      = -1;
+int joybmenu_forward   = -1;
+int joybmenu_confirm   = -1;
+int joybmenu_abort     = -1;
 
 // [SVE] svillarreal
 int joybinvleft = -1;
@@ -230,7 +233,29 @@ int joybmap_clearmark = -1;
 // "use" has been pressed
 
 int dclick_use = 1;
- 
+
+boolean M_CheckGamepadButtonVars(void)
+{
+    static int *vars[] =
+    {
+        &joybfire, &joybstrafe, &joybuse, &joybspeed, &joybstrafeleft,
+        &joybstraferight, &joybjump, &joybprevweapon, &joybnextweapon,
+        &joybinvleft, &joybinvright, &joybinvuse, &joybinvdrop,
+        &joybcenterview, &joybmission, &joybinvpop, &joybinvkey,
+    };
+
+    int i;
+    boolean allnegone = true;
+
+    for(i = 0; i < arrlen(vars); i++)
+    {
+        if(*vars[i] != -1)
+            allnegone = false;
+    }
+
+    return allnegone;
+}
+
 // 
 // Bind all of the common controls used by Doom and all other games.
 //
@@ -358,6 +383,11 @@ void M_BindStrifeControls(void)
     M_BindVariable("joyb_mission",       &joybmission);
     M_BindVariable("joyb_invpop",        &joybinvpop);
     M_BindVariable("joyb_invkey",        &joybinvkey);
+
+    // [SVE] haleyjd
+    M_BindVariable("mouseb_invuse",      &mousebinvuse);
+    M_BindVariable("mouseb_invprev",     &mousebinvprev);
+    M_BindVariable("mouseb_invnext",     &mousebinvnext);
 }
 
 void M_BindWeaponControls(void)

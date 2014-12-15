@@ -24,6 +24,7 @@
 
 #include "d_event.h"
 #include "d_loop.h"
+#include "d_main.h"
 #include "d_ticcmd.h"
 
 #include "i_system.h"
@@ -46,6 +47,8 @@
 #include "steamService.h"
 #endif
 #include "net_steamworks.h"
+
+#include "rb_config.h"
 
 // The complete set of data for a particular tic.
 
@@ -142,6 +145,10 @@ static int GetAdjustedTime(void)
     return (time_ms * TICRATE) / 1000;
 }
 
+// [SVE]: try increasing time allowed to get ahead
+//#define GET_AHEAD_TICS 5
+#define GET_AHEAD_TICS 20
+
 static boolean BuildNewTic(void)
 {
     int	gameticdiv;
@@ -178,7 +185,7 @@ static boolean BuildNewTic(void)
     }
     else
     {
-       if (maketic - gameticdiv >= 5)
+       if (maketic - gameticdiv >= GET_AHEAD_TICS) // [SVE]
            return false;
     }
 
@@ -325,6 +332,11 @@ static void BlockUntilStart(net_gamesettings_t *settings,
 {
     while (!NET_CL_GetSettings(settings))
     {
+#if defined(_USE_STEAM_)
+        // RUN CALLBACKS
+        I_SteamUpdate();
+#endif
+
         NET_CL_Run();
         NET_SV_Run();
 
@@ -465,6 +477,9 @@ boolean D_InitNetGame(net_connect_data_t *connect_data)
 #ifdef FEATURE_MULTIPLAYER
 
 #ifdef _USE_STEAM_
+    // RUN CALLBACKS
+    I_SteamUpdate();
+
     // haleyjd 20141022: [SVE]
     // Are we marked to start a Steam-negotiated netgame? This may be a pure UDP
     // connection, a NAT-puncher-assisted tunnel, or an indirect connection
@@ -488,6 +503,9 @@ boolean D_InitNetGame(net_connect_data_t *connect_data)
             I_Error("Unknown Steam netgame client state %d", net_SteamNodeType);
         }
 
+        // RUN CALLBACKS
+        I_SteamUpdate();
+
         if(addr)
         {
             if(!NET_CL_Connect(addr, connect_data))
@@ -497,6 +515,9 @@ boolean D_InitNetGame(net_connect_data_t *connect_data)
             
             result = true;
         }
+
+        // RUN CALLBACKS
+        I_SteamUpdate();
 
         return result;
     }
@@ -750,6 +771,7 @@ void TryRunTics (void)
     int	availabletics;
     int	counts;
     boolean caninterpolate = (gametic > 0 && d_interpolate); // haleyjd
+    boolean dosleep = !d_fpslimit || (use3drenderer && rbVsync);
 
     // get real tics
     entertic = I_GetTime() / ticdup;
@@ -790,7 +812,11 @@ void TryRunTics (void)
 
         // haleyjd 20140902: [SVE] interpolation
         if(counts <= 0 && caninterpolate)
+        {
+            if(dosleep)
+                I_Sleep(1);
             return;
+        }
 
         if (counts < 1)
             counts = 1;
@@ -803,7 +829,11 @@ void TryRunTics (void)
 
     // haleyjd 20140902: [SVE] interpolation
     if(counts <= 0 && caninterpolate)
+    {
+        if(dosleep)
+            I_Sleep(1);
         return;
+    }
 
     if (counts < 1)
 	counts = 1;
@@ -823,7 +853,11 @@ void TryRunTics (void)
         // so return to update the screen
 
 	if (caninterpolate || I_GetTime() / ticdup - entertic > 0)
+        {
+            if(dosleep)
+                I_Sleep(1);
 	    return;
+        }
 
         I_Sleep(1);
     }

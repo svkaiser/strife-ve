@@ -85,6 +85,8 @@ extern boolean i_seejoysticks;
 
 // [SVE] frontend functions
 int I_JoystickGetButtons(void);
+int I_JoystickGetButtonsEvent(void);
+void I_JoystickResetOldButtons(void);
 void I_JoystickGetAxes(int *x_axis, int *y_axis, int *s_axis, int *l_axis);
 
 #endif /* #ifndef __I_JOYSTICK__ */

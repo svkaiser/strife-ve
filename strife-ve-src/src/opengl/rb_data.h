@@ -42,6 +42,7 @@ extern int          lightmapCount;
 
 byte *RB_GetScreenBufferData(void);
 void RB_InitData(void);
+void RB_DeleteDoomData(void);
 void RB_DeleteData(void);
 boolean RB_DataInitialized(void);
 unsigned int RB_GetTextureFlags(const rbDataType_t type, const int index, const int translation);
