@@ -45,7 +45,7 @@
 // DEFAULTS
 //
 
-// Location where all configuration data is stored - 
+// Location where all configuration data is stored -
 // default.cfg, savegames, etc.
 
 char *configdir;
@@ -59,7 +59,7 @@ boolean extra_config_fresh = false;
 static char *default_main_config;
 static char *default_extra_config;
 
-typedef enum 
+typedef enum
 {
     DEFAULT_INT,
     DEFAULT_INT_HEX,
@@ -88,7 +88,7 @@ typedef struct
     // If zero, we didn't read this value from a config file.
     int untranslated;
 
-    // The value we translated the scancode into when we read the 
+    // The value we translated the scancode into when we read the
     // config file on startup.  If the variable value is different from
     // this, it has been changed and needs to be converted; otherwise,
     // use the 'untranslated' value.
@@ -378,13 +378,13 @@ static default_t	doom_defaults_list[] =
     //
 
     CONFIG_VARIABLE_KEY(key_invDrop),
-    
+
     //!
     // @game strife
     //
     // Keyboard key to center view
     //
-    
+
     CONFIG_VARIABLE_KEY(key_centerview),
 
     //!
@@ -1280,21 +1280,21 @@ static default_t extra_defaults_list[] =
     //
 
     CONFIG_VARIABLE_INT(mouseb_jump),
-    
+
     //!
     // [SVE] haleyjd
     // Mouse button to use inventory
     //
 
     CONFIG_VARIABLE_INT(mouseb_invuse),
-    
+
     //!
     // [SVE] haleyjd
     // Mouse button to scroll to prev inventory
     //
 
     CONFIG_VARIABLE_INT(mouseb_invprev),
-    
+
     //!
     // [SVE] haleyjd
     // Mouse button to scroll to next inventory
@@ -1892,7 +1892,7 @@ static default_t *SearchCollection(default_collection_t *collection, const char 
 {
     int i;
 
-    for (i=0; i<collection->numdefaults; ++i) 
+    for (i=0; i<collection->numdefaults; ++i)
     {
         if (!strcmp(name, collection->defaults[i].name))
         {
@@ -1980,7 +1980,7 @@ const char *GetNameForKey(const int key)
 {
     int i;
     static char keychar[2];
-    
+
     for(i = 0; i < arrlen(keynames); ++i)
     {
         if(keynames[i].keycode == key)
@@ -1988,13 +1988,13 @@ const char *GetNameForKey(const int key)
             return keynames[i].name;
         }
     }
-    
+
     if(isprint(key & 0x7f))
     {
         keychar[0] = key;
         return keychar;
     }
-    
+
     return 0;
 }
 
@@ -2005,7 +2005,7 @@ const char *GetNameForKey(const int key)
 const int GetKeyForName(const char *name)
 {
     int i;
-    
+
     for(i = 0; i < arrlen(keynames); ++i)
     {
         if(!strcmp(name, keynames[i].name))
@@ -2013,12 +2013,12 @@ const int GetKeyForName(const char *name)
             return keynames[i].keycode;
         }
     }
-    
+
     if(isprint(name[0]&0x7f))
     {
         return name[0];
     }
-    
+
     return 0;
 }
 
@@ -2030,13 +2030,13 @@ static void SaveDefaultCollection(default_collection_t *collection)
     int i, v;
     FILE *f;
     void *location; // haleyjd: [SVE]
-	
+
     f = fopen (collection->filename, "w");
     if (!f)
 	return; // can't write the file, but don't complain
 
     defaults = collection->defaults;
-		
+
     for (i=0 ; i<collection->numdefaults ; i++)
     {
         int chars_written;
@@ -2056,12 +2056,12 @@ static void SaveDefaultCollection(default_collection_t *collection)
             fprintf(f, " ");
 
         // [SVE] save the value from default, if it is set.
-        location = defaults[i].default_location ? 
+        location = defaults[i].default_location ?
             defaults[i].default_location : defaults[i].location;
 
         // Print the value
 
-        switch (defaults[i].type) 
+        switch (defaults[i].type)
         {
             case DEFAULT_KEY:
                 v = * (int *) location;
@@ -2176,7 +2176,7 @@ static boolean LoadDefaultCollection(default_collection_t *collection)
 
     if (f == NULL)
     {
-        // File not opened, but don't complain. 
+        // File not opened, but don't complain.
         // It's probably just the first time they ran the game.
 
         return false;
@@ -2276,7 +2276,7 @@ void M_SaveDefaultsAlternate(char *main, char *extra)
 void M_LoadDefaults (void)
 {
     int i;
- 
+
     // check for a custom default file
 
     //!
@@ -2314,7 +2314,7 @@ void M_LoadDefaults (void)
     if (i)
     {
         extra_defaults.filename = myargv[i+1];
-        printf("        extra configuration file: %s\n", 
+        printf("        extra configuration file: %s\n",
                extra_defaults.filename);
     }
     else
@@ -2403,7 +2403,7 @@ int M_GetIntVariable(const char *name)
     variable = GetDefaultForName(name);
 
     if (variable == NULL || !variable->bound
-     || (variable->type != DEFAULT_INT && 
+     || (variable->type != DEFAULT_INT &&
          variable->type != DEFAULT_INT_HEX &&
          variable->type != DEFAULT_KEY)) // haleyjd: [SVE]
     {
@@ -2448,7 +2448,32 @@ float M_GetFloatVariable(const char *name)
 
 static char *GetDefaultConfigDir(void)
 {
-#if !defined(_WIN32) || defined(_WIN32_WCE)
+// [SVE] dotfloat 20141216
+#if defined(__linux__)
+
+    // Configuration settings are stored in $XDG_DATA_HOME instead of $HOME on Linux.
+
+    char *datadir;
+    char *result;
+
+    datadir = getenv("XDG_DATA_HOME");
+    if(datadir != NULL && datadir[0] != '\0')
+    {
+        result = M_StringJoin(datadir, "/" PACKAGE_TARNAME "/", NULL);
+
+        return result;
+    }
+
+    // Default to $HOME/.local/share if $XDG_DATA_HOME isn't set or is empty.
+    datadir = getenv("HOME");
+    if(datadir != NULL)
+    {
+        result = M_StringJoin(datadir, "/.local/share/" PACKAGE_TARNAME "/", NULL);
+
+        return result;
+    }
+    else
+#elif !defined(_WIN32) || defined(_WIN32_WCE)
 
     // Configuration settings are stored in ~/.chocolate-doom/,
     // except on Windows, where we behave like Vanilla Doom and
@@ -2475,7 +2500,7 @@ static char *GetDefaultConfigDir(void)
     }
 }
 
-// 
+//
 // SetConfigDir:
 //
 // Sets the location of the configuration directory, where configuration
@@ -2589,7 +2614,7 @@ int M_GetIntVariableDefault(const char *name)
     variable = GetDefaultForName(name);
 
     if (variable == NULL || !variable->bound
-     || (variable->type != DEFAULT_INT && 
+     || (variable->type != DEFAULT_INT &&
          variable->type != DEFAULT_INT_HEX &&
          variable->type != DEFAULT_KEY)) // haleyjd: [SVE]
     {
