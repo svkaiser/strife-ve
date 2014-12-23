@@ -381,17 +381,17 @@ void D_StartNetGame(net_gamesettings_t *settings,
     // has some bugs.
     //
 
-    if (M_CheckParm("-newsync") > 0)
-	settings->new_sync = 1;
-    else
-	settings->new_sync = 0;
-
-    // TODO: New sync code is not enabled by default because it's
-    // currently broken.
-    //if (M_CheckParm("-oldsync") > 0)
-    //    settings->new_sync = 0;
-    //else
+    //if (M_CheckParm("-newsync") > 0)
     //    settings->new_sync = 1;
+    //else
+    //    settings->new_sync = 0;
+
+    // [SVE] 20141220: Apparently "newsync" is pretty much required for Internet play.
+    // Special thanks to Edward850 for diagnosing this with a bunch of testing.
+    if (M_CheckParm("-oldsync") > 0)
+        settings->new_sync = 0;
+    else
+        settings->new_sync = 1;
 
     //!
     // @category net
@@ -771,7 +771,7 @@ void TryRunTics (void)
     int	availabletics;
     int	counts;
     boolean caninterpolate = (gametic > 0 && d_interpolate); // haleyjd
-    boolean dosleep = !d_fpslimit || (use3drenderer && rbVsync);
+    boolean dosleep = !d_fpslimit;
 
     // get real tics
     entertic = I_GetTime() / ticdup;

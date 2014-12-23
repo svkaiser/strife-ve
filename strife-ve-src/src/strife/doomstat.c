@@ -78,5 +78,8 @@ int ctcprefteam = PREF_TEAM_AUTO;
 // [SVE] preferred ctc teams
 int ctcprefteams[MAXPLAYERS];
 
+// [SVE] autoaim toggle
+int autoaim = true;
+
 // EOF
 

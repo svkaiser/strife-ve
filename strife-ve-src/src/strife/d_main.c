@@ -509,6 +509,7 @@ void D_BindVariables(void)
     M_BindVariable("classicmode",            &classicmode);
     M_BindVariable("weapon_recoil",          &d_recoil);
     M_BindVariable("damage_indicator",       &d_dmgindictor);
+    M_BindVariable("autoaim",                &autoaim);
     M_BindVariable("autorun",                &autorun);
     M_BindVariable("fullscreen_hud",         &fullscreenhud);
 
@@ -671,7 +672,7 @@ void D_DoomLoop (void)
             D_Display();
 
         // Must cap framerate if interpolating
-        if(d_interpolate && d_fpslimit && !(use3drenderer && rbVsync))
+        if(d_interpolate && d_fpslimit)
         {
             while(D_capFrameRate());
         }

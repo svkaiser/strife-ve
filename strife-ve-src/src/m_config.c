@@ -800,6 +800,14 @@ static default_t extra_defaults_list[] =
     //!
     // @game strife [SVE]
     //
+    // If non-zero, player autoaims in single player mode
+    //
+
+    CONFIG_VARIABLE_INT(autoaim),
+
+    //!
+    // @game strife [SVE]
+    //
     // If non-zero, fullscreen HUD will be rendered
     //
 

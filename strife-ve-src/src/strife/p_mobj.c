@@ -938,9 +938,9 @@ void P_AssignPlayerToTeam(player_t *player)
             continue;
         if(player == &players[i])
             continue;
-        if(players[i].allegiance == CTC_TEAM_BLUE)
+        if(players[i].allegiance == CTC_TEAM_BLUE || ctcprefteams[i] == PREF_TEAM_BLUE)
             ++bluecount;
-        else if(players[i].allegiance == CTC_TEAM_RED)
+        else if(players[i].allegiance == CTC_TEAM_RED || ctcprefteams[i] == PREF_TEAM_RED)
             ++redcount;
     }
 
@@ -1503,34 +1503,47 @@ mobj_t* P_SpawnPlayerMissile(mobj_t* source, mobjtype_t type)
     fixed_t	y;
     fixed_t	z;
     fixed_t	slope;
+
+    an = source->angle;
     
     // see which target is to be aimed at
-    an = source->angle;
-    slope = P_AimLineAttack (source, an, 16*64*FRACUNIT);
-        
-    if(!linetarget)
+    if(netgame || autoaim) // [SVE]: single player autoaim toggle
     {
-        an += 1<<26;
         slope = P_AimLineAttack (source, an, 16*64*FRACUNIT);
 
         if(!linetarget)
         {
-            an -= 2<<26;
+            an += 1<<26;
             slope = P_AimLineAttack (source, an, 16*64*FRACUNIT);
+
+            if(!linetarget)
+            {
+                an -= 2<<26;
+                slope = P_AimLineAttack (source, an, 16*64*FRACUNIT);
+            }
+
+            if(!linetarget)
+            {
+                an = source->angle;
+
+                // haleyjd 09/21/10: [STRIFE] Removed, for look up/down support.
+                //slope = 0; 
+            }
         }
 
-        if(!linetarget)
-        {
-            an = source->angle;
-
-            // haleyjd 09/21/10: [STRIFE] Removed, for look up/down support.
-            //slope = 0; 
-        }
+        // villsa [STRIFE]
+        if(linetarget)
+            P_SetTarget(&source->target, linetarget);
+    }
+    else
+    {
+        P_AimLineAttack(source, an, 16*64*FRACUNIT);
+        // villsa [STRIFE]
+        if(linetarget)
+            P_SetTarget(&source->target, linetarget);
+        linetarget = NULL;
     }
 
-    // villsa [STRIFE]
-    if(linetarget)
-        P_SetTarget(&source->target, linetarget);
 
     x = source->x;
     y = source->y;

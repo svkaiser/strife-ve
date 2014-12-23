@@ -1193,7 +1193,6 @@ void FE_StartInGameOptionsMenu(void)
     currentFEMenu     = &optionsMenuMain;
 
     // cannot pop out further than options menu
-    optionsMenuMain.itemon   = 0;
     optionsMenuMain.prevMenu = NULL;
 
     FE_InitMerchant();

@@ -1129,7 +1129,9 @@ void RB_DrawDamageMarkers(player_t *player)
 
 void RB_RenderFXAA(void)
 {
-    if(!has_GL_ARB_shader_objects || !rbEnableFXAA)
+    if(!has_GL_ARB_shader_objects       ||
+       !has_GL_ARB_framebuffer_object   ||
+       !rbEnableFXAA)
     {
         return;
     }
@@ -1164,7 +1166,9 @@ void RB_RenderBloom(void)
     int vp[4];
     vtx_t v[4];
 
-    if(!has_GL_ARB_shader_objects || !rbEnableBloom)
+    if(!has_GL_ARB_shader_objects       ||
+       !has_GL_ARB_framebuffer_object   ||
+       !rbEnableBloom)
     {
         return;
     }
@@ -1424,6 +1428,7 @@ static void RB_DrawSprites(void)
 {
     // draw special outline sprites
     RB_SetState(GLSTATE_DEPTHTEST, false);
+    RB_SetBlend(GLSRC_SRC_ALPHA, GLDST_ONE_MINUS_SRC_ALPHA);
     DL_ProcessDrawList(DLT_SPRITEOUTLINE);
     RB_SetState(GLSTATE_DEPTHTEST, true);
 
@@ -1534,7 +1539,7 @@ void RB_DrawScene(void)
     RB_SetColorMask(1);
 
     // fix sprite clipping
-    if(rbFixSpriteClipping)
+    if(rbFixSpriteClipping && has_GL_ARB_framebuffer_object)
     {
         RB_FixSpriteClippingPreProcess();
     }
@@ -1569,7 +1574,7 @@ void RB_DrawScene(void)
         RB_SetDepth(GLFUNC_LEQUAL);
     }
 
-    if(!rbFixSpriteClipping)
+    if(!rbFixSpriteClipping || !has_GL_ARB_framebuffer_object)
     {
         // draw sprites
         RB_DrawSprites();

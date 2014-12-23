@@ -713,6 +713,15 @@ void P_BulletSlope(mobj_t *mo)
 {
     angle_t an = mo->angle;
     
+    if(mo->player && !(netgame || autoaim)) // [SVE]: SP autoaim toggle
+    {
+        P_AimLineAttack(mo, an, 16*64*FRACUNIT);
+        bulletslope = (mo->player->pitch / 256);
+        if(linetarget)
+            P_SetTarget(&mo->target, linetarget);
+        return;
+    }
+
     // see which target is to be aimed at
     bulletslope = P_AimLineAttack (mo, an, 16*64*FRACUNIT);
 

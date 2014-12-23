@@ -2586,7 +2586,7 @@ mobjinfo_t mobjinfo[NUMMOBJTYPES] =
         100,        //mass
         0,      //damage
         sfx_None,       //activesound
-        MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL,     //flags
+        MF_SOLID|MF_SHOOTABLE|MF_COUNTKILL|MF_NODIALOG,     //flags
         NULL,       //namepointer
         MF2_DRAWBILLBOARD|MF2_IGNORENOMONSTERS   // flags2
     },

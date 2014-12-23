@@ -80,6 +80,11 @@ static void FBO_CheckStatus(rbfbo_t *fbo)
 void FBO_InitColorAttachment(rbfbo_t *fbo, const int attachment,
                              const int width, const int height)
 {
+    if(!has_GL_ARB_framebuffer_object)
+    {
+        return;
+    }
+    
     if(fbo->bLoaded)
     {
         return;
@@ -148,6 +153,11 @@ void FBO_InitColorAttachment(rbfbo_t *fbo, const int attachment,
 
 void FBO_Delete(rbfbo_t *fbo)
 {
+    if(!has_GL_ARB_framebuffer_object)
+    {
+        return;
+    }
+    
     if(!fbo->bLoaded)
     {
         return;
@@ -181,6 +191,11 @@ void FBO_Delete(rbfbo_t *fbo)
 
 void FBO_CopyBackBuffer(rbfbo_t *fbo, const int x, const int y, const int width, const int height)
 {
+    if(!has_GL_ARB_framebuffer_object)
+    {
+        return;
+    }
+    
     dglBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
     RB_SetReadBuffer(GL_BACK);
     dglBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo->fboId);
@@ -206,8 +221,15 @@ void FBO_CopyBackBuffer(rbfbo_t *fbo, const int x, const int y, const int width,
 void FBO_CopyFrameBuffer(rbfbo_t *src, rbfbo_t *dst,
                          const int width, const int height)
 {
-    int w = dst->fboWidth - (dst->fboWidth - width);
-    int h = dst->fboHeight - (dst->fboHeight - height);
+    int w, h;
+    
+    if(!has_GL_ARB_framebuffer_object)
+    {
+        return;
+    }
+    
+    w = dst->fboWidth - (dst->fboWidth - width);
+    h = dst->fboHeight - (dst->fboHeight - height);
     
     if(w > dst->fboWidth)
     {
@@ -242,6 +264,11 @@ void FBO_CopyFrameBuffer(rbfbo_t *src, rbfbo_t *dst,
 
 void FBO_Bind(rbfbo_t *fbo)
 {
+    if(!has_GL_ARB_framebuffer_object)
+    {
+        return;
+    }
+    
     if(fbo->fboId == rbState.currentFBO)
     {
         return;
@@ -260,6 +287,11 @@ void FBO_Bind(rbfbo_t *fbo)
 
 void FBO_UnBind(rbfbo_t *fbo)
 {
+    if(!has_GL_ARB_framebuffer_object)
+    {
+        return;
+    }
+    
     if(rbState.currentFBO == 0)
     {
         return;
@@ -276,6 +308,11 @@ void FBO_BindImage(rbfbo_t *fbo)
 {
     int unit = rbState.currentUnit;
     dtexture currentTexture = rbState.textureUnits[unit].currentTexture;
+    
+    if(!has_GL_ARB_framebuffer_object)
+    {
+        return;
+    }
     
     if(fbo->fboTexId == currentTexture)
     {
@@ -294,6 +331,11 @@ void FBO_UnBindImage(rbfbo_t *fbo)
 {
     int unit = rbState.currentUnit;
     
+    if(!has_GL_ARB_framebuffer_object)
+    {
+        return;
+    }
+    
     if(rbState.textureUnits[unit].currentTexture == 0)
     {
         return;
@@ -311,6 +353,11 @@ void FBO_Draw(rbfbo_t *fbo, boolean forceScreenSize)
 {
     vtx_t v[4];
     float delta;
+    
+    if(!has_GL_ARB_framebuffer_object)
+    {
+        return;
+    }
 
     delta = 0;
 

@@ -59,6 +59,11 @@ typedef struct fehelpstr_s
 static fehelpstr_t helpStrs[] =
 {
     {
+        "autoaim",
+        "Toggle automatic aim assistance on or off. If off, you'll need to be "
+        "exactly on the mark to hit enemies above or below."
+    },
+    {
         "autorun",
         "You will run automatically without needing to hold down an extra key."
     },

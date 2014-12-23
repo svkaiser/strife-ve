@@ -42,6 +42,7 @@
 #include "p_inter.h"
 #include "f_finale.h"
 #include "hu_stuff.h"
+#include "hu_lib.h"
 
 // [SVE] svillarreal
 #ifdef _USE_STEAM_
@@ -351,6 +352,39 @@ static rndmessage_t rndMessages[] =
 
 // And again, this could have been a define, but was a variable.
 static int numrndmessages = arrlen(rndMessages);
+
+//=============================================================================
+//
+// [SVE]
+//
+// Voices where BlackBird speaks at the end.
+//
+
+static const char *BlackBirdVoices[] =
+{
+    "ADG01", "AG301", "CTT02", "DER03", "FP201A", "FP301A", "GOV04", "LOM06",
+    "MAC02", "MAC06", "MAC08", "MAC14", "MAE03",  "MAE04",  "MAE06", "ORC06",
+    "PDG02", "QUI04", "QUI06", "TCC01", "TCH02",  "WDM02",  "WER02", "WER03",
+    "WER05", "WER08", "WOR03"
+};
+
+static boolean P_IsBlackBirdVoice(const char *voice)
+{
+    int i;
+
+    if(!voice)
+        return false;
+
+    for(i = 0; i < arrlen(BlackBirdVoices); i++)
+    {
+        if(!strcasecmp(voice, BlackBirdVoices[i]))
+            return true;
+    }
+
+    return false;
+}
+
+static boolean blackbirdvoice;
 
 //=============================================================================
 //
@@ -1360,6 +1394,13 @@ static void P_DialogDrawer(void)
         M_WriteText(12, 18, dialogname);
         y = 28;
 
+        if(blackbirdvoice) // [SVE]
+        {
+            const char *msg = "BlackBird is listening...";
+            int x = 300 - HUlib_yellowTextWidth(msg);
+            HUlib_drawYellowText(x, 181, msg, true);
+        }
+
         // show text (optional for dialogs with voices)
         if(dialogshowtext || currentdialog->voice[0] == '\0')
             y = M_WriteText(20, 28, dialogtext);
@@ -1677,6 +1718,8 @@ void P_DialogStart(player_t *player)
 
     // get voice
     I_StartVoice(currentdialog->voice);
+
+    blackbirdvoice = P_IsBlackBirdVoice(currentdialog->voice);
 
     // get bye text
     switch(rnd)
