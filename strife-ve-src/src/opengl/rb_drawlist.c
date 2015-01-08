@@ -244,7 +244,7 @@ void DL_ProcessDrawList(int tag)
 
         for(i = 0; i < dl->index; ++i)
         {
-            vtxlist_t* rover;
+            vtxlist_t *rover;
 
             head = &dl->list[i];
 
@@ -258,18 +258,18 @@ void DL_ProcessDrawList(int tag)
             {
                 if(!head->procfunc(head, &drawcount))
                 {
-                    rover = head + 1;
+                    rover = &dl->list[i+1];
                     continue;
                 }
             }
 
-            rover = head + 1;
+            rover = &dl->list[i+1];
 
             if(tag != DLT_SPRITE)
             {
                 if(rover != tail)
                 {
-                    if(head->texid == rover->texid && head->params == rover->params)
+                    if(head->texid == rover->texid)
                     {
                         continue;
                     }

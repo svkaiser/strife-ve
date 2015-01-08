@@ -1149,7 +1149,8 @@ void I_AVStartVideoStream(const char *filename)
     static boolean avInitialized = false;
     SDL_Event ev;
 
-    if(M_CheckParm("-skipmovies") > 0)
+    if(M_CheckParm("-skipmovies") > 0 ||
+       M_CheckParm("+connect_lobby") > 0)
     {
         return;
     }

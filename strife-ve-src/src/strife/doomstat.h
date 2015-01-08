@@ -336,4 +336,7 @@ enum
 extern int ctcprefteam;
 extern int ctcprefteams[MAXPLAYERS];
 
+// [SVE]: autoaim toggle
+extern int autoaim;
+
 #endif

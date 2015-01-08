@@ -19,6 +19,12 @@
 #include "rb_gl.h"
 #include "rb_config.h"
 
+#if defined(__GNUC__)
+    __attribute__ ((visibility("default"))) unsigned long NvOptimusEnablement = 0x00000001;
+#elif defined(_MSC_VER)
+    _declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+#endif
+
 GL_ARB_multitexture_Define();
 GL_EXT_compiled_vertex_array_Define();
 GL_ARB_texture_non_power_of_two_Define();

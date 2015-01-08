@@ -112,6 +112,7 @@ void FE_CmdOptions(void)
 static femenuitem_t optionsGameplayItems[] =
 {
     { FE_MITEM_TOGGLE, "Always Run",       "autorun",           FE_FONT_SMALL },
+    { FE_MITEM_TOGGLE, "Autoaim",          "autoaim",           FE_FONT_SMALL },
     { FE_MITEM_TOGGLE, "Classic Mode",     "classicmode",       FE_FONT_SMALL, FE_TOGGLE_NOTNET },
     { FE_MITEM_TOGGLE, "Crosshair",        "gl_show_crosshair", FE_FONT_SMALL },
     { FE_MITEM_TOGGLE, "Damage Indicator", "damage_indicator",  FE_FONT_SMALL },
@@ -129,7 +130,7 @@ static femenu_t optionsGameplayMenu =
     optionsGameplayItems,
     arrlen(optionsGameplayItems),
     74,
-    32,
+    26,
     2,
     "Gameplay Options",
     FE_BG_RSKULL,

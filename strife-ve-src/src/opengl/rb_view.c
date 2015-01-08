@@ -98,27 +98,34 @@ static void RB_SetupClipFrustum(rbView_t *view)
 static void RB_SetupClipper(rbView_t *view, const float fov)
 {
     const float fovAngle = DEG2RAD(fov) + 0.2f;
-    SDL_Surface *screen;
     angle_t clipangle;
     float span;
     float tfov;
     float tilt;
-    float aspect;
+    fixed_t aspect;
+    float faspect;
     float expand;
+    float ratio;
     
     // get screen aspect ratio
-    screen = SDL_GetVideoSurface();
-    aspect = (float)screen->w / (float)screen->h;
+    aspect = (screen_width * FRACUNIT) / screen_height;
     
     // anything other than center pitch will add additional span for the clip range.
     // higher the fov, the more wider span is applied. this will always be
     // clamped between 0 and 1
     tfov = MAX(1.0f - (fabsf(view->rotpitch.s) * MAX(tanf(fovAngle / 2.0f), 1)), 0);
     
-    expand = 10.0f * aspect;
+    faspect = FIXED2FLOAT(aspect);
+    expand = 10.0f * faspect;
+    ratio = FIXED_ASPECT;
+
+    if(aspect > 4 * FRACUNIT / 3)
+    {
+        ratio *= FIXED2FLOAT(FixedDiv(4*FRACUNIT, 3 * aspect));
+    }
     
     // compute the span angle. this shouldn't go below the fixed aspect ratio
-    span = MIN((M_PI - fovAngle) * aspect, FIXED_ASPECT * 2.0f);
+    span = MIN((M_PI - fovAngle) * faspect, ratio * 2.0f);
     tilt = MIN((360.0f - (RAD2DEG(tfov * span))) + expand, 360.0f);
     
     // convert to angle_t and set the clip angle
@@ -408,7 +415,7 @@ void RB_RenderPlayerView(player_t *player)
     RB_SetOrtho();
 
     // render framebuffer with sprites
-    if(rbFixSpriteClipping)
+    if(rbFixSpriteClipping && has_GL_ARB_framebuffer_object)
     {
         RB_SetBlend(GLSRC_ONE, GLDST_ONE_MINUS_SRC_ALPHA);
         FBO_Draw(&spriteFBO, false);
