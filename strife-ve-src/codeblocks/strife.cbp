@@ -19,16 +19,6 @@
 					<Add option="-W" />
 					<Add option="-gdwarf-2" />
 				</Compiler>
-				<Linker>
-					<Add option="-pthread -lGL -lopl-dbg -lpcsound-dbg -ltextscreen-dbg -ldl -lm" />
-				</Linker>
-				<ExtraCommands>
-					<Add before='export LDFLAGS=&quot;$LDFLAGS -ldl&quot;' />
-					<Add after="sleep 1" />
-					<Add after='./../patchelf/src/patchelf --set-rpath &quot;\\$${ORIGIN}&quot; ../bin/strife-ve-dbg' />
-					<Add after="ldd ../bin/strife-ve-dbg" />
-					<Mode after="always" />
-				</ExtraCommands>
 			</Target>
 			<Target title="Release">
 				<Option output="../bin/strife-ve" prefix_auto="0" extension_auto="0" />
@@ -42,22 +32,78 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-lopl -lpcsound -ltextscreen -pthread -lGL -ldl -lm" />
 				</Linker>
-				<ExtraCommands>
-					<Add after="sleep 1" />
-					<Add after='./../patchelf/src/patchelf --set-rpath &quot;\\$${ORIGIN}&quot; ../bin/strife-ve' />
-					<Add after="ldd ../bin/strife-ve" />
-					<Mode after="always" />
-				</ExtraCommands>
+			</Target>
+			<Target title="SteamDbg">
+				<Option platforms="Unix;" />
+				<Option output="../bin/steam/strife-ve-dbg" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="../bin/steam" />
+				<Option object_output="../obj/chocolate-strife/steamdbg" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-W" />
+					<Add option="-gdwarf-2" />
+					<Add option="-D_USE_STEAM_" />
+					<Add directory="../../steam-service/api/SteamService/source" />
+					<Add directory="/usr/include/libpng12" />
+					<Add directory="../ffmpeg/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,-R\\$$$ORIGIN" />
+					<Add library="/usr/lib/libSDL.a" />
+					<Add library="./libSteamService.so" />
+					<Add library="../../steam-service/sdk/redistributable_bin/linux32/libsteam_api.so" />
+					<Add library="../ffmpeg/linux/libavcodec.so.56" />
+					<Add library="../ffmpeg/linux/libavdevice.so.56" />
+					<Add library="../ffmpeg/linux/libavfilter.so.5" />
+					<Add library="../ffmpeg/linux/libavformat.so.56" />
+					<Add library="../ffmpeg/linux/libavutil.so.54" />
+					<Add library="../ffmpeg/linux/libswresample.so.1" />
+					<Add library="../ffmpeg/linux/libswscale.so.3" />
+					<Add directory="../lib" />
+					<Add directory="../../steam-service/api/SteamService/codeblocks/SteamService/bin/Release" />
+					<Add directory="../ffmpeg/linux" />
+				</Linker>
+			</Target>
+			<Target title="SteamRel">
+				<Option output="../bin/steam/strife-ve" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="../bin/steam" />
+				<Option object_output="../obj/chocolate-strife/steamrel" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-D_USE_STEAM_" />
+					<Add directory="../../steam-service/api/SteamService/source" />
+					<Add directory="/usr/include/libpng12" />
+					<Add directory="../ffmpeg/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-Wl,-R\\$$$ORIGIN" />
+					<Add library="/usr/lib/libSDL.a" />
+					<Add library="./libSteamService.so" />
+					<Add library="../../steam-service/sdk/redistributable_bin/linux32/libsteam_api.so" />
+					<Add library="../ffmpeg/linux/libavcodec.so.56" />
+					<Add library="../ffmpeg/linux/libavdevice.so.56" />
+					<Add library="../ffmpeg/linux/libavfilter.so.5" />
+					<Add library="../ffmpeg/linux/libavformat.so.56" />
+					<Add library="../ffmpeg/linux/libavutil.so.54" />
+					<Add library="../ffmpeg/linux/libswresample.so.1" />
+					<Add library="../ffmpeg/linux/libswscale.so.3" />
+					<Add directory="../lib" />
+					<Add directory="../../steam-service/api/SteamService/codeblocks/SteamService/bin/Release" />
+					<Add directory="../ffmpeg/linux" />
+				</Linker>
 			</Target>
 		</Build>
 		<VirtualTargets>
 			<Add alias="All" targets="Debug;Release;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option='-DPROGRAM_PREFIX=&quot;\&quot;chocolate-\&quot;&quot;' />
-			<Add option="-D_USE_STEAM_" />
 			<Add option="-D__linux__" />
 			<Add directory="." />
 			<Add directory="../src" />
@@ -68,27 +114,53 @@
 			<Add directory="../src/strife" />
 			<Add directory="../src/opengl" />
 			<Add directory="/usr/include/libpng12" />
-			<Add directory="../../steam-service/api/SteamService/source" />
-			<Add directory="../ffmpeg/include" />
 		</Compiler>
 		<Linker>
-			<Add option="-lSDLmain -lSDL -lSDL_mixer -lSDL_net -ldl -lm" />
-			<Add library="/usr/lib/i386-linux-gnu/libdl.so" />
-			<Add library="/usr/lib/i386-linux-gnu/libpng.so" />
-			<Add library="/usr/lib/libSDL.a" />
-			<Add library="./libSteamService.so" />
-			<Add library="../../steam-service/sdk/redistributable_bin/linux32/libsteam_api.so" />
-			<Add library="../ffmpeg/linux/libavcodec.so.56" />
-			<Add library="../ffmpeg/linux/libavdevice.so.56" />
-			<Add library="../ffmpeg/linux/libavfilter.so.5" />
-			<Add library="../ffmpeg/linux/libavformat.so.56" />
-			<Add library="../ffmpeg/linux/libavutil.so.54" />
-			<Add library="../ffmpeg/linux/libswresample.so.1" />
-			<Add library="../ffmpeg/linux/libswscale.so.3" />
-			<Add directory="../lib" />
-			<Add directory="../../steam-service/api/SteamService/codeblocks/SteamService/bin/Release" />
-			<Add directory="../ffmpeg/linux" />
+			<Add option="-lSDLmain -lSDL -lSDL_mixer -lSDL_net -ldl -lm -pthread -lGL" />
+			<Add option="-lavcodec -lavdevice -lavfilter -lavformat -lavutil" />
+			<Add option="-lswresample -lswscale -lpng" />
 		</Linker>
+		<Unit filename="../opl/dbopl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../opl/dbopl.h" />
+		<Unit filename="../opl/ioperm_sys.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../opl/ioperm_sys.h" />
+		<Unit filename="../opl/opl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../opl/opl.h" />
+		<Unit filename="../opl/opl_internal.h" />
+		<Unit filename="../opl/opl_linux.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../opl/opl_queue.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../opl/opl_queue.h" />
+		<Unit filename="../opl/opl_sdl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../opl/opl_timer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../opl/opl_timer.h" />
+		<Unit filename="../pcsound/pcsound.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../pcsound/pcsound.h" />
+		<Unit filename="../pcsound/pcsound_bsd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../pcsound/pcsound_internal.h" />
+		<Unit filename="../pcsound/pcsound_linux.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../pcsound/pcsound_sdl.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="../src/d_event.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -702,6 +774,91 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/z_zone.h" />
+		<Unit filename="../textscreen/textscreen.h" />
+		<Unit filename="../textscreen/txt_button.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_button.h" />
+		<Unit filename="../textscreen/txt_checkbox.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_checkbox.h" />
+		<Unit filename="../textscreen/txt_desktop.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_desktop.h" />
+		<Unit filename="../textscreen/txt_dropdown.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_dropdown.h" />
+		<Unit filename="../textscreen/txt_fileselect.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_fileselect.h" />
+		<Unit filename="../textscreen/txt_font.h" />
+		<Unit filename="../textscreen/txt_gui.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_gui.h" />
+		<Unit filename="../textscreen/txt_inputbox.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_inputbox.h" />
+		<Unit filename="../textscreen/txt_io.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_io.h" />
+		<Unit filename="../textscreen/txt_label.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_label.h" />
+		<Unit filename="../textscreen/txt_largefont.h" />
+		<Unit filename="../textscreen/txt_main.h" />
+		<Unit filename="../textscreen/txt_radiobutton.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_radiobutton.h" />
+		<Unit filename="../textscreen/txt_scrollpane.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_scrollpane.h" />
+		<Unit filename="../textscreen/txt_sdl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_sdl.h" />
+		<Unit filename="../textscreen/txt_separator.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_separator.h" />
+		<Unit filename="../textscreen/txt_smallfont.h" />
+		<Unit filename="../textscreen/txt_spinctrl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_spinctrl.h" />
+		<Unit filename="../textscreen/txt_strut.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_strut.h" />
+		<Unit filename="../textscreen/txt_table.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_table.h" />
+		<Unit filename="../textscreen/txt_utf8.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_utf8.h" />
+		<Unit filename="../textscreen/txt_widget.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_widget.h" />
+		<Unit filename="../textscreen/txt_window.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_window.h" />
+		<Unit filename="../textscreen/txt_window_action.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../textscreen/txt_window_action.h" />
 		<Unit filename="config.h" />
 		<Unit filename="game-res.rc">
 			<Option compilerVar="WINDRES" />
