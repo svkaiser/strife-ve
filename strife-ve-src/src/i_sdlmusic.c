@@ -1172,7 +1172,14 @@ static void *I_SDL_RegisterSong(void *data, int len)
 #if defined(SVE_USE_RWOPS_MUSIC)
         int size = M_ReadFile(filename, (byte **)&rw_music_data);
         rw_music_cache = SDL_RWFromMem(rw_music_data, size);
+
+// [SVE] dotfloat 20141212
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+        music = Mix_LoadMUS_RW(rw_music_cache, 1);
+#else
         music = Mix_LoadMUS_RW(rw_music_cache);
+#endif
+
 #else
         music = Mix_LoadMUS(filename);
 #endif

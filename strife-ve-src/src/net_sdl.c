@@ -33,7 +33,7 @@
 // NETWORKING
 //
 
-#include <SDL_net.h>
+#include "SDL_net.h"
 
 #define DEFAULT_PORT 2342
 

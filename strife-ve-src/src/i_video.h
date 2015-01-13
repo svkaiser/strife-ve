@@ -21,6 +21,8 @@
 #ifndef __I_VIDEO__
 #define __I_VIDEO__
 
+#include "SDL_version.h" // [SVE] dotfloat 20150110: for SDL_VERSION_ATLEAST
+
 #include "doomtype.h"
 
 // Screen width and height.
@@ -91,7 +93,10 @@ typedef struct
 } screen_mode_t;
 
 typedef boolean (*grabmouse_callback_t)(void);
+
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 typedef boolean (*warpmouse_callback_t)(void); // haleyjd [SVE]
+#endif
 
 // Called by D_DoomMain,
 // determines the hardware configuration
@@ -119,7 +124,10 @@ void I_SetWindowTitle(char *title);
 
 void I_CheckIsScreensaver(void);
 void I_SetGrabMouseCallback(grabmouse_callback_t func);
+
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 void I_SetWarpMouseCallback(warpmouse_callback_t func);
+#endif
 
 void I_DisplayFPSDots(boolean dots_on);
 void I_BindVideoVariables(void);
@@ -149,6 +157,11 @@ void I_EnableLoadingDisk(void);
 
 extern char *video_driver;
 extern boolean screenvisible;
+
+// [SVE] dotfloat 20150112
+struct SDL_Window;
+typedef struct SDL_Window SDL_Window;
+extern SDL_Window *sdlwindow;
 
 extern float mouse_acceleration;
 extern int mouse_threshold;

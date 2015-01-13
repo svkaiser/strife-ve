@@ -184,7 +184,12 @@ int OPL_Timer_StartThread(void)
     opl_timer_paused = 0;
     pause_offset = 0;
 
+// [SVE] dotfloat 20141212
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    timer_thread = SDL_CreateThread(ThreadFunction, "OPL Thread", NULL);
+#else
     timer_thread = SDL_CreateThread(ThreadFunction, NULL);
+#endif
 
     if (timer_thread == NULL)
     {

@@ -569,6 +569,8 @@ static boolean D_StartupGrabCallback(void)
     return false;
 }
 
+// [SVE] dotfloat 20150112
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 //
 // haleyjd 20141007: [SVE] Added mechanism to tell the low level code when and
 // when not to warp the mouse to the lower right corner when releasing it. For
@@ -578,6 +580,7 @@ static boolean D_WarpMouseCallback(void)
 {
     return !(menuactive || FE_InFrontend());
 }
+#endif
 
 static int d_ticcount;
 boolean    d_fpslimit = false;
@@ -639,7 +642,11 @@ void D_DoomLoop (void)
 
     I_EnableLoadingDisk();
     I_SetGrabMouseCallback(D_GrabMouseCallback);
+
+// [SVE] dotfloat 20150112
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
     I_SetWarpMouseCallback(D_WarpMouseCallback);
+#endif
 
     V_RestoreBuffer();
     R_ExecuteSetViewSize();
@@ -1372,7 +1379,12 @@ static void D_InitFrontend()
     {
         I_SetWindowTitle(gamedescription);
         I_SetGrabMouseCallback(D_StartupGrabCallback);
+
+// [SVE] dotfloat 20150112
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
         I_SetWarpMouseCallback(D_WarpMouseCallback);
+#endif
+
         I_InitGraphics();
         V_RestoreBuffer(); // make the V_ routines work
         V_LoadXlaTable();  // need XLATAB for software screen wipe

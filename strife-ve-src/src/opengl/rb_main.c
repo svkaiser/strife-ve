@@ -56,8 +56,6 @@ rbState_t rbState;
 
 void RB_Init(void)
 {
-    screen = SDL_GetVideoSurface();
-
     gl_vendor = (const char*)dglGetString(GL_VENDOR);
     gl_renderer = (const char*)dglGetString(GL_RENDERER);
     gl_version = (const char*)dglGetString(GL_VERSION);
@@ -150,7 +148,7 @@ void RB_InitDefaultState(void)
 
 void RB_ResetViewPort(void)
 {
-    dglViewport(0, 0, screen->w, screen->h);
+    dglViewport(0, 0, screen_width, screen_height);
 }
 
 //
@@ -347,7 +345,12 @@ void RB_SwapBuffers(void)
         dglFinish();
     }
 
+// [SVE] dotfloat 20150113
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    SDL_GL_SwapWindow(sdlwindow);
+#else
     SDL_GL_SwapBuffers();
+#endif
 
     // reset debugging info
     rbState.numStateChanges = 0;

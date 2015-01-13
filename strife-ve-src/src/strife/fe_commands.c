@@ -770,6 +770,85 @@ static int             curModeNum;
 //
 static void FE_BuildModeList(void)
 {
+// [SVE] dotfloat 20150111
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    int i, j;
+    SDL_DisplayMode mode, prevmode = { 0 };
+    boolean curModeInList = false;
+    static boolean modesBuilt = false;
+    int numModesAlloc;
+    int numDispModes;
+
+    if (modesBuilt)
+        return;
+
+    if (!(numDispModes = SDL_GetNumDisplayModes(0)))
+    {
+        char buf[32];
+
+        numModes = 2;
+        modeStrings = Z_Calloc(numModes, sizeof(*modeStrings), PU_STATIC, NULL);
+        modeStructs = Z_Calloc(numModes, sizeof(*modeStructs), PU_STATIC, NULL);
+
+        modeStructs[0].w = 640;
+        modeStructs[0].h = 480;
+        modeStrings[0] = "640x480";
+
+        modeStructs[1].w = screen_width;
+        modeStructs[1].h = screen_height;
+        M_snprintf(buf, sizeof(buf), "%dx%d", screen_width, screen_height);
+        modeStrings[1] = M_Strdup(buf);
+        curModeNum = 1;
+
+        modesBuilt = true;
+        return;
+    }
+
+    // SDL2 considers display modes with identical resolution but different refresh rates
+    // as separate, so we need to weed them out.
+    for (i = 0; i < numDispModes; i++)
+    {
+        SDL_GetDisplayMode(0, i, &mode);
+
+        if (mode.w == prevmode.w && mode.h == prevmode.h)
+            continue;
+        prevmode = mode;
+
+        ++numModes;
+
+        if(screen_width == mode.w && screen_height == mode.h)
+            curModeInList = true;
+    }
+
+
+    numModesAlloc = numModes + !curModeInList;
+
+    modeStrings = Z_Calloc(numModesAlloc, sizeof(*modeStrings), PU_STATIC, NULL);
+    modeStructs = Z_Calloc(numModesAlloc, sizeof(*modeStructs), PU_STATIC, NULL);
+
+    prevmode.w = prevmode.h = 0;
+    for (i = j = 0; i < numDispModes; i++)
+    {
+        char buf[32];
+        int modeIdx;
+
+        SDL_GetDisplayMode(0, i, &mode);
+        if (mode.w == prevmode.w && mode.h == prevmode.h)
+            continue;
+        prevmode = mode;
+
+        modeIdx = numModes - (j + 1);
+
+        modeStructs[modeIdx].w = mode.w;
+        modeStructs[modeIdx].h = mode.h;
+        M_snprintf(buf, sizeof(buf), "%dx%d", mode.w, mode.h);
+        modeStrings[modeIdx] = M_Strdup(buf);
+
+        if(screen_width == mode.w && screen_height == mode.h)
+            curModeNum = modeIdx;
+        ++j;
+    }
+#else
     int i;
     SDL_Rect **modes;
     boolean curModeInList = false;
@@ -833,6 +912,7 @@ static void FE_BuildModeList(void)
         if(screen_width == modes[modeIdx]->w && screen_height == modes[modeIdx]->h)
             curModeNum = i;
     }
+#endif
 
     if(!curModeInList)
     {

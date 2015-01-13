@@ -1066,9 +1066,8 @@ static void I_AVDrawVideoStream(void)
 
     I_AVProcessNextVideoFrame();
 
-    screen = SDL_GetVideoSurface();
-    ws = screen->w;
-    hs = screen->h;
+    ws = screen_width;
+    hs = screen_height;
 
     RB_SetMaxOrtho(ws, hs);
     RB_DrawScreenTexture(&texture, reqWidth, reqHeight);
@@ -1180,7 +1179,12 @@ void I_AVStartVideoStream(const char *filename)
         return;
     }
     
+// [SVE] dotfloat 20141212
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    thread = SDL_CreateThread(I_AVIteratePacketsThread, "i_ffmpeg", NULL);
+#else
     thread = SDL_CreateThread(I_AVIteratePacketsThread, NULL);
+#endif
 
     I_SetShowCursor(false);
 

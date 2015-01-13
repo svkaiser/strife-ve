@@ -4342,7 +4342,14 @@ static __inline void glUnlockArraysEXT_DEBUG (const char* file, int line)
 extern boolean has_GL_EXT_multi_draw_arrays;
 
 #ifndef __IPHONEOS__
+
+// [SVE] dotfloat 20150113
+#if SDL_VERSION_ATLEAST(2, 0 ,0)
+typedef void (APIENTRYP PFNGLMULTIDRAWARRAYSEXTPROC) (GLenum mode, const GLint* first, const GLsizei* count, GLsizei primcount);
+#else
 typedef void (APIENTRYP PFNGLMULTIDRAWARRAYSEXTPROC) (GLenum mode, GLint* first, GLsizei* count, GLsizei primcount);
+#endif // SDL_VERSION_ATLEAST
+
 typedef void (APIENTRYP PFNGLMULTIDRAWELEMENTSEXTPROC) (GLenum mode, const GLsizei* count, GLenum type, const GLvoid** indices, GLsizei primcount);
 #endif // __IPHONEOS__
 

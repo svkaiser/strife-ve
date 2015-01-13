@@ -232,8 +232,8 @@ void RB_InitDrawer(void)
     RB_InitLightPointTexture();
     RB_InitMouseCursor();
 
-    w = SDL_GetVideoSurface()->w;
-    h = SDL_GetVideoSurface()->h;
+    w = screen_width;
+    h = screen_height;
 
     FBO_InitColorAttachment(&spriteFBO, 0, w, h);
     FBO_InitColorAttachment(&fxaaFBO, 0, w, h);
@@ -412,9 +412,8 @@ void RB_DrawScreenTexture(rbTexture_t *texture, const int width, const int heigh
 
     RB_BindTexture(texture);
 
-    screen = SDL_GetVideoSurface();
-    ws = screen->w;
-    hs = screen->h;
+    ws = screen_width;
+    hs = screen_height;
 
     tx = (float)texture->origwidth / (float)texture->width;
 
@@ -1138,12 +1137,12 @@ void RB_RenderFXAA(void)
 
     RB_SetBlend(GLSRC_SRC_ALPHA, GLDST_ONE_MINUS_SRC_ALPHA);
 
-    FBO_CopyBackBuffer(&fxaaFBO, 0, 0, SDL_GetVideoSurface()->w, SDL_GetVideoSurface()->h);
+    FBO_CopyBackBuffer(&fxaaFBO, 0, 0, screen_width, screen_height);
     SP_Enable(&fxaaShader);
 
     SP_SetUniform1i(&fxaaShader, "uDiffuse", 0);
-    SP_SetUniform1f(&fxaaShader, "uViewWidth", (float)SDL_GetVideoSurface()->w);
-    SP_SetUniform1f(&fxaaShader, "uViewHeight", (float)SDL_GetVideoSurface()->h);
+    SP_SetUniform1f(&fxaaShader, "uViewWidth", (float)screen_width);
+    SP_SetUniform1f(&fxaaShader, "uViewHeight", (float)screen_height);
 
     SP_SetUniform1f(&fxaaShader, "uMaxSpan", 8.0f);
     SP_SetUniform1f(&fxaaShader, "uReduceMax", 8.0f);
@@ -1232,8 +1231,8 @@ void RB_RenderBloom(void)
     SP_SetUniform1i(&blurShader, "uDiffuse", 0);
     SP_SetUniform1f(&blurShader, "uBlurRadius", 1.0f);
 
-    w = SDL_GetVideoSurface()->w;
-    h = SDL_GetVideoSurface()->h;
+    w = screen_width;
+    h = screen_height;
 
     // pass 2: blur
     for(i = 0; i < 2; ++i)

@@ -48,13 +48,12 @@ static rbTexture_t *objMarkIcon;
 
 static void RB_SetupAutomapView(rbView_t *view)
 {
-    SDL_Surface *screen = SDL_GetVideoSurface();
-    float delta = (float)screen->h / ((float)SCREENHEIGHT / 16.0f);
+    float delta = (float)screen_height / ((float)SCREENHEIGHT / 16.0f);
     float amx, amy;
     float px, py;
     float fscale;
 
-    dglViewport(0, delta, screen->w, screen->h);
+    dglViewport(0, delta, screen_width, screen_height);
 
     fscale = FIXED2FLOAT(scale_ftom);
 

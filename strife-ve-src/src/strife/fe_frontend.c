@@ -52,7 +52,11 @@
 #include "fe_multiplayer.h"
 #include "fe_gamepad.h"
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+extern int TranslateKey(SDL_Keysym *sym);
+#else
 extern int TranslateKey(SDL_keysym *sym);
+#endif
 
 //
 // State Vars
@@ -110,9 +114,16 @@ void FE_UpdateFocus(void)
 
     SDL_PumpEvents();
 
+// [SVE] dotfloat 20150111
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    state = SDL_GetWindowFlags(sdlwindow);
+
+    fe_window_focused = (state & SDL_WINDOW_INPUT_FOCUS) && (state & SDL_WINDOW_SHOWN);
+#else
     state = SDL_GetAppState();
 
     fe_window_focused = (state & SDL_APPINPUTFOCUS) && (state & SDL_APPACTIVE);
+#endif
 
 #ifdef _USE_STEAM_
     // The above check can still be true even if Steam is eating input, but to
@@ -127,12 +138,16 @@ void FE_UpdateFocus(void)
         {
             SDL_Event ev;
             while(SDL_PollEvent(&ev));
+
+// [SVE] dotfloat 20150111
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
             SDL_EnableKeyRepeat(
                 SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL
             );
-        }
-        else
+        } else {
             SDL_EnableKeyRepeat(0, 0);
+#endif
+        }
 
         currently_focused = fe_window_focused;
     }
@@ -542,11 +557,15 @@ static void FE_HandleKey(SDL_Event *ev)
     {
         char ch;
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+        ch = (char)(ev->key.keysym.sym & 0x7f);
+#else
         // jump to item by first letter
         if(!ev->key.keysym.unicode || ev->key.keysym.unicode >= 0x7f)
             return;
 
         ch = (char)(ev->key.keysym.unicode & 0x7f);
+#endif
         ch = tolower(ch);
 
         if(isalnum(ch))
@@ -667,9 +686,8 @@ static boolean FE_MouseInValueRect(Uint32 mx, Uint32 my, femenuitem_t *item)
 //
 static void FE_TransformCoordinates(Uint16 mx, Uint16 my, Uint32 *sx, Uint32 *sy)
 {
-    SDL_Surface *display = SDL_GetVideoSurface();
-    int w = display->w;
-    int h = display->h;
+    int w = screen_width;
+    int h = screen_height;
     fixed_t aspectRatio = w * FRACUNIT / h;
 
     if(aspectRatio == 4 * FRACUNIT / 3) // nominal
@@ -1030,7 +1048,13 @@ static void FE_Responder(void)
         case SDL_QUIT:
             I_Quit();
             break;
+
+// [SVE] dotfloat 20150112
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+        case SDL_WINDOWEVENT:
+#else
         case SDL_ACTIVEEVENT:
+#endif
             FE_UpdateFocus();
             break;
         default:
