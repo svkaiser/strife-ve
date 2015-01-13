@@ -427,7 +427,7 @@ void I_DisplayFPSDots(boolean dots_on)
 
 static void UpdateFocus(void)
 {
-    Uint8 state;
+    Uint32 state;
 
 // [SVE] dotfloat 20141212
 #if SDL_VERSION_ATLEAST(2, 0, 0)
@@ -609,10 +609,7 @@ int TranslateKey(SDL_keysym *sym)
 
       case SDLK_PAUSE:	return KEY_PAUSE;
 
-#if !SDL_VERSION_ATLEAST(1, 3, 0)
       case SDLK_EQUALS: return KEY_EQUALS;
-#endif
-
       case SDLK_MINUS:          return KEY_MINUS;
 
       case SDLK_LSHIFT:
@@ -1173,7 +1170,6 @@ static void UpdateGrab(void)
     boolean grab;
 
     grab = MouseShouldBeGrabbed();
-
     if (screensaver_mode)
     {
         // Hide the cursor in screensaver mode
@@ -1183,8 +1179,11 @@ static void UpdateGrab(void)
     else if (grab && !currently_grabbed)
     {
         I_SetShowCursor(false);
+
 // [SVE] dotfloat 20150112
-#if !SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+        SDL_SetRelativeMouseMode(SDL_TRUE);
+#else
         CenterMouse();
 #endif
     }
