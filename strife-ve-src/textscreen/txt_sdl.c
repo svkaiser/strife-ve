@@ -171,6 +171,56 @@ static txt_font_t *FontForName(char *name)
 
 static void ChooseFont(void)
 {
+// [SVE] dotfloat 20141212
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    SDL_DisplayMode dm;
+    char *env;
+
+    // Allow normal selection to be overridden from an environment variable:
+
+    env = getenv("TEXTSCREEN_FONT");
+
+    if (env != NULL)
+    {
+        font = FontForName(env);
+
+        if (font != NULL)
+        {
+            return;
+        }
+    }
+
+    // Get desktop resolution:
+    SDL_GetDesktopDisplayMode(0, &dm);
+
+    // On tiny low-res screens (eg. palmtops) use the small font.
+    // If the screen resolution is at least 1920x1080, this is
+    // a modern high-resolution display, and we can use the
+    // large font.
+
+    if (dm.w < 640 || dm.h < 480)
+    {
+        font = &small_font;
+    }
+#ifdef _WIN32
+    // On Windows we can use the system DPI settings to make a
+    // more educated guess about whether to use the large font.
+
+    else if (Win32_UseLargeFont())
+    {
+        font = &large_font;
+    }
+#else
+    else if (dm.w >= 1920 && dm.h >= 1080)
+    {
+        font = &large_font;
+    }
+#endif
+    else
+    {
+        font = &main_font;
+    }
+#else // SDL2
     const SDL_VideoInfo *info;
     char *env;
 
@@ -228,6 +278,7 @@ static void ChooseFont(void)
     {
         font = &main_font;
     }
+#endif // SDL2
 }
 
 //
@@ -238,6 +289,8 @@ static void ChooseFont(void)
 
 int TXT_Init(void)
 {
+// [SVE] dotfloat 20141212
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
     if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
     {
         return 0;
@@ -274,6 +327,7 @@ int TXT_Init(void)
     // menu, for example. This is what setup.exe does.
 
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+#endif
 
     return 1;
 }
@@ -378,6 +432,8 @@ static int LimitToRange(int val, int min, int max)
 
 void TXT_UpdateScreenArea(int x, int y, int w, int h)
 {
+// [SVE] dotfloat 20150112
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
     SDL_Rect rect;
     int x1, y1;
     int x_end;
@@ -403,6 +459,7 @@ void TXT_UpdateScreenArea(int x, int y, int w, int h)
 
     SDL_BlitSurface(screenbuffer, &rect, screen, &rect);
     SDL_UpdateRects(screen, 1, &rect);
+#endif
 }
 
 void TXT_UpdateScreen(void)
@@ -412,11 +469,8 @@ void TXT_UpdateScreen(void)
 
 void TXT_GetMousePosition(int *x, int *y)
 {
-#if SDL_VERSION_ATLEAST(1, 3, 0)
-    SDL_GetMouseState(0, x, y);
-#else
+// [SVE] dotfloat 20141212
     SDL_GetMouseState(x, y);
-#endif
 
     *x /= font->w;
     *y /= font->h;
@@ -426,7 +480,12 @@ void TXT_GetMousePosition(int *x, int *y)
 // Translates the SDL key
 //
 
+// [SVE] dotfloat 20141212: SDL_Keysym is capitalised in SDL2
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+static int TranslateKey(SDL_Keysym *sym)
+#else
 static int TranslateKey(SDL_keysym *sym)
+#endif
 {
     switch(sym->sym)
     {
@@ -449,7 +508,13 @@ static int TranslateKey(SDL_keysym *sym)
         case SDLK_F10:         return KEY_F10;
         case SDLK_F11:         return KEY_F11;
         case SDLK_F12:         return KEY_F12;
+
+// [SVE] dotfloat 20141212
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+        case SDLK_PRINTSCREEN:       return KEY_PRTSCR;
+#else
         case SDLK_PRINT:       return KEY_PRTSCR;
+#endif
 
         case SDLK_BACKSPACE:   return KEY_BACKSPACE;
         case SDLK_DELETE:      return KEY_DEL;
@@ -473,7 +538,13 @@ static int TranslateKey(SDL_keysym *sym)
                                return KEY_RALT;
 
         case SDLK_CAPSLOCK:    return KEY_CAPSLOCK;
+
+// [SVE] dotfloat 20141212
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+        case SDLK_SCROLLLOCK:   return KEY_SCRLCK;
+#else
         case SDLK_SCROLLOCK:   return KEY_SCRLCK;
+#endif
 
         case SDLK_HOME:        return KEY_HOME;
         case SDLK_INSERT:      return KEY_INS;
@@ -504,6 +575,10 @@ static int TranslateKey(SDL_keysym *sym)
         // Unicode characters beyond the ASCII range need to be
         // mapped up into textscreen's Unicode range.
 
+// [SVE] dotfloat 20141212: SDL2 doesn't have unicode support
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+        return sym->scancode;
+#else
         if (sym->unicode < 128)
         {
             return sym->unicode;
@@ -512,6 +587,7 @@ static int TranslateKey(SDL_keysym *sym)
         {
             return sym->unicode - 128 + TXT_UNICODE_BASE;
         }
+#endif
     }
     else
     {
@@ -521,6 +597,19 @@ static int TranslateKey(SDL_keysym *sym)
 
         switch (sym->sym)
         {
+// [SVE] dotfloat 20141212
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+            case SDLK_KP_0:         return KEYP_0;
+            case SDLK_KP_1:         return KEYP_1;
+            case SDLK_KP_2:         return KEYP_2;
+            case SDLK_KP_3:         return KEYP_3;
+            case SDLK_KP_4:         return KEYP_4;
+            case SDLK_KP_5:         return KEYP_5;
+            case SDLK_KP_6:         return KEYP_6;
+            case SDLK_KP_7:         return KEYP_7;
+            case SDLK_KP_8:         return KEYP_8;
+            case SDLK_KP_9:         return KEYP_9;
+#else
             case SDLK_KP0:         return KEYP_0;
             case SDLK_KP1:         return KEYP_1;
             case SDLK_KP2:         return KEYP_2;
@@ -531,6 +620,7 @@ static int TranslateKey(SDL_keysym *sym)
             case SDLK_KP7:         return KEYP_7;
             case SDLK_KP8:         return KEYP_8;
             case SDLK_KP9:         return KEYP_9;
+#endif
 
             case SDLK_KP_PERIOD:   return KEYP_PERIOD;
             case SDLK_KP_MULTIPLY: return KEYP_MULTIPLY;
@@ -586,7 +676,12 @@ static int MouseHasMoved(void)
 // Examine a key press/release and update the modifier key state
 // if necessary.
 
+// [SVE] dotfloat 20141212
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+static void UpdateModifierState(SDL_Keysym *sym, int pressed)
+#else
 static void UpdateModifierState(SDL_keysym *sym, int pressed)
+#endif
 {
     txt_modifier_t mod;
 
@@ -865,7 +960,10 @@ void TXT_EnableKeyMapping(int enable)
 
 void TXT_SetWindowTitle(char *title)
 {
+// [SVE] dotfloat 20150112
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
     SDL_WM_SetCaption(title, NULL);
+#endif
 }
 
 void TXT_SDL_SetEventCallback(TxtSDLEventCallbackFunc callback, void *user_data)

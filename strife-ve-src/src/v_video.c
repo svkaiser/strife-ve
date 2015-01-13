@@ -982,10 +982,9 @@ void V_ScreenShot(char *format)
     }
     else
     {
-        SDL_Surface *screen = SDL_GetVideoSurface();
         byte *data = RB_GetScreenBufferData();
 
-        WriteHiResPNG(lbmname, data, screen->w, screen->h);
+        WriteHiResPNG(lbmname, data, screen_width, screen_height);
 
         Z_Free(data);
     }

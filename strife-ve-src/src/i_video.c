@@ -153,6 +153,17 @@ char *video_driver = "";
 
 static char *window_position = "center";
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+// SDL window
+SDL_Window *sdlwindow;
+
+// SDL context for GL rendering
+static SDL_GLContext *glcontext = NULL;
+
+// SDL renderer for Software rendering
+static SDL_Renderer *renderer = NULL;
+#endif
+
 // SDL surface for the screen.
 
 static SDL_Surface *screen;
@@ -273,7 +284,11 @@ static boolean noblit;
 // mouse pointer.
 
 static grabmouse_callback_t grabmouse_callback = NULL;
+
+// [SVE] dotfloat 20150110: Sorry, Quasar`.
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 static warpmouse_callback_t warpmouse_callback = NULL; // haleyjd [SVE]
+#endif
 
 // disk image data and background overwritten by the disk to be
 // restored by EndRead
@@ -369,6 +384,8 @@ static boolean MouseShouldBeGrabbed()
     }
 }
 
+// [SVE] dotfloat 20141212: It's better to let SDL2 handle mouse warping
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 //
 // haleyjd 20141007: [SVE]
 // Our improved mouse support in the menus for SVE requires not warping the
@@ -380,16 +397,20 @@ static boolean MouseShouldBeWarped(void)
 {
     return warpmouse_callback ? warpmouse_callback() : true;
 }
+#endif
 
 void I_SetGrabMouseCallback(grabmouse_callback_t func)
 {
     grabmouse_callback = func;
 }
 
+// [SVE] dotfoat 20150110
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 void I_SetWarpMouseCallback(warpmouse_callback_t func)
 {
     warpmouse_callback = func;
 }
+#endif
 
 // Set the variable controlling FPS dots.
 
@@ -408,6 +429,19 @@ static void UpdateFocus(void)
 {
     Uint8 state;
 
+// [SVE] dotfloat 20141212
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    state = SDL_GetWindowFlags(sdlwindow);
+
+    // We should have input (keyboard) focus and be visible
+    // (not minimized)
+
+    window_focused = (state & SDL_WINDOW_INPUT_FOCUS) && (state & SDL_WINDOW_SHOWN);
+
+    // Should the screen be grabbed?
+
+    screenvisible = (state & SDL_WINDOW_SHOWN) != 0;
+#else
     state = SDL_GetAppState();
 
     // We should have input (keyboard) focus and be visible 
@@ -418,6 +452,7 @@ static void UpdateFocus(void)
     // Should the screen be grabbed?
 
     screenvisible = (state & SDL_APPACTIVE) != 0;
+#endif
 }
 
 // Show or hide the mouse cursor. We have to use different techniques
@@ -447,7 +482,12 @@ void I_SetShowCursor(boolean show)
 
     if (!screensaver_mode)
     {
+// [SVE] dotfloat 20150112
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+        SDL_SetWindowGrab(sdlwindow, !show);
+#else
         SDL_WM_GrabInput(!show);
+#endif
     }
 }
 
@@ -473,7 +513,11 @@ void I_EnableLoadingDisk(void)
     int y;
     char buf[20];
 
+// [SVE] dotfloat 20150112
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+#else
     SDL_VideoDriverName(buf, 15);
+#endif
 
     if (!strcmp(buf, "Quartz"))
     {
@@ -523,7 +567,13 @@ void I_EnableLoadingDisk(void)
 //
 // [SVE]: Externalized (needed in frontend)
 //
+
+// [SVE] dotfloat 20141212: SDL_Keysym is capitalised in SDL2
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+int TranslateKey(SDL_Keysym *sym)
+#else
 int TranslateKey(SDL_keysym *sym)
+#endif
 {
     switch(sym->sym)
     {
@@ -546,7 +596,13 @@ int TranslateKey(SDL_keysym *sym)
       case SDLK_F10:	return KEY_F10;
       case SDLK_F11:	return KEY_F11;
       case SDLK_F12:	return KEY_F12;
-      case SDLK_PRINT:  return KEY_PRTSCR;
+
+// [SVE] dotfloat 20141212
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+      case SDLK_PRINTSCREEN:       return KEY_PRTSCR;
+#else
+      case SDLK_PRINT:       return KEY_PRTSCR;
+#endif
 
       case SDLK_BACKSPACE: return KEY_BACKSPACE;
       case SDLK_DELETE:	return KEY_DEL;
@@ -576,6 +632,23 @@ int TranslateKey(SDL_keysym *sym)
         return KEY_RALT;
 
       case SDLK_CAPSLOCK: return KEY_CAPSLOCK;
+
+// [SVE] dotfloat 20141212
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+      case SDLK_SCROLLLOCK: return KEY_SCRLCK;
+      case SDLK_NUMLOCKCLEAR: return KEY_NUMLOCK;
+
+      case SDLK_KP_0: return KEYP_0;
+      case SDLK_KP_1: return KEYP_1;
+      case SDLK_KP_2: return KEYP_2;
+      case SDLK_KP_3: return KEYP_3;
+      case SDLK_KP_4: return KEYP_4;
+      case SDLK_KP_5: return KEYP_5;
+      case SDLK_KP_6: return KEYP_6;
+      case SDLK_KP_7: return KEYP_7;
+      case SDLK_KP_8: return KEYP_8;
+      case SDLK_KP_9: return KEYP_9;
+#else
       case SDLK_SCROLLOCK: return KEY_SCRLCK;
       case SDLK_NUMLOCK: return KEY_NUMLOCK;
 
@@ -589,6 +662,7 @@ int TranslateKey(SDL_keysym *sym)
       case SDLK_KP7: return KEYP_7;
       case SDLK_KP8: return KEYP_8;
       case SDLK_KP9: return KEYP_9;
+#endif
 
       case SDLK_KP_PERIOD:   return KEYP_PERIOD;
       case SDLK_KP_MULTIPLY: return KEYP_MULTIPLY;
@@ -766,7 +840,12 @@ static int GetTypedChar(SDL_Event *event)
     {
         // Unicode value, from key layout.
 
+// [SVE] dotfloat 20141212
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+        return tolower(event->key.keysym.sym);
+#else
         return tolower(event->key.keysym.unicode);
+#endif
     }
 }
 
@@ -799,13 +878,18 @@ static void UpdateShiftStatus(SDL_Event *event)
 //
 void I_GetAbsoluteMousePosition(int *x, int *y)
 {
-    SDL_Surface *display = SDL_GetVideoSurface();
-    int w = display->w;
-    int h = display->h;
+    int w = screen_width;
+    int h = screen_height;
     fixed_t aspectRatio = w * FRACUNIT / h;
 
-    if(!display)
+// [SVE] dotfloat 20150113
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    if(!sdlwindow)
         return;
+#else
+    if (!screen)
+        return;
+#endif
 
     SDL_PumpEvents();
     SDL_GetMouseState(x, y);
@@ -928,6 +1012,12 @@ void I_GetEvent(void)
                 D_PostEvent(&event);
                 break;
 
+// [SVE] dotfloat 20141212
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+            case SDL_WINDOWEVENT:
+                UpdateFocus();
+                break;
+#else
             case SDL_ACTIVEEVENT:
                 // need to update our focus state
                 UpdateFocus();
@@ -936,6 +1026,7 @@ void I_GetEvent(void)
             case SDL_VIDEOEXPOSE:
                 palette_to_set = true;
                 break;
+#endif
 
                 // [SVE] svillarreal - this is a huge hassle to support with
                 // the OpenGL context
@@ -954,6 +1045,8 @@ void I_GetEvent(void)
     }
 }
 
+// [SVE] dotfloat 20141212: Forcibly centering the mouse cursor is a bad idea
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 // Warp the mouse back to the middle of the screen
 
 static void CenterMouse(void)
@@ -971,6 +1064,7 @@ static void CenterMouse(void)
     SDL_GetRelativeMouseState(NULL, NULL);
 #endif
 }
+#endif
 
 //
 // Read the change in mouse state to generate mouse motion events
@@ -984,11 +1078,7 @@ static void I_ReadMouse(void)
     int x, y;
     event_t ev;
 
-#if SDL_VERSION_ATLEAST(1, 3, 0)
-    SDL_GetRelativeMouseState(0, &x, &y);
-#else
     SDL_GetRelativeMouseState(&x, &y);
-#endif
 
     // [SVE] svillarreal
     if(mouse_scale > 4) mouse_scale = 4;
@@ -1029,10 +1119,13 @@ static void I_ReadMouse(void)
         last_y = y;
     }
 
+// [SVE] dotfloat 20150112
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
     if (MouseShouldBeGrabbed())
     {
         CenterMouse();
     }
+#endif
 }
 
 //
@@ -1090,7 +1183,10 @@ static void UpdateGrab(void)
     else if (grab && !currently_grabbed)
     {
         I_SetShowCursor(false);
+// [SVE] dotfloat 20150112
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
         CenterMouse();
+#endif
     }
     else if (!grab && currently_grabbed)
     {
@@ -1102,8 +1198,11 @@ static void UpdateGrab(void)
         // because we're at an end of level intermission screen, for
         // example.
 
+// [SVE] dotfloat 20150110
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
         if(MouseShouldBeWarped()) // [SVE]: done conditionally.
             SDL_WarpMouse(screen->w - 16, screen->h - 16);
+#endif
         SDL_GetRelativeMouseState(NULL, NULL);
     }
 
@@ -1165,10 +1264,15 @@ static void UpdateRect(int x1, int y1, int x2, int y2)
         x2_scaled = (x2 * screen_mode->width) / SCREENWIDTH;
         y2_scaled = (y2 * screen_mode->height) / SCREENHEIGHT;
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+        printf("STUB: UpdateRect\n");
+        exit(0);
+#else
         SDL_UpdateRect(screen,
                        x1_scaled, y1_scaled,
                        x2_scaled - x1_scaled,
                        y2_scaled - y1_scaled);
+#endif
     }
 }
 
@@ -1232,6 +1336,8 @@ void I_EndRead(void)
 
 static void FinishUpdateSoftware(void)
 {
+    // [SVE] dotfloat 20150112
+    #if !SDL_VERSION_ATLEAST(2, 0, 0)
     // draw to screen
 
     BlitArea(0, 0, SCREENWIDTH, SCREENHEIGHT);
@@ -1266,6 +1372,7 @@ static void FinishUpdateSoftware(void)
     }
 
     SDL_Flip(screen);
+#endif
 }
 
 //
@@ -1296,8 +1403,14 @@ void I_FinishUpdate (void)
     // Not doing this breaks under Windows when we alt-tab away 
     // while fullscreen.
 
+// [SVE] dotfloat 20150110
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    if (!(SDL_GetWindowFlags(sdlwindow) & SDL_WINDOW_SHOWN))
+        return;
+#else
     if (!(SDL_GetAppState() & SDL_APPACTIVE))
         return;
+#endif
 
     // draws little dots on the bottom of the screen
 
@@ -1434,12 +1547,17 @@ void I_SetWindowTitle(char *title)
 
 void I_InitWindowTitle(void)
 {
+// [SVE] dotfloat 20150113: Use PACKAGE_STRING instead
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    SDL_SetWindowTitle(sdlwindow, PACKAGE_STRING " [SDL2]");
+#else
     // haleyjd 20140827: [SVE] hard coded title
     char *buf = "Strife: Veteran Edition";
 
     //buf = M_StringJoin(window_title, " - ", PACKAGE_STRING, NULL);
     SDL_WM_SetCaption(buf, NULL);
     //free(buf);
+#endif
 }
 
 // Set the application icon
@@ -1475,7 +1593,12 @@ void I_InitWindowIcon(void)
                                        0xff << 16,
                                        0);
 
+// [SVE] dotfloat 20150113
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    SDL_SetWindowIcon(sdlwindow, surface);
+#else
     SDL_WM_SetIcon(surface, mask);
+#endif
     SDL_FreeSurface(surface);
     free(mask);
 }
@@ -1592,6 +1715,48 @@ static screen_mode_t *I_FindScreenMode(int w, int h)
 
 static boolean AutoAdjustFullscreen(void)
 {
+// [SVE] dotfloat 20150110
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    SDL_DisplayMode mode, closest;
+    screen_mode_t *screen_mode;
+    int diff, best_diff;
+    int i;
+
+    // [SVE]: On first time run, set desired res to best available res
+    if(!screen_init && use3drenderer)
+    {
+        SDL_GetDesktopDisplayMode(0, &mode);
+
+        screen_width  = default_screen_width  = mode.w;
+        screen_height = default_screen_height = mode.h;
+        screen_init   = true;        // do not do this again
+    }
+
+    // Find the best mode that matches the mode specified in the
+    // configuration file
+
+    mode.w = screen_width;
+    mode.h = screen_height;
+    mode.driverdata = 0;
+    mode.format = 0;
+    mode.refresh_rate = 0;
+
+    if (SDL_GetClosestDisplayMode(0, &mode, &closest) == NULL)
+    {
+        // Unable to find a valid mode!
+
+        return false;
+    }
+
+    if (screen_width != closest.w || screen_height != closest.h)
+    {
+        printf("I_InitGraphics: %ix%i mode not supported on this machine.\n",
+               screen_width, screen_height);
+    }
+
+    screen_width  = default_screen_width  = closest.w;
+    screen_height = default_screen_height = closest.h;
+#else
     SDL_Rect **modes;
     SDL_Rect *best_mode;
     screen_mode_t *screen_mode;
@@ -1672,6 +1837,7 @@ static boolean AutoAdjustFullscreen(void)
 
     screen_width  = default_screen_width  = best_mode->w;
     screen_height = default_screen_height = best_mode->h;
+#endif
 
     return true;
 }
@@ -1710,6 +1876,24 @@ static void AutoAdjustWindowed(void)
 
 static void AutoAdjustColorDepth(void)
 {
+// [SVE] dotfloat 20150110
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    SDL_DisplayMode mode, closest;
+    int dummy, closest_bpp = 0;
+
+    mode.format = SDL_BITSPERPIXEL(screen_bpp);
+    SDL_GetClosestDisplayMode(0, &mode, &closest);
+    SDL_PixelFormatEnumToMasks(closest.format, &closest_bpp, NULL, NULL, NULL, NULL);
+
+    if (screen_bpp != closest_bpp)
+    {
+        printf("I_InitGraphics: %ibpp color depth not supported.\n",
+               screen_bpp);
+
+        SDL_GetDesktopDisplayMode(0, &mode);
+        SDL_PixelFormatEnumToMasks(mode.format, &screen_bpp, &dummy, &dummy, &dummy, &dummy);
+    }
+#else
     SDL_Rect **modes;
     SDL_PixelFormat format;
     const SDL_VideoInfo *info;
@@ -1758,6 +1942,7 @@ static void AutoAdjustColorDepth(void)
             screen_bpp = info->vfmt->BitsPerPixel;
         }
     }
+#endif
 }
 
 // If the video mode set in the configuration file is not available,
@@ -2070,6 +2255,8 @@ static void SetSDLVideoDriver(void)
     }
 }
 
+// [SVE] dotfloat 20141212: No need to hackishly modify envvars anymore
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
 static void SetWindowPositionVars(void)
 {
     char buf[64];
@@ -2090,6 +2277,7 @@ static void SetWindowPositionVars(void)
         putenv(buf);
     }
 }
+#endif
 
 static char *WindowBoxType(screen_mode_t *mode, int w, int h)
 {
@@ -2134,6 +2322,29 @@ static void SetVideoMode(screen_mode_t *mode, int w, int h)
         mode->InitMode(doompal);
     }
 
+// [SVE] dotfloat 20150111
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    if (fullscreen)
+    {
+        flags |= SDL_WINDOW_FULLSCREEN;
+    }
+
+    if (using_opengl)
+    {
+        flags |= SDL_WINDOW_OPENGL;
+    }
+
+    if (!(sdlwindow = SDL_CreateWindow(PACKAGE_STRING " [SDL2]", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w, h, flags)))
+    {
+        I_Error("Error setting video mode %ix%ix%ibpp: %s\n",
+                w, h, screen_bpp, SDL_GetError());
+    }
+
+    if (!(glcontext = SDL_GL_CreateContext(sdlwindow)))
+    {
+        I_Error("Error creating a OpenGL context: %s\n", SDL_GetError());
+    }
+#else
     if (fullscreen)
     {
         flags |= SDL_FULLSCREEN;
@@ -2156,6 +2367,7 @@ static void SetVideoMode(screen_mode_t *mode, int w, int h)
 #endif
 
     // [SVE] svillarreal - from gl scale branch
+
     if (using_opengl)
     {
         flags |= SDL_OPENGL;
@@ -2178,6 +2390,7 @@ static void SetVideoMode(screen_mode_t *mode, int w, int h)
         I_Error("Error setting video mode %ix%ix%ibpp: %s\n",
                 w, h, screen_bpp, SDL_GetError());
     }
+#endif
 
     // [SVE] svillarreal
     DEH_printf("GL_Init: Initializing OpenGL extensions\n");
@@ -2194,7 +2407,7 @@ static void SetVideoMode(screen_mode_t *mode, int w, int h)
         // if we have all the extensions that we need to make it work.
         // If it does, then fall back to software mode instead.
 
-        if (!I_GL_InitScale(screen->w, screen->h))
+        if (!I_GL_InitScale(screen_width, screen_height))
         {
             fprintf(stderr,
                     "Failed to initialize in OpenGL mode. "
@@ -2308,7 +2521,11 @@ void I_InitGraphics(void)
     }
 
     SetSDLVideoDriver();
+
+// [SVE] dotfloat 20150113: No need to change envvars in SDL2.
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
     SetWindowPositionVars();
+#endif
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) 
     {
@@ -2395,7 +2612,12 @@ void I_InitGraphics(void)
 
     if (!using_opengl)
     {
+// [SVE] dotfloat 20150113
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+        SDL_SetSurfacePalette(screenbuffer, palette);
+#else
         SDL_SetColors(screenbuffer, palette, 0, 256);
+#endif
 
         // Start with a clear black screen
         // (screen will be flipped after we set the palette)
@@ -2451,6 +2673,8 @@ void I_InitGraphics(void)
 
     memset(I_VideoBuffer, 0, SCREENWIDTH * SCREENHEIGHT);
 
+// [SVE] dotfloat 20150111: SDL2 has no Unicode and key repeat is always on.
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
     // We need SDL to give us translated versions of keys as well
 
     SDL_EnableUNICODE(1);
@@ -2460,6 +2684,7 @@ void I_InitGraphics(void)
     // driver is used.  This is good enough though.
 
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+#endif
 
     // Clear out any events waiting at the start:
 

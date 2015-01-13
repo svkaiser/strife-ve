@@ -55,7 +55,6 @@ static boolean bInitialized = false;
 
 byte *RB_GetScreenBufferData(void)
 {
-    SDL_Surface *screen = SDL_GetVideoSurface();
     int col;
     int pack;
     int i, j;
@@ -64,24 +63,24 @@ byte *RB_GetScreenBufferData(void)
     byte *buffer;
     byte *tmpBuffer;
 
-    buffer = (byte*)Z_Calloc(1, (screen->w * screen->h) * 3, PU_STATIC, 0);
+    buffer = (byte*)Z_Calloc(1, (screen_width * screen_height) * 3, PU_STATIC, 0);
 
-    col = screen->w * 3;
+    col = screen_width * 3;
     tmpBuffer = (byte*)Z_Calloc(1, col, PU_STATIC, 0);
 
     dglGetIntegerv(GL_PACK_ALIGNMENT, &pack);
     dglPixelStorei(GL_PACK_ALIGNMENT, 1);
     dglFlush();
-    dglReadPixels(0, 0, screen->w, screen->h, GL_RGB, GL_UNSIGNED_BYTE, buffer);
+    dglReadPixels(0, 0, screen_width, screen_height, GL_RGB, GL_UNSIGNED_BYTE, buffer);
     dglPixelStorei(GL_PACK_ALIGNMENT, pack);
 
     // flip image vertically
-    for(i = 0; i < screen->h / 2; ++i)
+    for(i = 0; i < screen_height / 2; ++i)
     {
         for(j = 0; j < col; ++j)
         {
             offset1 = (i * col) + j;
-            offset2 = ((screen->h - (i + 1)) * col) + j;
+            offset2 = ((screen_height - (i + 1)) * col) + j;
 
             tmpBuffer[j] = buffer[offset1];
             buffer[offset1] = buffer[offset2];
