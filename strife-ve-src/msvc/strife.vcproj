@@ -171,6 +171,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				AdditionalManifestFiles="dpiaware.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -187,6 +188,180 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				CommandLine="$(OutDir)\vsign.exe -signwith $(OutDir)\strife-ve.exe $(OutDir)\sve.key"
+			/>
+		</Configuration>
+		<Configuration
+			Name="GoG Release|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="0"
+			WholeProgramOptimization="0"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
+				WholeProgramOptimization="true"
+				AdditionalIncludeDirectories=".;..\src;..\src\opengl;..\src\strife;..\textscreen;..\pcsound;..\opl;&quot;..\..\SDL\SDL-1.2.15\include&quot;;&quot;..\..\SDL\SDL_net-1.2.8\include&quot;;&quot;..\..\SDL\SDL_mixer-1.2.12\include&quot;;..\lpng1612;..\ffmpeg\include;&quot;..\..\gog-service\api\source&quot;"
+				PreprocessorDefinitions="WIN32;GOG_RELEASE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;PROGRAM_PREFIX=&quot;\&quot;chocolate-\&quot;&quot;"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="2"
+				FloatingPointModel="2"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="0"
+				CompileAs="1"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="..\..\SDL\SDL-1.2.15\lib\x86\SDL.lib ..\..\SDL\SDL_mixer-1.2.12\lib\x86\SDL_mixer.lib ..\..\SDL\SDL_net-1.2.8\lib\x86\SDL_net.lib ..\..\SDL\SDL-1.2.15\lib\x86\SDLMain.lib ..\..\gog-service\api\lib\GoGService.lib opengl32.lib ..\ffmpeg\windows\avcodec.lib ..\ffmpeg\windows\avdevice.lib ..\ffmpeg\windows\avfilter.lib ..\ffmpeg\windows\avformat.lib ..\ffmpeg\windows\avutil.lib ..\ffmpeg\windows\postproc.lib ..\ffmpeg\windows\swresample.lib ..\ffmpeg\windows\swscale.lib"
+				OutputFile="$(OutDir)\strife-ve.exe"
+				LinkIncremental="0"
+				IgnoreDefaultLibraryNames="msvcrtd"
+				GenerateDebugInformation="false"
+				GenerateMapFile="true"
+				SubSystem="2"
+				OptimizeReferences="1"
+				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="1"
+				DataExecutionPrevention="0"
+				TurnOffAssemblyGeneration="false"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+				AdditionalManifestFiles="dpiaware.manifest"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="GoG Debug|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="0"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;..\src;..\src\opengl;..\src\strife;..\textscreen;..\pcsound;..\opl;&quot;..\..\SDL\SDL-1.2.15\include&quot;;&quot;..\..\SDL\SDL_net-1.2.8\include&quot;;&quot;..\..\SDL\SDL_mixer-1.2.12\include&quot;;..\lpng1612;..\ffmpeg\include;&quot;..\..\gog-service\api\source&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;GOG_RELEASE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;PROGRAM_PREFIX=&quot;\&quot;chocolate-\&quot;&quot;"
+				MinimalRebuild="true"
+				ExceptionHandling="0"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				ExpandAttributedSource="true"
+				AssemblerOutput="2"
+				WarningLevel="3"
+				DebugInformationFormat="4"
+				CompileAs="1"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="..\..\SDL\SDL-1.2.15\lib\x86\SDL.lib ..\..\SDL\SDL_mixer-1.2.12\lib\x86\SDL_mixer.lib ..\..\SDL\SDL_net-1.2.8\lib\x86\SDL_net.lib ..\..\SDL\SDL-1.2.15\lib\x86\SDLMain.lib ..\..\gog-service\api\lib\GoGService.lib ..\lpng1612\projects\visualc71\Win32_LIB_Debug\libpngd.lib ..\lpng1612\projects\visualc71\Win32_LIB_Debug\ZLib\zlibd.lib opengl32.lib ..\ffmpeg\windows\avcodec.lib ..\ffmpeg\windows\avdevice.lib ..\ffmpeg\windows\avfilter.lib ..\ffmpeg\windows\avformat.lib ..\ffmpeg\windows\avutil.lib ..\ffmpeg\windows\postproc.lib ..\ffmpeg\windows\swresample.lib ..\ffmpeg\windows\swscale.lib"
+				OutputFile="$(OutDir)\strife-ve.exe"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories=""
+				IgnoreDefaultLibraryNames="msvcrt"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				DataExecutionPrevention="0"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>
@@ -257,6 +432,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\i_galaxyservices.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\i_glscale.h"
 				>
 			</File>
@@ -265,11 +444,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\i_noappservices.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\i_scale.h"
 				>
 			</File>
 			<File
+				RelativePath="..\src\i_social.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\i_sound.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\i_steamservices.h"
 				>
 			</File>
 			<File
@@ -865,6 +1056,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\i_galaxyservices.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\i_glscale.c"
 				>
 			</File>
@@ -874,6 +1069,10 @@
 			</File>
 			<File
 				RelativePath="..\src\i_main.c"
+				>
+			</File>
+			<File
+				RelativePath="..\src\i_noappservices.c"
 				>
 			</File>
 			<File
@@ -897,7 +1096,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\i_social.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\i_sound.c"
+				>
+			</File>
+			<File
+				RelativePath="..\src\i_steamservices.c"
 				>
 			</File>
 			<File
@@ -1452,6 +1659,14 @@
 					>
 					<FileConfiguration
 						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AssemblerOutput="4"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="GoG Release|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"

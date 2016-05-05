@@ -32,10 +32,8 @@
 #include "w_wad.h"
 
 // [SVE] svillarreal
-#ifdef _USE_STEAM_
 #include "p_local.h"
-#include "steamService.h"
-#endif
+#include "i_social.h"
 
 extern patch_t *hu_font[HU_FONTSIZE];
 
@@ -271,28 +269,24 @@ void WI_Drawer(void)
             WI_writeTextCentered(150, "Blue Team Wins the Match!");
 
             // [SVE] svillarreal - fancy cup achievement
-#ifdef _USE_STEAM_
             if(wbs->numplayers > 1 &&
                !P_CheckPlayersCheating(ACH_ALLOW_DM) && 
                players[consoleplayer].allegiance == CTC_TEAM_BLUE)
             {
-                I_SteamSetAchievement("SVE_ACH_CTC");
+                gAppServices->SetAchievement("SVE_ACH_CTC");
             }
-#endif
         }
         else if(ctcredscore > ctcbluescore)
         {
             WI_writeTextCentered(150, "Red Team Wins the Match!");
 
             // [SVE] svillarreal - fancy cup achievement
-#ifdef _USE_STEAM_
-            if(wbs->numplayers > 1 && wbs->numblue && wbs->numred &&
+            if(wbs->numplayers > 1 &&
                !P_CheckPlayersCheating(ACH_ALLOW_DM) && 
                players[consoleplayer].allegiance == CTC_TEAM_RED)
             {
-                I_SteamSetAchievement("SVE_ACH_CTC");
+                gAppServices->SetAchievement("SVE_ACH_CTC");
             }
-#endif
         }
         else
         {

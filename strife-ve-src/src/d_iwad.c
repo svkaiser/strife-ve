@@ -28,6 +28,7 @@
 #include "m_argv.h"
 #include "m_config.h"
 #include "m_misc.h"
+#include "m_qstring.h"
 #include "m_saves.h"
 #include "w_wad.h"
 #include "z_zone.h"
@@ -388,7 +389,7 @@ static void CheckDOSDefaults(void)
 // Returns true if the specified path is a path to a file
 // of the specified name.
 
-static boolean DirIsFile(char *path, char *filename)
+static boolean DirIsFile(const char *path, const char *filename)
 {
     size_t path_len;
     size_t filename_len;
@@ -405,36 +406,46 @@ static boolean DirIsFile(char *path, char *filename)
 // file, returning the full path to the IWAD if found, or NULL
 // if not found.
 
-static char *CheckDirectoryHasIWAD(char *dir, char *iwadname)
+static char *CheckDirectoryHasIWAD(const char *dir, const char *iwadname)
 {
+    static qstring_t buffer;
+    boolean uppercased = false;
     char *filename;
 
-    // As a special case, the "directory" may refer directly to an
-    // IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
+    QStrClearOrCreate(&buffer, iwadname ? strlen(iwadname)+1 : 32);
+    QStrCopy(&buffer, iwadname);
 
-    if (DirIsFile(dir, iwadname) && M_FileExists(dir))
+    // [SVE]: tolerate uppercased IWAD filenames
+    do
     {
-        return M_Strdup(dir);
-    }
+        // As a special case, the "directory" may refer directly to an
+        // IWAD file if the path comes from DOOMWADDIR or DOOMWADPATH.
 
-    // Construct the full path to the IWAD if it is located in
-    // this directory, and check if it exists.
+        if (DirIsFile(dir, QStrConstPtr(&buffer)) && M_FileExists(dir))
+        {
+            return M_Strdup(dir);
+        }
 
-    if (!strcmp(dir, "."))
-    {
-        filename = M_Strdup(iwadname);
-    }
-    else
-    {
-        filename = M_StringJoin(dir, DIR_SEPARATOR_S, iwadname, NULL);
-    }
+        // Construct the full path to the IWAD if it is located in
+        // this directory, and check if it exists.
 
-    if (M_FileExists(filename))
-    {
-        return filename;
-    }
+        if (!strcmp(dir, "."))
+        {
+            filename = M_Strdup(QStrConstPtr(&buffer));
+        }
+        else
+        {
+            filename = M_StringJoin(dir, DIR_SEPARATOR_S, QStrConstPtr(&buffer), NULL);
+        }
 
-    free(filename);
+        if (M_FileExists(filename))
+        {
+            return filename;
+        }
+
+        free(filename);
+    }
+    while(!uppercased && (QStrUpr(&buffer), (uppercased = true)));
 
     return NULL;
 }
@@ -647,6 +658,7 @@ static void BuildIWADDirList(void)
 
 char *D_FindWADByName(char *name)
 {
+    static qstring_t buffer;
     char *path;
     int i;
 
@@ -667,21 +679,30 @@ char *D_FindWADByName(char *name)
         // the "directory" may actually refer directly to an IWAD
         // file.
 
-        if (DirIsFile(iwad_dirs[i], name) && M_FileExists(iwad_dirs[i]))
+        boolean uppercased = false;
+        QStrClearOrCreate(&buffer, name ? strlen(name)+1 : 32);
+        QStrCopy(&buffer, name);
+
+        // [SVE]: tolerate uppercased wad names
+        do
         {
-            return M_Strdup(iwad_dirs[i]);
+            if (DirIsFile(iwad_dirs[i], QStrConstPtr(&buffer)) && M_FileExists(iwad_dirs[i]))
+            {
+                return M_Strdup(iwad_dirs[i]);
+            }
+
+            // Construct a string for the full path
+
+            path = M_StringJoin(iwad_dirs[i], DIR_SEPARATOR_S, QStrConstPtr(&buffer), NULL);
+
+            if (M_FileExists(path))
+            {
+                return path;
+            }
+
+            free(path);
         }
-
-        // Construct a string for the full path
-
-        path = M_StringJoin(iwad_dirs[i], DIR_SEPARATOR_S, name, NULL);
-
-        if (M_FileExists(path))
-        {
-            return path;
-        }
-
-        free(path);
+        while(!uppercased && (QStrUpr(&buffer), (uppercased = true)));
     }
 
     // File not found

@@ -217,7 +217,7 @@ static fehelpstr_t helpStrs[] =
     },
     {
         "invite",
-        "Use the Steam overlay to invite friends you want to play with into "
+        "Use the overlay to invite friends you want to play with into "
         "your lobby."
     },
     {
@@ -275,7 +275,7 @@ static fehelpstr_t helpStrs[] =
     {
         "lobbylist",
         "View a list of public lobbies you can join. Only lobbies created by your "
-        "Steam friends will show up in this list."
+        "friends will show up in this list."
     },
     { 
         "max_gore", 
@@ -333,13 +333,13 @@ static fehelpstr_t helpStrs[] =
     },
     {
         "newpublobby",
-        "Create a new public game lobby. Any of your Steam friends will "
+        "Create a new public game lobby. Any of your friends will "
         "be able to join this lobby if they feel like a good fragging."
     },
     {
         "newprivlobby",
         "Create a new private game lobby. You'll need to invite some of "
-        "your Steam friends into it in order to play a game."
+        "your friends into it in order to play a game."
     },
     {
         "nomonsters",

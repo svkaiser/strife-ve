@@ -37,9 +37,7 @@
 
 #include "d_loop.h"
 
-#ifdef _USE_STEAM_
-#include "steamService.h"
-#endif
+#include "i_social.h"
 
 ticcmd_t *netcmds;
 
@@ -240,10 +238,8 @@ void D_ConnectNetGame(void)
     InitConnectData(&connect_data);
     netgame = D_InitNetGame(&connect_data);
 
-#ifdef _USE_STEAM_
-    // leave lobby if still in one
-    I_SteamLeaveLobby();
-#endif
+    // leave or lock lobby if still in one
+    gAppServices->LockLobby();
 
     //!
     // @category net

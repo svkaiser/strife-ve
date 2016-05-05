@@ -20,9 +20,7 @@
 
 #include "SDL.h"
 
-#ifdef _USE_STEAM_
-#include "steamService.h"
-#endif
+#include "i_social.h"
 
 #include "z_zone.h"
 #include "doomdef.h"
@@ -122,7 +120,6 @@ static void FE_DMSensibleDefaults(boolean backup)
 // Sanitize a Steamworks API-derived string for display in the frontend.
 // The passed string MUST be mutable.
 //
-#ifdef _USE_STEAM_
 static void FE_SanitizeString(char *in, int limit, boolean useyfont)
 {
     unsigned char *end;
@@ -155,7 +152,6 @@ static void FE_SanitizeString(char *in, int limit, boolean useyfont)
             *end-- = '\0';
     }
 }
-#endif
 
 //=============================================================================
 //
@@ -175,10 +171,8 @@ void FE_IncrementTeam(void)
         ctcprefteam = PREF_TEAM_AUTO;
     S_StartSound(NULL, sfx_swtchn);
 
-#ifdef _USE_STEAM_
     // broadcast to the lobby
-    I_SteamLobbyChangeTeam(ctcteamvals[ctcprefteam]);
-#endif
+    gAppServices->LobbyChangeTeam(ctcteamvals[ctcprefteam]);
 }
 
 void FE_DecrementTeam(void)
@@ -189,10 +183,8 @@ void FE_DecrementTeam(void)
         --ctcprefteam;
     S_StartSound(NULL, sfx_swtchn);
 
-#ifdef _USE_STEAM_
     // broadcast to the lobby
-    I_SteamLobbyChangeTeam(ctcteamvals[ctcprefteam]);
-#endif
+    gAppServices->LobbyChangeTeam(ctcteamvals[ctcprefteam]);
 }
 
 const char *FE_GetLobbyTeam(void)
@@ -212,9 +204,7 @@ const char *FE_GetLobbyTeam(void)
 //
 void FE_EnableLobbyListener(void)
 {
-#ifdef _USE_STEAM_
-    I_SteamBeginLobbyJoinListener();
-#endif
+    gAppServices->BeginLobbyJoinListener();
 }
 
 //
@@ -222,9 +212,7 @@ void FE_EnableLobbyListener(void)
 //
 void FE_DisableLobbyListener(void)
 {
-#ifdef _USE_STEAM_
-    I_SteamDestroyLobbyJoinListener();
-#endif
+    gAppServices->DestroyLobbyJoinListener();
 }
 
 //
@@ -232,11 +220,7 @@ void FE_DisableLobbyListener(void)
 //
 boolean FE_CheckLobbyListener(void)
 {
-#ifdef _USE_STEAM_
-    return !!I_SteamLobbyJoinRequested();
-#else
-    return false;
-#endif
+    return !!gAppServices->LobbyJoinRequested();
 }
 
 //=============================================================================
@@ -253,20 +237,16 @@ static int     feLobbyErrMsgTimer;
 //
 static int FE_CheckLobbyCreated(void)
 {
-#ifdef _USE_STEAM_
-    switch(I_SteamLobbyPollState())
+    switch(gAppServices->LobbyPollState())
     {
     case I_LOBBY_STATE_CREATING:
         return 0;
     case I_LOBBY_STATE_INLOBBY:
         return 1;
     default: // create failed, or a different (unknown?) state
-        I_SteamLobbyCleanUp();
+        gAppServices->LobbyCleanUp();
         return -1;
     }
-#else
-    return -1;
-#endif
 }
 
 //
@@ -293,7 +273,9 @@ static void FE_LobbyCreateTick(void)
         feModalLoopFunc   = NULL;
         frontend_state    = FE_STATE_MAINMENU;
         feInLobby         = true;
-        FE_DMSensibleDefaults(true);
+        ctcprefteam       = PREF_TEAM_AUTO;
+        gAppServices->LobbyChangeTeam(ctcteamvals[ctcprefteam]);
+        FE_DMSensibleDefaults(true);        
         FE_ExecCmd("lobbysrv"); // go to lobby server menu
         break;
     case 0: // still waiting
@@ -317,9 +299,7 @@ void FE_CreateLobby(int publicLobby)
     // ensure listener is disabled
     FE_DisableLobbyListener();
 
-#ifdef _USE_STEAM_
-    I_SteamCreateNewLobby(publicLobby);
-#endif
+    gAppServices->CreateNewLobby(publicLobby);
     frontend_state      = FE_STATE_LOBBYCREATE;
     frontend_modalmsg   = "Creating lobby...";
     feInLobby           = false;
@@ -334,12 +314,10 @@ void FE_LeaveLobby(void)
 {
     if(!feInLobby)
         return;
-
+    
+    gAppServices->LeaveLobby();    
     FE_EnableLobbyListener(); // turn listener back on now.
 
-#ifdef _USE_STEAM_
-    I_SteamLeaveLobby();    
-#endif
     feInLobby = false;
     FE_RestoreDMVars(); // don't make game settings stick to single player
     FE_PopMenu(true);   // force exit lobby menu
@@ -350,11 +328,7 @@ void FE_LeaveLobby(void)
 //
 boolean FE_GetLobbyReady(void)
 {
-#ifdef _USE_STEAM_
-    return !!I_SteamLobbyGetReady();
-#else
-    return false;
-#endif
+    return !!gAppServices->LobbyGetReady();
 }
 
 //
@@ -362,9 +336,7 @@ boolean FE_GetLobbyReady(void)
 //
 void FE_ToggleLobbyReady(void)
 {
-#ifdef _USE_STEAM_
-    I_SteamLobbyChangeReady();
-#endif
+    gAppServices->LobbyChangeReady();
     S_StartSound(NULL, sfx_swtchn);
 }
 
@@ -376,15 +348,13 @@ void FE_CheckForLobbyUpgrade(void)
     if(!(feInLobby && FE_InClientLobby()))
         return;
 
-#ifdef _USE_STEAM_
-    if(I_SteamLobbyUserIsOwner())
+    if(gAppServices->LobbyUserIsOwner())
     {
-        I_SteamLobbyUpdateName();     // update lobby name
-        FE_PopMenu(true);             // exit out of client menu
-        FE_DMSensibleDefaults(false); // set DM defaults w/o backup
-        FE_ExecCmd("lobbysrv");       // go to lobby server menu
+        gAppServices->LobbyUpdateName(); // update lobby name
+        FE_PopMenu(true);                // exit out of client menu
+        FE_DMSensibleDefaults(false);    // set DM defaults w/o backup
+        FE_ExecCmd("lobbysrv");          // go to lobby server menu
     }
-#endif
 }
 
 //
@@ -412,9 +382,7 @@ void FE_CmdLeaveLobby(void)
 // "invite" command
 void FE_CmdInvite(void)
 {
-#ifdef _USE_STEAM_
-    I_SteamLobbyInviteFriends();
-#endif
+    gAppServices->LobbyInviteFriends();
 }
 
 //=============================================================================
@@ -429,22 +397,17 @@ static boolean feLobbyJoinFailed;
 //
 static int FE_CheckLobbyJoined(void)
 {
-#ifdef _USE_STEAM_
-    switch(I_SteamLobbyPollState())
+    switch(gAppServices->LobbyPollState())
     {
     case I_LOBBY_STATE_JOINING:
         return 0;
     case I_LOBBY_STATE_INLOBBY:
         return 1;
     default: // join failed, or a different (unknown?) state
-        I_SteamLobbyCleanUp();
+        gAppServices->LobbyCleanUp();
         return -1;
     }
-#else
-    return -1;
-#endif
 }
-
 
 //
 // Lobby join modal loop
@@ -470,16 +433,16 @@ static void FE_LobbyJoinTick(void)
         feModalLoopFunc   = NULL;
         frontend_state    = FE_STATE_MAINMENU;
         feInLobby         = true;
-#ifdef _USE_STEAM_
-        if(I_SteamLobbyUserIsOwner()) // user became owner when joining?
+        ctcprefteam       = PREF_TEAM_AUTO;
+        gAppServices->LobbyChangeTeam(ctcteamvals[ctcprefteam]);
+
+        if(gAppServices->LobbyUserIsOwner()) // user became owner when joining?
         {
             FE_DMSensibleDefaults(true);
             FE_ExecCmd("lobbysrv"); // go to lobby server menu
         }
         else
-#endif
         {
-
             FE_BackupDMVars();
             FE_ExecCmd("lobbyclient"); // go to lobby client menu
         }
@@ -505,9 +468,7 @@ void FE_JoinLobbyFromInvite(void)
     if(feInLobby)
         return;
 
-#ifdef _USE_STEAM_
-    I_SteamJoinLobbyFromInvite();
-#endif
+    gAppServices->JoinLobbyFromInvite();
     FE_DisableLobbyListener(); // turn off listener now.
     frontend_state    = FE_STATE_LOBBYJOIN;
     frontend_modalmsg = "Joining lobby...";
@@ -527,9 +488,7 @@ void FE_JoinLobbyFromConnectStr(const char *lobbyID)
     if(feInLobby)
         return;
 
-#ifdef _USE_STEAM_
-    I_SteamJoinLobbyFromStartup(lobbyID);
-#endif
+    gAppServices->JoinLobbyFromStartup(lobbyID);
     FE_DisableLobbyListener(); // turn off listener if still on
     frontend_state    = FE_STATE_LOBBYJOIN;
     frontend_modalmsg = "Joining lobby...";
@@ -549,7 +508,6 @@ static boolean dashlineBuilt;
 //
 // Draw a separating line of dashes in the yellow font.
 //
-#ifdef _USE_STEAM_
 static void FE_DrawDashLine(int x, int y, int width)
 {
     if(!dashlineBuilt)
@@ -562,16 +520,14 @@ static void FE_DrawDashLine(int x, int y, int width)
 
     HUlib_drawYellowText(x, y, dashlinebuf, true);
 }
-#endif
 
 //
 // Draw the lobby user list with ready states.
 //
 void FE_DrawLobbyUserList(int x, int y)
 {
-#ifdef _USE_STEAM_
     int i;
-    int numUsers = I_SteamLobbyGetNumMembers();
+    int numUsers = gAppServices->LobbyGetNumMembers();
     static int stateWidth;
 
     if(!stateWidth)
@@ -584,9 +540,9 @@ void FE_DrawLobbyUserList(int x, int y)
     y += 8;
     for(i = 0; i < numUsers; i++)
     {
-        char *name    = M_Strdup(I_SteamLobbyGetUserNameAt(i));
-        char *team    = M_Strdup(I_SteamLobbyGetTeamAt(i));
-        boolean ready = I_SteamLobbyGetUserReadyAt(i);
+        char *name    = M_Strdup(gAppServices->LobbyGetUserNameAt(i));
+        char *team    = M_Strdup(gAppServices->LobbyGetTeamAt(i));
+        boolean ready = gAppServices->LobbyGetUserReadyAt(i);
         char *patch;
         boolean autoteam = false;
        
@@ -612,7 +568,6 @@ void FE_DrawLobbyUserList(int x, int y)
         free(name);
         free(team);
     }
-#endif
 }
 
 //=============================================================================
@@ -659,13 +614,12 @@ static femenu_t lobbyMenu =
 //
 void FE_DrawLobbyItem(femenuitem_t *item, int x, int y)
 {
-#ifdef _USE_STEAM_
     char *name;
 
-    if(I_SteamLobbyMgrInRequest())
+    if(gAppServices->LobbyMgrInRequest())
         return;
 
-    name = M_Strdup(I_SteamLobbyMgrGetNameAt((unsigned int)(item->data)));
+    name = M_Strdup(gAppServices->LobbyMgrGetNameAt((unsigned int)(item->data)));
     FE_SanitizeString(name, SCREENWIDTH - 20 - lobbyMenu.x, false);
 
     item->x = x;
@@ -676,7 +630,6 @@ void FE_DrawLobbyItem(femenuitem_t *item, int x, int y)
     M_WriteText(x, y, name);
 
     free(name);
-#endif
 }
 
 //
@@ -687,10 +640,9 @@ static void FE_RebuildLobbyMenu(void)
     unsigned int i;
     unsigned int numLobbies = 0;
 
-#ifdef _USE_STEAM_
-    numLobbies = I_SteamLobbyMgrGetCount();
+    numLobbies = gAppServices->LobbyMgrGetCount();
 
-    if(I_SteamLobbyMgrInRequest())
+    if(gAppServices->LobbyMgrInRequest())
     {
         lobbyMenuItems[0].description = "Searching...";
         lobbyMenuItems[0].type        = FE_MITEM_CMD;
@@ -701,9 +653,7 @@ static void FE_RebuildLobbyMenu(void)
         for(i = 1; i < arrlen(lobbyMenuItems); i++)
             lobbyMenuItems[i].type = FE_MITEM_END;
     }
-    else
-#endif
-    if(numLobbies == 0)
+    else if(numLobbies == 0)
     {
         lobbyMenuItems[0].description = "No lobbies available.";
         lobbyMenuItems[0].type        = FE_MITEM_CMD;
@@ -728,12 +678,12 @@ static void FE_RebuildLobbyMenu(void)
             lobbyMenuItems[i].verb        = "joinlobby";
             lobbyMenuItems[i].data        = (int)i;
         }
-        lobbyMenuItems[numMenuLobbies + 1].description = "Refresh...";
-        lobbyMenuItems[numMenuLobbies + 1].type        = FE_MITEM_CMD;
-        lobbyMenuItems[numMenuLobbies + 1].verb        = "lobbyrefresh";
-        lobbyMenuItems[numMenuLobbies + 1].data        = 0;
+        lobbyMenuItems[numMenuLobbies].description = "Refresh...";
+        lobbyMenuItems[numMenuLobbies].type        = FE_MITEM_CMD;
+        lobbyMenuItems[numMenuLobbies].verb        = "lobbyrefresh";
+        lobbyMenuItems[numMenuLobbies].data        = 0;
         lobbyMenu.numitems = numMenuLobbies + 2;
-        for(i = numMenuLobbies + 2; i < arrlen(lobbyMenuItems); i++)
+        for(i = numMenuLobbies + 1; i < arrlen(lobbyMenuItems); i++)
             lobbyMenuItems[i].type = FE_MITEM_END;
         if(lobbyMenu.itemon >= lobbyMenu.numitems - 2)
             lobbyMenu.itemon = lobbyMenu.numitems - 2;
@@ -745,9 +695,7 @@ static void FE_RebuildLobbyMenu(void)
 //
 static void FE_LobbyRefreshTick(void)
 {
-#ifdef _USE_STEAM_
-    if(!I_SteamLobbyMgrInRequest())
-#endif
+    if(!gAppServices->LobbyMgrInRequest())
     {
         frontend_modalmsg = NULL;
         feModalLoopFunc   = NULL;
@@ -770,9 +718,7 @@ void FE_CmdJoinLobby(void)
 
     lobbyNum = (unsigned int)(item->data);
 
-#ifdef _USE_STEAM_
-    I_SteamLobbyMgrJoinLobbyAt(lobbyNum);
-#endif
+    gAppServices->LobbyMgrJoinLobbyAt(lobbyNum);
     FE_DisableLobbyListener(); // turn off listener if still on
     frontend_state    = FE_STATE_LOBBYJOIN;
     frontend_modalmsg = "Joining lobby...";
@@ -786,9 +732,7 @@ void FE_CmdJoinLobby(void)
 //
 void FE_CmdLobbyRefresh(void)
 {
-#ifdef _USE_STEAM_
-    I_SteamLobbyMgrRefresh();
-#endif
+    gAppServices->LobbyMgrRefresh();
     frontend_state    = FE_STATE_REFRESH;
     frontend_modalmsg = "Refreshing list...";
     feModalLoopFunc   = FE_LobbyRefreshTick;
@@ -815,25 +759,23 @@ void FE_ClientCheckForGameStart(void)
     if(!feInLobby || net_SteamGame)
         return;
 
-#ifdef _USE_STEAM_
     // not for server
-    if(I_SteamLobbyUserIsOwner())
+    if(gAppServices->LobbyUserIsOwner())
         return;
 
-    if(I_SteamLobbyPollState() == I_LOBBY_STATE_GAMESTARTING)
+    if(gAppServices->LobbyPollState() == I_LOBBY_STATE_GAMESTARTING)
     {
         net_SteamGame     = true;
         net_SteamNodeType = NET_STEAM_CLIENT;
-        net_SteamNumNodes = I_SteamLobbyGetNumMembers();
-        I_SteamClientGetServerFromLobby();   // record server
-        I_SteamUpdate();                     // run callbacks
-        I_Sleep(300);                        // wait a bit
-        I_SteamUpdate();                     // run callbacks
-        net_SteamServerID = M_Strdup(I_SteamClientGetServerAddr());
+        net_SteamNumNodes = gAppServices->LobbyGetNumMembers();
+        gAppServices->ClientGetServerFromLobby();   // record server
+        gAppServices->Update();                     // run callbacks
+        I_Sleep(300);                               // wait a bit
+        gAppServices->Update();                     // run callbacks
+        net_SteamServerID = M_Strdup(gAppServices->ClientGetServerAddr());
         frontend_state = FE_STATE_GAMESTART; // netgame is starting
         FE_ExecCmd("go"); // exit frontend
     }
-#endif
 }
 
 // "startgame" command, run by the server user to start the game
@@ -842,17 +784,15 @@ void FE_CmdStartGame(void)
     if(!feInLobby || net_SteamGame)
         return;
 
-#ifdef _USE_STEAM_
     net_SteamGame     = true;
     net_SteamNodeType = NET_STEAM_SERVER;
-    net_SteamNumNodes = I_SteamServerGetClientsFromLobby(); // record clients from lobby
-    I_SteamLobbyStartGame();             // notify lobby of game start
-    I_SteamUpdate();                     // run callbacks
+    net_SteamNumNodes = gAppServices->ServerGetClientsFromLobby(); // record clients from lobby
+    gAppServices->LobbyStartGame();      // notify lobby of game start
+    gAppServices->Update();              // run callbacks
     I_Sleep(300);                        // wait a bit
-    I_SteamUpdate();                     // run callbacks
+    gAppServices->Update();              // run callbacks
     frontend_state = FE_STATE_GAMESTART; // netgame is starting
     FE_ExecCmd("go");                    // exit frontend
-#endif
 }
 
 // EOF

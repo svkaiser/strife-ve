@@ -31,6 +31,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "z_zone.h"
 #include "i_system.h"
@@ -522,6 +523,35 @@ char M_GetFilePath(const char *fn, char *dest, size_t len)
 
     return sepchar;
 }
+
+// haleyjd: portable strupr function
+char *M_Strupr(char *string)
+{
+   char *s = string;
+
+   while(*s)
+   {
+      int c = toupper((unsigned char)*s);
+      *s++ = c;
+   }
+
+   return string;
+}
+
+// haleyjd: portable strlwr function
+char *M_Strlwr(char *string)
+{
+   char *s = string;
+
+   while(*s)
+   {
+      int c = tolower((unsigned char)*s);
+      *s++ = c;
+   }
+
+   return string;
+}
+
 
 // EOF
 

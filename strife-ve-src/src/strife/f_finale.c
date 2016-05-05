@@ -46,9 +46,7 @@
 // [SVE] svillarreal
 #include "p_local.h"
 
-#ifdef _USE_STEAM_
-#include "steamService.h"
-#endif
+#include "i_social.h"
 
 typedef enum
 {
@@ -224,10 +222,8 @@ void F_StartFinale (void)
                 slideshow_state = SLIDE_BADEND1;  // - Humanity goes extinct
 
                 // [SVE] svillarreal - achievements
-#ifdef _USE_STEAM_
                 if(!P_CheckPlayersCheating(ACH_ALLOW_SP))
-                    I_SteamSetAchievement("SVE_ACH_DOOMED");
-#endif
+                    gAppServices->SetAchievement("SVE_ACH_DOOMED");
             }
             else
             {
@@ -238,15 +234,13 @@ void F_StartFinale (void)
                     slideshow_state = SLIDE_GOODEND1;
 
                     // [SVE] svillarreal - achievements
-#ifdef _USE_STEAM_
                     if(!P_CheckPlayersCheating(ACH_ALLOW_SP))
                     {
-                        I_SteamSetAchievement("SVE_ACH_GALIANT_HERO");
+                        gAppServices->SetAchievement("SVE_ACH_GALIANT_HERO");
 
                         if(gameskill == sk_nightmare)
-                            I_SteamSetAchievement("SVE_ACH_UNSTOPPABLE");
+                            gAppServices->SetAchievement("SVE_ACH_UNSTOPPABLE");
                     }
-#endif
                 }
                 else
                 {
@@ -254,10 +248,8 @@ void F_StartFinale (void)
                     slideshow_state = SLIDE_BLAHEND1;
 
                     // [SVE] svillarreal - achievements
-#ifdef _USE_STEAM_
                     if(!P_CheckPlayersCheating(ACH_ALLOW_SP))
-                        I_SteamSetAchievement("SVE_ACH_WITHOUT_HOPE");
-#endif
+                        gAppServices->SetAchievement("SVE_ACH_WITHOUT_HOPE");
                 }
             }
         }
@@ -275,16 +267,14 @@ void F_StartFinale (void)
             slideshow_state = SLIDE_DEMOEND1;
 
         // [SVE] svillarreal - tourist achievement
-#ifdef _USE_STEAM_
         if(!P_CheckPlayersCheating(ACH_ALLOW_SP))
         {
-            I_SteamSetAchievement("SVE_ACH_DEMO");
+            gAppServices->SetAchievement("SVE_ACH_DEMO");
 
             // warmup achievement
             if(gameskill == sk_nightmare && leveltime <= (6*60*TICRATE))
-                I_SteamSetAchievement("SVE_ACH_WARMUP");
+                gAppServices->SetAchievement("SVE_ACH_WARMUP");
         }
-#endif
         break;
     }
 

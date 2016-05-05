@@ -35,9 +35,7 @@
 #include "fe_gamepad.h"
 
 // [SVE] svillarreal
-#ifdef _USE_STEAM_
-#include "steamService.h"
-#endif
+#include "i_social.h"
 
 #include "m_controls.h"
 
@@ -842,10 +840,8 @@ void I_UpdateJoystick(void)
     }
 
     // [SVE] svillarreal
-#ifdef _USE_STEAM_
-    if(I_SteamOverlayActive())
+    if(gAppServices->OverlayActive())
         return;
-#endif
 
     if(joystick != NULL)
     {

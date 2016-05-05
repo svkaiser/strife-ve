@@ -43,9 +43,7 @@
 #include "net_loop.h"
 
 // [SVE]
-#ifdef _USE_STEAM_
-#include "steamService.h"
-#endif
+#include "i_social.h"
 #include "net_steamworks.h"
 
 #include "rb_config.h"
@@ -332,10 +330,8 @@ static void BlockUntilStart(net_gamesettings_t *settings,
 {
     while (!NET_CL_GetSettings(settings))
     {
-#if defined(_USE_STEAM_)
         // RUN CALLBACKS
-        I_SteamUpdate();
-#endif
+        gAppServices->Update();
 
         NET_CL_Run();
         NET_SV_Run();
@@ -476,10 +472,10 @@ boolean D_InitNetGame(net_connect_data_t *connect_data)
 
 #ifdef FEATURE_MULTIPLAYER
 
-#ifdef _USE_STEAM_
     // RUN CALLBACKS
-    I_SteamUpdate();
+    gAppServices->Update();
 
+#ifdef I_APPSERVICES_NETWORKING
     // haleyjd 20141022: [SVE]
     // Are we marked to start a Steam-negotiated netgame? This may be a pure UDP
     // connection, a NAT-puncher-assisted tunnel, or an indirect connection
@@ -500,16 +496,16 @@ boolean D_InitNetGame(net_connect_data_t *connect_data)
             addr = net_steamworks_module.ResolveAddress(net_SteamServerID);
             break;
         default:
-            I_Error("Unknown Steam netgame client state %d", net_SteamNodeType);
+            I_Error("Unknown netgame client state %d", net_SteamNodeType);
         }
 
         // RUN CALLBACKS
-        I_SteamUpdate();
+        gAppServices->Update();
 
         if(addr)
         {
             if(!NET_CL_Connect(addr, connect_data))
-                I_Error("Failed to connect Steam client to server");
+                I_Error("Failed to connect client to server");
             
             NET_WaitForSteamLaunch();
             
@@ -517,7 +513,7 @@ boolean D_InitNetGame(net_connect_data_t *connect_data)
         }
 
         // RUN CALLBACKS
-        I_SteamUpdate();
+        gAppServices->Update();
 
         return result;
     }

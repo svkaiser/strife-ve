@@ -33,6 +33,7 @@
 #include "m_cheat.h"
 #include "m_controls.h"
 #include "i_system.h"
+#include "i_video.h"
 
 // Needs access to LFB.
 #include "v_video.h"
@@ -377,6 +378,7 @@ void AM_restoreScaleAndLoc(void)
 //
 void AM_addMark(void)
 {
+    // [SVE]: deliberately maintaining DOOM behavior here versus recent choco fix
     markpoints[markpointnum].x = m_x + m_w/2;
     markpoints[markpointnum].y = m_y + m_h/2;
     //markpointnum = (markpointnum + 1) % AM_NUMMARKPOINTS;
@@ -639,12 +641,12 @@ boolean AM_Responder(event_t* ev)
     if(!automapactive)
     {
         if((ev->type == ev_keydown && ev->data1 == key_map_toggle) ||
-            (ev->type == ev_joybtndown && ev->data1 == joybmap_toggle))
+           (ev->type == ev_joybtndown && ev->data1 == joybmap_toggle))
         {
             AM_Start();
             viewactive = false;
             rc = true;
-        }
+         }
     }
     else if(ev->type == ev_keydown || ev->type == ev_joybtndown)
     {

@@ -36,7 +36,9 @@
 #include "st_stuff.h"
 #include "m_misc.h"
 #include "w_wad.h"
-#ifdef _USE_STEAM_
+#include "i_social.h"
+
+#ifdef I_APPSERVICES_NETWORKING
 #include "net_client.h"
 #endif
 

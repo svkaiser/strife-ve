@@ -26,9 +26,7 @@
 #include "net_sdl.h"
 #include "net_steamworks.h"
 
-#ifdef _USE_STEAM_
-#include "steamService.h"
-#endif
+#include "i_social.h"
 
 //
 // Globals
@@ -44,7 +42,7 @@ char    *net_SteamServerID; // ID of server if we are a client
 // Steamworks Net Module
 //
 
-#ifdef _USE_STEAM_
+#ifdef I_APPSERVICES_NETWORKING
 
 typedef struct
 {
@@ -177,7 +175,7 @@ static boolean NET_Steamworks_InitServer(void)
 static void NET_Steamworks_SendPacket(net_addr_t *addr, net_packet_t *packet)
 {
     uint64_t csid = *((uint64_t *)addr->handle);
-    if(!I_SteamSendPacket(&csid, packet->data, (unsigned int)packet->len))
+    if(!gAppServices->SendPacket(&csid, packet->data, (unsigned int)packet->len))
         I_Error("NET_Steamworks_SendPacket: Error transmitting packet");
 }
 
@@ -190,7 +188,7 @@ static boolean NET_Steamworks_RecvPacket(net_addr_t **addr, net_packet_t **packe
     void        *data = NULL;
     unsigned int size  = 0;
     
-    I_SteamRecvPacket(&csid, &data, &size);
+    gAppServices->RecvPacket(&csid, &data, &size);
 
     // no packets received
     if(!csid || !data || !size)
@@ -227,7 +225,7 @@ net_addr_t *NET_Steamworks_ResolveAddress(char *address)
 {
     uint64_t addr = (uint64_t)(atoll(address));
 
-    if(!I_SteamResolveAddress(&addr))
+    if(!gAppServices->ResolveAddress(&addr))
     {
         // unable to resolve
         return NULL;

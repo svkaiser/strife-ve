@@ -21,6 +21,10 @@ stamp-h.in
 stamp-h1
 tags
 
+# Ignore build directories on linux
+/build/
+/build_ext/
+
 # These are the default patterns globally ignored by Subversion:
 *.o
 *.lo

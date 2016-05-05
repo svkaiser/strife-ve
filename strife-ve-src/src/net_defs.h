@@ -102,7 +102,7 @@ struct _net_addr_s
 // magic number sent when connecting to check this is a valid client
 // [SVE]: modified to prevent accidental UDP comm w/normal Choco clients
 //  (netplay protocol is not otherwise compatible due to needed changes)
-#define NET_MAGIC_NUMBER 3436039887U
+#define NET_MAGIC_NUMBER 3436039889U
 
 // header field value indicating that the packet is a reliable packet
 

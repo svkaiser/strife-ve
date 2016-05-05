@@ -91,8 +91,8 @@ static int CallbackWaiting(uint64_t *next_time)
 
 static uint64_t GetNextTime(void)
 {
-    opl_callback_t callback;
-    void *callback_data;
+    opl_callback_t callback = NULL;
+    void *callback_data = NULL;
     uint64_t next_time;
     int have_callback;
 

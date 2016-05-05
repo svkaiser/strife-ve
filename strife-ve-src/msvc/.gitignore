@@ -11,3 +11,6 @@ strfsav*
 *.png
 *.txt
 *.ogv
+*.log
+GoG Release
+GoG Debug

@@ -24,10 +24,7 @@
 
 #include "SDL.h"
 
-#ifdef _USE_STEAM_
-#include "steamService.h"
-#endif
-
+#include "i_social.h"
 #include "doomstat.h"
 #include "rb_local.h"
 #include "z_zone.h"
@@ -114,12 +111,10 @@ void FE_UpdateFocus(void)
 
     fe_window_focused = (state & SDL_APPINPUTFOCUS) && (state & SDL_APPACTIVE);
 
-#ifdef _USE_STEAM_
     // The above check can still be true even if Steam is eating input, but to
     // SDL it's the same as having lost focus.
-    if(I_SteamOverlayActive())
+    if(gAppServices->OverlayActive())
         fe_window_focused = false;
-#endif
 
     if(currently_focused != fe_window_focused)
     {
@@ -165,10 +160,8 @@ static boolean FE_InModalNetState(void)
     return res;
 }
 
-#ifdef _USE_STEAM_
 static boolean feInOverlay;
 static boolean fePrevInOverlay;
-#endif
 
 //
 // Do per-tic logic for the frontend.
@@ -177,16 +170,14 @@ static void FE_Ticker(void)
 {
     ++frontend_tic;
 
-#ifdef _USE_STEAM_
-    // update Steam status
-    I_SteamUpdate();
+    // update app services provider status
+    gAppServices->Update();
 
     // check for overlay state change
     fePrevInOverlay = feInOverlay;
-    feInOverlay     = !!I_SteamOverlayActive();
+    feInOverlay     = !!gAppServices->OverlayActive();
     if(!feInOverlay && fePrevInOverlay)
         I_SetShowVisualCursor(true);
-#endif
 
     // animate sigil cursor
     if(--frontend_sgcount <= 0)
@@ -967,35 +958,32 @@ static void FE_Responder(void)
         return;
 
     // [SVE] svillarreal
-#ifdef _USE_STEAM_
-    if(!I_SteamOverlayActive())
+    if(!gAppServices->OverlayActive())
     {
-#endif
-    // run joybind responders?
-    if(frontend_state == FE_STATE_JBINPUT)
-    {
-        FE_JoyBindResponder();
-        return;
-    }
-    else if(frontend_state == FE_STATE_JAINPUT)
-    {
-        FE_JoyAxisResponder();
-        return;
-    }
+        // run joybind responders?
+        if(frontend_state == FE_STATE_JBINPUT)
+        {
+            FE_JoyBindResponder();
+            return;
+        }
+        else if(frontend_state == FE_STATE_JAINPUT)
+        {
+            FE_JoyAxisResponder();
+            return;
+        }
 
-    // poll gamepad
-    if((joybuttons = I_JoystickGetButtons()) >= 0)
-        FE_HandleJoyButtons(joybuttons);
+        // poll gamepad
+        if((joybuttons = I_JoystickGetButtons()) >= 0)
+            FE_HandleJoyButtons(joybuttons);
 
-    FE_HandleJoyAxes();
-
-    // [SVE] svillarreal
-#ifdef _USE_STEAM_
+        FE_HandleJoyAxes();
     }
-#endif
 
     while(SDL_PollEvent(&ev))
     {
+        if(gAppServices->OverlayEventFilter(ev.type))
+            continue;
+
         switch(ev.type)
         {
         case SDL_KEYDOWN:

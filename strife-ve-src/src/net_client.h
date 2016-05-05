@@ -22,6 +22,7 @@
 #include "d_ticcmd.h"
 #include "sha1.h"
 #include "net_defs.h"
+#include "i_social.h"
 
 boolean NET_CL_Connect(net_addr_t *addr, net_connect_data_t *data);
 void NET_CL_Disconnect(void);
@@ -50,7 +51,7 @@ extern unsigned int net_local_is_freedoom;
 
 extern boolean drone;
 
-#ifdef _USE_STEAM_
+#ifdef I_APPSERVICES_NETWORKING
 extern char player_names[NET_MAXPLAYERS][MAXPLAYERNAME];
 #endif
 

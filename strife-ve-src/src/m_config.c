@@ -24,6 +24,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <sys/stat.h>
 
 #include "config.h"
 
@@ -40,6 +41,7 @@
 // [SVE] svillarreal
 #include "rb_config.h"
 #include "i_joystick.h"
+#include "i_social.h"
 
 //
 // DEFAULTS
@@ -658,7 +660,6 @@ static default_t	doom_defaults_list[] =
 
     CONFIG_VARIABLE_STRING(back_flat),
 
-#ifndef _USE_STEAM_
     //!
     // @game strife
     //
@@ -666,7 +667,6 @@ static default_t	doom_defaults_list[] =
     //
 
     CONFIG_VARIABLE_STRING(nickname),
-#endif
 
     //!
     // Multiplayer chat macro: message to send when alt+0 is pressed.
@@ -2451,33 +2451,130 @@ float M_GetFloatVariable(const char *name)
     return *((float *) variable->location);
 }
 
+#if defined(__APPLE__)
+#define SVE_APPLE_PATH "~/Library/Application Support/com.nightdivestudios.Strife"
+#define SVE_APPLE_PATH_S SVE_APPLE_PATH DIR_SEPARATOR_S
+#endif
+
+#if !defined(_WIN32) && defined(I_APPSERVICES_OLDCFGDIR)
+//
+// Tries to fix SVE's old incorrect save location on Linux and Apple 
+// (~/strife-ve/) when using Steam.
+//
+static void MoveOldCfgDir(void)
+{
+    char *dest = NULL;
+    char *homedir;
+
+    // Determine the path we *want* to use
+#if defined(__APPLE__)
+    // Mac OS X
+    dest = M_Strdup(SVE_APPLE_PATH);
+#else
+    // Linux
+    dest = getenv("XDG_DATA_HOME");
+    if(dest != NULL && dest[0] != '\0')
+    {
+        dest = M_StringJoin(dest, "/" PACKAGE_TARNAME, NULL);
+    }
+    else
+    {
+        // Default to $HOME/.local/share if $XDG_DATA_HOME isn't set or is empty.
+        dest = getenv("HOME");
+        if(dest != NULL)
+        {
+            dest = M_StringJoin(dest, "/.local/share/" PACKAGE_TARNAME, NULL);
+        }
+    }
+    if(!dest)
+        return;
+#endif
+
+    // Get the path we *were* using, and try to move it.
+    homedir = getenv("HOME");
+    if(homedir != NULL)
+    {
+        char *src = M_StringJoin(homedir, "/" PACKAGE_TARNAME, NULL);
+        struct stat st;
+
+        // if this folder exists, try to rename it
+        if(!stat(src, &st) && S_ISDIR(st.st_mode))
+        {
+            rename(src, dest);
+        }
+
+        free(src);
+    }
+
+    free(dest);
+}
+#endif
+
 // Get the path to the default configuration dir to use, if NULL
 // is passed to M_SetConfigDir.
 
 static char *GetDefaultConfigDir(void)
 {
-#if !defined(_WIN32) || defined(_WIN32_WCE)
+    // [SVE] dotfloat 20141216
+#if !defined(_WIN32)
+    char *datadir = NULL;
+    struct stat st;
 
-    // Configuration settings are stored in ~/.chocolate-doom/,
-    // except on Windows, where we behave like Vanilla Doom and
-    // save in the current directory.
+#if defined(I_APPSERVICES_OLDCFGDIR)
+    // For compatibility's sake, SVE needs to keep preferentially looking in an
+    // incorrect location on Linux and Apple (~/strife-ve/) when using Steam - we
+    // will only use that directory if it already exists
 
-    char *homedir;
-    char *result;
+    // Try to rename it first.
+    MoveOldCfgDir();
 
-    homedir = getenv("HOME");
-
-    if(homedir != NULL)
+    datadir = getenv("HOME");
+    if(datadir != NULL)
     {
         // put all configuration in a config directory off the
         // homedir
-        result = M_StringJoin(homedir, DIR_SEPARATOR_S,
-                              PACKAGE_TARNAME, DIR_SEPARATOR_S, NULL);
+        char *res1 = M_StringJoin(datadir, "/" PACKAGE_TARNAME, NULL);
 
-        return result;
+        // if this folder exists, use it; otherwise, go on below.
+        if(!stat(res1, &st) && S_ISDIR(st.st_mode))
+        {
+            return M_StringJoin(res1, "/", NULL);
+        }
+        else
+            free(res1);
+    }
+#endif
+
+#if defined(__APPLE__)
+    // On Apple, try to create a folder under "~/Library/Application Support".
+    // This is not guaranteed to work, and there is no way to get the proper path when
+    // it won't without use of Objective-C code.
+
+    if((!stat(SVE_APPLE_PATH, &st) && S_ISDIR(st.st_mode)) || // already exists?
+       M_MakeDirectory(SVE_APPLE_PATH))                       // created successfully?
+    {
+        return M_Strdup(SVE_APPLE_PATH_S);
     }
     else
-#endif /* #ifndef _WIN32 */
+#elif defined(__linux__)
+    // Linux defaults
+    // Configuration settings are stored in $XDG_DATA_HOME instead of $HOME on Linux.
+
+    datadir = getenv("XDG_DATA_HOME");
+    if(datadir != NULL && datadir[0] != '\0')
+    {
+        return M_StringJoin(datadir, "/" PACKAGE_TARNAME "/", NULL);
+    }
+
+    // Default to $HOME/.local/share if $XDG_DATA_HOME isn't set or is empty.
+    datadir = getenv("HOME");
+    if(datadir != NULL)
+    {
+        return M_StringJoin(datadir, "/.local/share/" PACKAGE_TARNAME "/", NULL);
+    }
+    else
+#endif // #elif defined(__linux__)
+#endif // #if !defined(_WIN32)
     {
         return M_Strdup("");
     }

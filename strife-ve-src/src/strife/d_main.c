@@ -86,11 +86,6 @@
 #include "m_qstring.h"
 #include "i_ffmpeg.h"
 
-// haleyjd 20140821: [SVE] debug console
-#if defined(_WIN32) && defined(_DEBUG)
-void I_W32_DebugConsole(void);
-#endif
-
 //
 // D-DoomLoop()
 // Not a globally visible function,
@@ -171,10 +166,8 @@ static boolean main_loop_started = false;
 
 static int comport = 0;
 
-#ifndef _USE_STEAM_
 // fraggle 06/03/11 [STRIFE]: Multiplayer nickname?
 char *nickname = NULL;
-#endif
 
 void D_ConnectNetGame(void);
 void D_CheckNetGame(void);
@@ -513,9 +506,7 @@ void D_BindVariables(void)
     M_BindVariable("autorun",                &autorun);
     M_BindVariable("fullscreen_hud",         &fullscreenhud);
 
-#ifndef _USE_STEAM_
     M_BindVariable("nickname",               &nickname);
-#endif
     M_BindVariable("comport",                &comport);
 
     // Multiplayer chat macros
@@ -1606,11 +1597,6 @@ void D_DoomMain (void)
     char file[256];
     char demolumpname[9];
     int setcheating = CHEAT_NONE; // haleyjd [SVE] 20140914
-
-    // haleyjd 20140821: [SVE] open debug console
-#if defined(_WIN32) && defined(_DEBUG)
-    I_W32_DebugConsole();
-#endif
 
     I_AtExit(D_Endoom, false);
 

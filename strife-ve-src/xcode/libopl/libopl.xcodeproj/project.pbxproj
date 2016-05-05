@@ -144,7 +144,7 @@
 		41B30A2B19CA143F0023A235 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0720;
 			};
 			buildConfigurationList = 41B30A2E19CA143F0023A235 /* Build configuration list for PBXProject "libopl" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -198,6 +198,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -254,6 +255,7 @@
 		41B30A3819CA143F0023A235 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../Chocolate/Frameworks";
 				HEADER_SEARCH_PATHS = (
@@ -270,6 +272,7 @@
 		41B30A3919CA143F0023A235 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../Chocolate/Frameworks";
 				HEADER_SEARCH_PATHS = (

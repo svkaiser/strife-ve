@@ -45,10 +45,8 @@
 #include "f_finale.h"
 
 // [SVE] svillarreal
-#ifdef _USE_STEAM_
-#include "steamService.h"
+#include "i_social.h"
 #include "net_client.h"
-#endif
 
 #include "hu_lib.h"
 
@@ -390,6 +388,15 @@ boolean P_GivePower(player_t* player, powertype_t power)
 
     if(power == pw_invisibility)
     {
+        // [SVE] 20160416: Chalice carriers cannot use Shadow Armor in CTC
+        if(capturethechalice &&
+           (P_PlayerHasItem(player, MT_INV_CHALICE) ||
+            P_PlayerHasItem(player, MT_INV_BLUE_CHALICE)))
+        {
+            S_StartSound(player->mo, sfx_noway);
+            return false;
+        }
+
         // if player already had this power...
         if(player->powers[power])
         {
@@ -526,6 +533,13 @@ static void P_stealChalice(mobj_t *special, mobj_t *toucher)
         P_MessageAllPlayers(ctcbuffer, sfx_alarm);
         P_RemoveMobj(special);
         toucher->player->bonuscount += BONUSADD;
+
+        // 20160416: cancel Shadow Armor from the chalice carrier
+        if(toucher->player->powers[pw_invisibility])
+        {
+            toucher->player->powers[pw_invisibility] = 0;
+            toucher->flags &= ~(MF_SHADOW|MF_MVIS);
+        }
     }
 }
 
@@ -652,10 +666,8 @@ static void P_CheckTalismans(player_t *player, mobjtype_t type)
             extra = " You have super strength!";
 
             // [SVE] svillarreal
-#ifdef _USE_STEAM_
             if(!P_CheckPlayersCheating(ACH_ALLOW_SP))
-                I_SteamSetAchievement("SVE_ACH_BESERK_REBORN");
-#endif
+                gAppServices->SetAchievement("SVE_ACH_BESERK_REBORN");
         }
     }
     // Doom 64 tribute :)
@@ -740,13 +752,13 @@ void P_TouchSpecialThing(mobj_t* special, mobj_t* toucher)
         break;
 
     // missile
-    case SPR_ROKT:
+    case SPR_MSSL:
         if(!P_GiveAmmo(player, am_missiles, 1))
             return;
         break;
 
     // box of missiles
-    case SPR_MSSL:
+    case SPR_ROKT:
         if(!P_GiveAmmo(player, am_missiles, 5))
             return;
         break;
@@ -1154,9 +1166,9 @@ void P_KillMobj(mobj_t* source, mobj_t* target)
             }
         }
 
-        target->flags &= ~MF_SOLID;
+        //target->flags &= ~MF_SOLID;
         target->player->playerstate = PST_DEAD;
-        target->player->mo->momz = 5*FRACUNIT;  // [STRIFE]: small hop!
+        target->player->mo->momz += 5*FRACUNIT;  // [STRIFE]: small hop!
         P_DropWeapon(target->player);
 
         if(target->player == &players[consoleplayer]
@@ -1181,7 +1193,8 @@ void P_KillMobj(mobj_t* source, mobj_t* target)
             if(d_maxgore)
                 minhealth >>= 1;
 
-            if(target->health < -minhealth
+            // haleyjd [STRIFE] 20160111: Rogue changed check from < to <=
+            if(target->health <= -minhealth
                 && target->info->xdeathstate)
                 P_SetMobjState(target, target->info->xdeathstate);
             else
@@ -1190,25 +1203,23 @@ void P_KillMobj(mobj_t* source, mobj_t* target)
     }
 
     // [SVE] svillarreal - achievements from killing bosses
-#ifdef _USE_STEAM_
     if(!P_CheckPlayersCheating(ACH_ALLOW_ANY))
     {
         if(gamemap == 9 && target->type == MT_PROGRAMMER)
-            I_SteamSetAchievement("SVE_ACH_CODE_MONKEY");
+            gAppServices->SetAchievement("SVE_ACH_CODE_MONKEY");
 
         if(gamemap == 16 && target->type == MT_SPECTRE_B)
-            I_SteamSetAchievement("SVE_ACH_BISHSLAPPED");
+            gAppServices->SetAchievement("SVE_ACH_BISHSLAPPED");
 
         if(gamemap == 12 && target->type == MT_SPECTRE_C)
-            I_SteamSetAchievement("SVE_ACH_ORACLE");
+            gAppServices->SetAchievement("SVE_ACH_ORACLE");
 
         if(gamemap == 10 && target->type == MT_SPECTRE_D)
-            I_SteamSetAchievement("SVE_ACH_MACIL");
+            gAppServices->SetAchievement("SVE_ACH_MACIL");
 
         if(gamemap == 27 && target->type == MT_SPECTRE_E)
-            I_SteamSetAchievement("SVE_ACH_LOREMASTER");
+            gAppServices->SetAchievement("SVE_ACH_LOREMASTER");
     }
-#endif
 
     // villsa [STRIFE] no death tics randomization
 
@@ -1714,7 +1725,9 @@ void P_DamageMobj(mobj_t* target, mobj_t* inflictor, mobj_t* source, int damage)
             if(target->player)
             {
                 target->player->cheats |= CF_ONFIRE;
-                target->player->powers[pw_communicator] = false;
+                target->player->powers[pw_invisibility] = 0;
+                // [SVE]: also clear the flags here.
+                target->flags &= ~(MF_SHADOW|MF_MVIS);
                 target->player->readyweapon = 0;
                 P_SetPsprite(target->player, ps_weapon, S_WAVE_00); // 02
                 P_SetPsprite(target->player, ps_flash, S_NULL);
@@ -1737,19 +1750,16 @@ void P_DamageMobj(mobj_t* target, mobj_t* inflictor, mobj_t* source, int damage)
 
                     if(numignitechains == 3)
                     {
-#ifdef _USE_STEAM_
-                        if(!I_SteamHasAchievement("SVE_ACH_FLAME_CHAIN") &&
-                            !P_CheckPlayersCheating(ACH_ALLOW_SP))
+                        if(!gAppServices->HasAchievement("SVE_ACH_FLAME_CHAIN") &&
+                           !P_CheckPlayersCheating(ACH_ALLOW_SP))
                         {
                             if(players[consoleplayer].powers[pw_communicator] == true)
                                 I_StartVoice(DEH_String("VOC219"));
 
-                            I_SteamSetAchievement("SVE_ACH_FLAME_CHAIN");
+                            gAppServices->SetAchievement("SVE_ACH_FLAME_CHAIN");
                         }
-                        else
-#endif
-                        if(players[consoleplayer].powers[pw_communicator] == true &&
-                            !(M_Random() & 3) && !classicmode)
+                        else if(players[consoleplayer].powers[pw_communicator] == true &&
+                                !(M_Random() & 3) && !classicmode)
                         {
                             I_StartVoice(DEH_String("VOC219"));
                         }

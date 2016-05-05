@@ -21,6 +21,7 @@
 
 #include "i_ffmpeg.h"
 #include "i_video.h"
+#include "i_social.h"
 #include "i_system.h"
 #include "i_joystick.h"
 #include "rb_main.h"
@@ -1228,6 +1229,7 @@ void I_AVStartVideoStream(const char *filename)
         if(!I_AVCapFrameRate())
         {
             I_AVDrawVideoStream();
+            gAppServices->Update();
         }
     }
     

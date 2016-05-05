@@ -46,9 +46,7 @@
 
 #include "textscreen.h"
 
-#if defined(_USE_STEAM_)
-#include "steamService.h"
-#endif
+#include "i_social.h"
 
 static txt_window_t *window;
 static int old_max_players;
@@ -482,10 +480,8 @@ void NET_WaitForSteamLaunch(void)
 
         I_StartTic();
 
-#if defined(_USE_STEAM_)
         // RUN CALLBACKS
-        I_SteamUpdate();
-#endif
+        gAppServices->Update();
         
         while((ev = D_PopEvent()))
         {
@@ -522,10 +518,8 @@ void NET_WaitForSteamLaunch(void)
         if(!net_client_connected)
             I_Error("Lost connection to server");
 
-#if defined(_USE_STEAM_)
         // RUN CALLBACKS
-        I_SteamUpdate();
-#endif
+        gAppServices->Update();
 
         I_FinishUpdate();
         I_Sleep(100);        
@@ -552,10 +546,8 @@ void NET_RenderSteamServerStart(void)
     if(net_SteamNodeType != NET_STEAM_SERVER)
         M_WriteText((SCREENWIDTH - strWaitWidth)/2, 100, strWait);
 
-#if defined(_USE_STEAM_)
     // RUN CALLBACKS
-    I_SteamUpdate();
-#endif
+    gAppServices->Update();
 
     I_FinishUpdate();
 }

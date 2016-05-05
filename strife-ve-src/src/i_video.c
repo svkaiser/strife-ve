@@ -61,9 +61,7 @@
 #include "fe_frontend.h"
 #include "m_help.h"
 
-#ifdef _USE_STEAM_
-#include "steamService.h"
-#endif
+#include "i_social.h"
 
 // [SVE]: Track whether or not we see mouse events
 boolean i_seemouses;
@@ -415,6 +413,9 @@ static void UpdateFocus(void)
 
     window_focused = (state & SDL_APPINPUTFOCUS) && (state & SDL_APPACTIVE);
 
+    if(gAppServices->OverlayActive())
+        window_focused = false;
+
     // Should the screen be grabbed?
 
     screenvisible = (state & SDL_APPACTIVE) != 0;
@@ -637,10 +638,8 @@ void I_ShutdownGraphics(void)
 //
 void I_StartFrame (void)
 {
-#ifdef _USE_STEAM_
     // [SVE] svillarreal
-    I_SteamUpdate();
-#endif
+    gAppServices->Update();
 }
 
 //
@@ -836,6 +835,7 @@ void I_GetAbsoluteMousePosition(int *x, int *y)
 
 void I_GetEvent(void)
 {
+    static boolean ate_shift_tab;
     SDL_Event sdlevent;
     event_t event;
 
@@ -843,10 +843,24 @@ void I_GetEvent(void)
     
     SDL_PumpEvents();
 
+    // haleyjd: [SVE] overlays with shift+tab issues need to purge the event 
+    // queue and update focus status when exiting the overlay.
+    if(ate_shift_tab && !gAppServices->OverlayActive())
+    {
+        SDL_Event ev;
+        while(SDL_PollEvent(&ev));
+        SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+        UpdateFocus();
+        ate_shift_tab = false;
+    }
+
     // put event-grabbing stuff in here
     
     while (SDL_PollEvent(&sdlevent))
     {
+        if(gAppServices->OverlayEventFilter(sdlevent.type))
+            continue;
+
         // ignore mouse events when the window is not focused
 
         if (!window_focused 
@@ -869,6 +883,19 @@ void I_GetEvent(void)
         switch (sdlevent.type)
         {
             case SDL_KEYDOWN:
+                // haleyjd: [SVE] some overlays have an issue with shift+tab
+                if(gAppServices->OverlayEatsShiftTab())
+                {
+                    // Going into the overlay?
+                    if(sdlevent.key.keysym.sym == SDLK_TAB && shiftdown)
+                    {
+                        // ignore the event and remember it
+                        ate_shift_tab = true;
+                        SDL_EnableKeyRepeat(0, 0);
+                        break;
+                    }
+                }
+
                 // data1 has the key pressed, data2 has the character
                 // (shift-translated, etc)
                 event.type = ev_keydown;
@@ -981,8 +1008,24 @@ static void CenterMouse(void)
 static void I_ReadMouse(void)
 {
     static int last_x = 0, last_y = 0;
+    static boolean did_filter = false;
     int x, y;
     event_t ev;
+
+    // if the app services overlay would filter out mouse motion events,
+    // then do not read the raw mouse position here either.
+    if(gAppServices->OverlayEventFilter(SDL_MOUSEMOTION))
+    {
+        did_filter = true;
+        return;
+    }
+    else if(did_filter)
+    {
+        // we need to warp the mouse if the condition above was true and 
+        // then stops being so.
+        CenterMouse();
+        did_filter = false;
+    }
 
 #if SDL_VERSION_ATLEAST(1, 3, 0)
     SDL_GetRelativeMouseState(0, &x, &y);
@@ -1330,7 +1373,7 @@ void I_FinishUpdate (void)
             RB_DrawPatchBuffer();
         }
 
-        if(show_visual_cursor)
+        if(show_visual_cursor && !gAppServices->OverlayActive())
         {
             if(i_seemouses || !i_seejoysticks) // haleyjd 20141202: this is overtime work.
             {

@@ -31,6 +31,7 @@
 #include "m_misc.h"
 #include "v_video.h"
 #include "w_wad.h"
+#include "i_social.h"
 
 #include "fe_commands.h"
 #include "fe_frontend.h"
@@ -48,7 +49,9 @@
 static femenuitem_t mainMenuItems[] =
 {
     { FE_MITEM_CMD, "Start Game",  "go",      FE_FONT_BIG },
+#ifdef I_APPSERVICES_NETWORKING
     { FE_MITEM_CMD, "Multiplayer", "multi",   FE_FONT_BIG },
+#endif
     { FE_MITEM_CMD, "Options",     "options", FE_FONT_BIG },
     { FE_MITEM_CMD, "Quit",        "exit",    FE_FONT_BIG },
     { FE_MITEM_END, "",            ""                     }
@@ -786,7 +789,7 @@ static void FE_DrawAboutMenu(void)
 
     y += 11;
 
-    FE_WriteSmallTextCentered(y, "Copyright 2014 Night Dive Studios");
+    FE_WriteSmallTextCentered(y, "Copyright 2015 Night Dive Studios");
 }
 
 static femenu_t optionsMenuAbout =
@@ -823,8 +826,8 @@ static femenuitem_t optionsAboutItems2[] =
 // Others are courtesy to end user and to the Chocolate Doom team.
 static const char *licText =
 "The \"Strife: Veteran Edition\" program code is Free Software available under the "
-"GNU GPL v2.0. See the SRCLICENSE.txt file in your Steam directory for details.\n\n"
-"Based on \"Chocolate Strife\", (c) 2014 Simon Howard et al.\n\n"
+"GNU GPL v2.0. See the SRCLICENSE.txt file in your " I_APPSERVICES_PLATFORMNAME " directory for details.\n\n"
+"Based on \"Chocolate Strife\", (c) 2015 Simon Howard et al.\n\n"
 "FFmpeg is used under terms of the LGPL 2.1\n"
 "See https://www.ffmpeg.org\n\n"
 "SDL is used under terms of the LGPL 2.1\n"

@@ -65,6 +65,7 @@
 // [SVE]
 #include "fe_frontend.h"
 #include "fe_graphics.h"
+#include "i_social.h"
 
 // declared here because the rb_** headers causes msvc to throw a big fuss
 void RB_InitExtraHudTextures(void);
@@ -2320,7 +2321,7 @@ boolean M_Responder (event_t* ev)
             // building with Steam support, don't enable local ones here, as
             // this causes two copies of the shot to be written. Do eat the
             // key though, because the Steam popup is going to come up.
-#ifndef _USE_STEAM_
+#ifndef I_APPSERVICES_SCREENSHOTS
             // haleyjd 20130301: 1.31 moved screenshots to F12.
             G_ScreenShot();
 #endif

@@ -44,6 +44,7 @@
 #include "sounds.h"
 
 // [SVE]
+#include "i_social.h"
 #include "net_client.h"
 #include "p_spec.h"
 
@@ -79,7 +80,7 @@ char *chat_macros[10] =
     HUSTR_CHATMACRO9
 };
 
-#ifndef _USE_STEAM_
+#ifndef I_APPSERVICES_NETWORKING
 // villsa [STRIFE]
 char player_names[8][16] =
 {
@@ -132,10 +133,8 @@ static int              notification_pos;
 static int              notification_y;
 static boolean          showfragschart;
 
-#ifndef _USE_STEAM_
 // haleyjd 20130915 [STRIFE]: need nickname
 extern char *nickname;
-#endif
 
 // haleyjd 20130915 [STRIFE]: true if setting nickname
 static boolean hu_setting_name = false;
@@ -235,7 +234,7 @@ void HU_Init(void)
         ffont[i] = (patch_t *) W_CacheLumpName(fefbuf, PU_STATIC);
     }
 
-#ifdef _USE_STEAM_
+#ifdef I_APPSERVICES_NETWORKING
     for(i = 0; i < MAXPLAYERS; i++)
         M_snprintf(player_names[i], sizeof(player_names[i]), "%d: ", i+1);
 #endif
@@ -331,7 +330,7 @@ void HU_Start(void)
 
         headsupactive = true;
 
-#ifndef _USE_STEAM_
+#ifndef I_APPSERVICES_NETWORKING
         // haleyjd 09/18/10: [STRIFE] nickname weirdness. 
         if(nickname != player_names[consoleplayer])
         {
@@ -416,7 +415,6 @@ void HU_SetNotification(char *message)
 //
 void HU_NotifyCheating(player_t *pl)
 {
-#ifdef _USE_STEAM_
     if(!pl || !(pl->cheats & CF_CHEATING))
     {
         // only one at a time plz
@@ -435,7 +433,6 @@ void HU_NotifyCheating(player_t *pl)
         if(pl)
             pl->cheats |= CF_CHEATING;
     }
-#endif
 }
 
 // 
@@ -644,7 +641,7 @@ void HU_Ticker(void)
                         {
                             // haleyjd 20130915 [STRIFE]: set player name
                             DEH_snprintf(player_names[i], sizeof(player_names[i]),
-#ifdef _USE_STEAM_
+#ifdef I_APPSERVICES_NETWORKING
                                          "%.27s: ", 
 #else
                                          "%.13s: ",
@@ -866,7 +863,7 @@ boolean HU_Responder(event_t *ev)
                         // [SVE]: display pretty player name
                         char *oldName = HUlib_makePrettyPlayerName(consoleplayer);
                         DEH_snprintf(lastmessage, sizeof(lastmessage),
-#ifdef _USE_STEAM_
+#ifdef I_APPSERVICES_NETWORKING
                             "%s now %.27s", 
 #else
                             "%s now %.13s",
@@ -878,7 +875,7 @@ boolean HU_Responder(event_t *ev)
                         // set name for local client
                         M_snprintf(player_names[consoleplayer],
                             sizeof(player_names[consoleplayer]),
-#ifdef _USE_STEAM_
+#ifdef I_APPSERVICES_NETWORKING
                             "%.27s: ",
 #else
                             "%.13s: ",

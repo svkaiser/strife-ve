@@ -29,9 +29,7 @@
 
 // [SVE] svillarreal
 #include "m_parser.h"
-#ifdef _USE_STEAM_
-#include "steamService.h"
-#endif
+#include "i_social.h"
 
 //
 // D_DoomMain()
@@ -120,16 +118,24 @@ static void LockCPUAffinity(void)
 
 #else
 
-#warning No known way to set processor affinity on this platform.
-#warning You may experience crashes due to SDL_mixer.
+// [SVE]: this is unused.
+//#warning No known way to set processor affinity on this platform.
+//#warning You may experience crashes due to SDL_mixer.
 
 static void LockCPUAffinity(void)
 {
+#if 0
     fprintf(stderr, 
     "WARNING: No known way to set processor affinity on this platform.\n"
     "         You may experience crashes due to SDL_mixer.\n");
+#endif
 }
 
+#endif
+
+// haleyjd 20140821: [SVE] debug console
+#if defined(_WIN32) && defined(_DEBUG)
+void I_W32_DebugConsole(void);
 #endif
 
 #if defined(__APPLE__)
@@ -143,14 +149,19 @@ int main(int argc, char **argv)
     myargc = argc;
     myargv = argv;
 
-#ifdef _USE_STEAM_
-    // [SVE] svillarreal - initialize steam
-    if(I_SteamCheckForRestart())
+    // haleyjd 20140821: [SVE] open debug console
+#if defined(_WIN32) && defined(_DEBUG)
+    I_W32_DebugConsole();
+#endif
+
+    // [SVE] initialize application services provider
+    I_InitAppServices();
+
+    if(gAppServices->CheckForRestart())
         return 1;
 
-    I_SteamInit();
-    I_AtExit(I_SteamShutdown, true);
-#endif
+    gAppServices->Init();
+    I_AtExit(gAppServices->Shutdown, true);
 
     // Only schedule on a single core, if we have multiple
     // cores.  This is to work around a bug in SDL_mixer.

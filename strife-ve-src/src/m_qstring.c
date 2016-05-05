@@ -596,7 +596,6 @@ char *QStrCDupAuto(qstring_t *qstr)
 // Case Handling
 //
 
-#if 0
 //
 // QStrLwr
 //
@@ -618,7 +617,6 @@ qstring_t *QStrUpr(qstring_t *qstr)
    M_Strupr(qstr->buffer);
    return qstr;
 }
-#endif
 
 //=============================================================================
 //

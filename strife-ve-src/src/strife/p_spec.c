@@ -56,9 +56,7 @@
 #include "rb_sky.h"
 
 // [SVE] svillarreal
-#ifdef _USE_STEAM_
-#include "steamService.h"
-#endif
+#include "i_social.h"
 
 //
 //      source animation definition
@@ -1060,13 +1058,11 @@ P_CrossSpecialLine
             break;
 
         // [SVE] svillarreal - stealth achievement
-#ifdef _USE_STEAM_
         if(line->tag == 2313 && gamemap == 4)
         {
             if(!P_CheckPlayersCheating(ACH_ALLOW_SP) && !P_ClaxonsActive())
-                I_SteamSetAchievement("SVE_ACH_STEALTH");
+                gAppServices->SetAchievement("SVE_ACH_STEALTH");
         }
-#endif
 
         // must have comm unit
         if(!(thing->player->powers[pw_communicator]))
@@ -1562,18 +1558,16 @@ void P_PlayerInSpecialSector (player_t* player)
             }
             S_StartSound(NULL, sfx_yeah);
 
-#ifdef _USE_STEAM_
             // [SVE] svillarreal - tally secrets found
             if(!P_CheckPlayersCheating(ACH_ALLOW_SP))
             {
-                if(!I_SteamHasAchievement("SVE_ACH_COMPLETIONIST"))
+                if(!gAppServices->HasAchievement("SVE_ACH_COMPLETIONIST"))
                 {
-                    I_SteamSetAchievementProgress("SVE_ACH_COMPLETIONIST", ++player->secretcount, 16);
+                    gAppServices->SetAchievementProgress("SVE_ACH_COMPLETIONIST", ++player->secretcount, 16);
                     if(player->secretcount >= 16)
-                        I_SteamSetAchievement("SVE_ACH_COMPLETIONIST");
+                        gAppServices->SetAchievement("SVE_ACH_COMPLETIONIST");
                 }
             }
-#endif
         }
         break;
 

@@ -45,9 +45,7 @@
 #include "hu_lib.h"
 
 // [SVE] svillarreal
-#ifdef _USE_STEAM_
-#include "steamService.h"
-#endif
+#include "i_social.h"
 #include "i_system.h"
 
 //
@@ -1219,13 +1217,11 @@ boolean P_GiveItemToPlayer(player_t *player, int sprnum, mobjtype_t type)
                 HU_SetNotification("Stamina +10!");
 
             // [SVE] svillarreal
-#ifdef _USE_STEAM_
             if(!P_CheckPlayersCheating(ACH_ALLOW_SP))
             {
                 if(player->stamina >= 100 && player->accuracy >= 100)
-                    I_SteamSetAchievement("SVE_ACH_FULLY_AMPHED");
+                    gAppServices->SetAchievement("SVE_ACH_FULLY_AMPHED");
             }
-#endif
             break;
 
         case MT_TOKEN_NEW_ACCURACY: // Accuracy upgrade
@@ -1239,13 +1235,11 @@ boolean P_GiveItemToPlayer(player_t *player, int sprnum, mobjtype_t type)
                 HU_SetNotification("Accuracy +10!");
 
             // [SVE] svillarreal
-#ifdef _USE_STEAM_
             if(!P_CheckPlayersCheating(ACH_ALLOW_SP))
             {
                 if(player->stamina >= 100 && player->accuracy >= 100)
-                    I_SteamSetAchievement("SVE_ACH_FULLY_AMPHED");
+                    gAppServices->SetAchievement("SVE_ACH_FULLY_AMPHED");
             }
-#endif
             break;
 
         case MT_SLIDESHOW: // Slideshow (start a finale)
@@ -1512,13 +1506,13 @@ void P_DialogDoChoice(int choice)
                                  currentchoice->needamounts[count]);
             }
 
-#ifdef _USE_STEAM_
             // [SVE] svillarreal - silence is golden achievement
             // triggered after receiving the commlink from Rowan
             if(gamemap == 2 && dialogtalker->type == MT_PEASANT6_A &&
                 item == MT_INV_COMMUNICATOR && !(dialogplayer->cheats & CF_CHEATING))
-                I_SteamSetAchievement("SVE_ACH_SILENCE_IS_GOLDEN");
-#endif
+            {
+                gAppServices->SetAchievement("SVE_ACH_SILENCE_IS_GOLDEN");
+            }
         }
         else
             message = rejectgivemsg; // [SVE]: could be overridden by particular items

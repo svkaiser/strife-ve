@@ -48,6 +48,8 @@ char *M_SafeFilePath(const char *basepath, const char *newcomponent);
 char  M_GetFilePath(const char *fn, char *dest, size_t len);
 char *M_MakeStrifeSaveDir(int slotnum, const char *extra);
 void  M_CreateSaveDirs(const char *savedir);
+char *M_Strupr(char *string);
+char *M_Strlwr(char *string);
 
 #endif
 

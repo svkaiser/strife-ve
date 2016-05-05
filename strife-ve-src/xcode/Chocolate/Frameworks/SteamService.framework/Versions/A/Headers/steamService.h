@@ -17,19 +17,6 @@
 #define KAPI
 #endif
 
-// Return values from I_SteamLobbyPollState
-// Must match ssLobby enumeration
-enum
-{
-    I_LOBBY_STATE_UNINITED,      // uninitialized
-    I_LOBBY_STATE_CREATING,      // trying to create
-    I_LOBBY_STATE_JOINING,       // trying to join existing
-    I_LOBBY_STATE_INLOBBY,       // currently in lobby
-    I_LOBBY_STATE_CREATEFAILED,  // creation of a lobby failed
-    I_LOBBY_STATE_JOINFAILED,    // join of a lobby failed
-    I_LOBBY_STATE_GAMESTARTING   // game wants to start
-};
-
 #ifdef __cplusplus
 extern "C"
 {

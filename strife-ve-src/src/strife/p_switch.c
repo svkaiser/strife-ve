@@ -44,9 +44,7 @@
 #include "r_state.h"
 
 // [SVE] svillarreal
-#ifdef _USE_STEAM_
-#include "steamService.h"
-#endif
+#include "i_social.h"
 
 //
 // CHANGE THE TEXTURE OF A WALL SWITCH TO ITS OPPOSITE
@@ -1026,11 +1024,9 @@ boolean P_UseSpecialLine(mobj_t* thing, line_t* line, int side)
                 DEH_String("Congratulations! You have completed the training area."));
             thing->player->message = usemessage;
 
-#ifdef _USE_STEAM_
             // [SVE] svillarreal - top of the class achievement
             if(!P_CheckPlayersCheating(ACH_ALLOW_SP) && gamemap == 31)
-                I_SteamSetAchievement("SVE_ACH_TOP_OF_THE_CLASS");
-#endif
+                gAppServices->SetAchievement("SVE_ACH_TOP_OF_THE_CLASS");
         }
         break;
 

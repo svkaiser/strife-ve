@@ -42,9 +42,9 @@
 #include "w_checksum.h"
 #include "w_wad.h"
 
-#ifdef _USE_STEAM_
-#include "steamService.h"
+#include "i_social.h"
 
+#ifdef I_APPSERVICES_NETWORKING
 // haleyjd 20141023: globally available player persona names
 char player_names[NET_MAXPLAYERS][MAXPLAYERNAME];
 #endif
@@ -441,7 +441,10 @@ void NET_CL_SendTiccmd(ticcmd_t *ticcmd, int maketic)
 
 static void NET_CL_ParseWaitingData(net_packet_t *packet)
 {
+#ifdef I_APPSERVICES_NETWORKING
     int i;
+#endif
+
     net_waitdata_t wait_data;
 
     if (!NET_ReadWaitData(packet, &wait_data))
@@ -468,7 +471,7 @@ static void NET_CL_ParseWaitingData(net_packet_t *packet)
         return;
     }
 
-#ifdef _USE_STEAM_
+#ifdef I_APPSERVICES_NETWORKING
     // haleyjd 20141023: copy player names to global var
     for(i = 0; i < wait_data.num_players; i++)
     {
@@ -938,6 +941,10 @@ static void NET_CL_SendSYN(net_connect_data_t *data)
 {
     net_packet_t *packet;
 
+    // haleyjd [SVE]: if local player name is missing, try to get it again
+    if(net_player_name == NULL || *net_player_name == '\0')
+        NET_CL_Init();
+
     packet = NET_NewPacket(10);
     NET_WriteInt16(packet, NET_PACKET_TYPE_SYN);
     NET_WriteInt32(packet, NET_MAGIC_NUMBER);
@@ -1096,13 +1103,13 @@ void NET_CL_Disconnect(void)
     NET_CL_Shutdown();
 }
 
-#ifdef _USE_STEAM_
+#ifdef I_APPSERVICES_NETWORKING
 static char *NET_CL_GetSteamName(void)
 {
-    qstring_t qstr;
+    static qstring_t qstr;
 
-    QStrInitCreate(&qstr);
-    QStrCopy(&qstr, I_SteamGetLocalUserName());
+    QStrClearOrCreate(&qstr, 32);
+    QStrCopy(&qstr, gAppServices->GetLocalUserName());
 
     if(QStrLen(&qstr) >= MAXPLAYERNAME)
         QStrTruncate(&qstr, MAXPLAYERNAME - 1);
@@ -1117,9 +1124,9 @@ static char *NET_CL_GetSteamName(void)
 
 void NET_CL_Init(void)
 {
-#ifdef _USE_STEAM_
+#ifdef I_APPSERVICES_NETWORKING
     // haleyjd [SVE]: use Steam persona name
-    if (net_player_name == NULL)
+    if (net_player_name == NULL || *net_player_name == '\0')
     {
         net_player_name = NET_CL_GetSteamName();
     }

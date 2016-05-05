@@ -22,6 +22,7 @@
 #include "d_event.h"
 #include "v_patch.h"
 #include "d_player.h"
+#include "i_social.h"
 
 //
 // Globally visible constants.
@@ -64,7 +65,7 @@ void HU_NotifyCheating(player_t *pl);
 
 extern char *chat_macros[10];
 
-#ifndef _USE_STEAM_
+#ifndef I_APPSERVICES_NETWORKING
 extern char player_names[8][16];   // villsa [STRIFE]
 #endif
 

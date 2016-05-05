@@ -17,7 +17,9 @@
 #ifndef NET_STEAMWORKS_H__
 #define NET_STEAMWORKS_H__
 
-#ifdef _USE_STEAM_
+#include "i_social.h"
+
+#ifdef I_APPSERVICES_NETWORKING
 extern net_module_t net_steamworks_module;
 #endif
 

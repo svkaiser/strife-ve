@@ -45,10 +45,8 @@
 #include "f_finale.h"
 #include "p_inter.h"
 
-// [SVE] svillarreal
-#ifdef _USE_STEAM_
-#include "steamService.h"
-#endif
+// [SVE]
+#include "i_social.h"
 
 // Forward Declarations:
 void A_RandomWalk(mobj_t *);
@@ -1470,7 +1468,7 @@ void A_ReaverAttack(mobj_t* actor)
     {
         int     t          = P_Random();
         angle_t shootangle = actor->angle + ((t - P_Random()) << 20);
-        int     damage     = (P_Random() & 7) + 1;
+        int     damage     = 3*((P_Random() & 7) + 1);
 
         P_LineAttack(actor, shootangle, 2048*FRACUNIT, slope, damage);
         ++i;
@@ -2448,7 +2446,7 @@ void A_ProgrammerMelee(mobj_t* actor)
     A_FaceTarget(actor);
     if(P_CheckMeleeRange(actor))
     {
-        int damage = 8 * (P_Random() % 10 + 1);
+        int damage = 6 * (P_Random() % 10 + 1);
         
         S_StartSound(actor, sfx_mtalht);
         P_DamageMobj(actor->target, actor, actor, damage);
@@ -2776,6 +2774,12 @@ void A_SpawnEntity(mobj_t* actor)
     entity_pos_x = mo->x;
     entity_pos_y = mo->y;
     entity_pos_z = mo->z;
+
+    // haleyjd 20150409: [SVE] Do not spawn the subentities out in the void 
+    // after loading badly timed save games.
+    mo->spawnpoint.x     = mo->x / FRACUNIT;
+    mo->spawnpoint.y     = mo->y / FRACUNIT;
+    mo->spawnpoint.angle = mo->z / FRACUNIT;
 }
 
 //
@@ -2807,6 +2811,16 @@ void A_EntityDeath(mobj_t* actor)
     fixed_t dist;
 
     dist = 2 * mobjinfo[MT_SUBENTITY].radius;
+
+    // haleyjd 20150409: [SVE] Do not spawn the subentities out in the void if
+    // loading a badly timed savegame.
+    if(entity_pos_x == 0 && entity_pos_y == 0 && entity_pos_z == 0)
+    {
+        // the positions were serialized in actor->spawnpoint.
+        entity_pos_x = actor->spawnpoint.x     << FRACBITS;
+        entity_pos_y = actor->spawnpoint.y     << FRACBITS;
+        entity_pos_z = actor->spawnpoint.angle << FRACBITS;
+    }
 
     // Subentity One
     an = actor->angle >> ANGLETOFINESHIFT;
@@ -2938,11 +2952,9 @@ void P_FreePrisoners(void)
         players[i].message = pmsgbuffer;
     }
 
-// [SVE] svillarreal - lending a hand achievement
-#ifdef _USE_STEAM_
+    // [SVE] svillarreal - lending a hand achievement
     if(!P_CheckPlayersCheating(ACH_ALLOW_SP) && gamemap == 5)
-        I_SteamSetAchievement("SVE_ACH_PRISONERS");
-#endif
+        gAppServices->SetAchievement("SVE_ACH_PRISONERS");
 }
 
 //
@@ -3542,6 +3554,9 @@ void A_TeleportBeacon(mobj_t* actor)
 
     // beacon no longer special
     actor->flags &= ~MF_SPECIAL;
+
+    // 20160306: set rebel threshold
+    mobj->threshold = 100;
 
     // set color and flags
     // [SVE]: determine by source player allegiance in CTC mode
