@@ -38,9 +38,8 @@
 #include "w_wad.h"
 #include "i_social.h"
 
-#ifdef I_APPSERVICES_NETWORKING
+// [SVE]: for player names
 #include "net_client.h"
-#endif
 
 // boolean : whether the screen is always erased
 #define noterased viewwindowx

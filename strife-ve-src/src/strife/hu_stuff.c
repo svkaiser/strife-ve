@@ -80,21 +80,6 @@ char *chat_macros[10] =
     HUSTR_CHATMACRO9
 };
 
-#ifndef I_APPSERVICES_NETWORKING
-// villsa [STRIFE]
-char player_names[8][16] =
-{
-    "1: ",
-    "2: ",
-    "3: ",
-    "4: ",
-    "5: ",
-    "6: ",
-    "7: ",
-    "8: "
-};
-#endif
-
 char                    chat_char; // remove later.
 static player_t*        plr;
 patch_t*                hu_font[HU_FONTSIZE];
@@ -234,10 +219,9 @@ void HU_Init(void)
         ffont[i] = (patch_t *) W_CacheLumpName(fefbuf, PU_STATIC);
     }
 
-#ifdef I_APPSERVICES_NETWORKING
+    // [SVE]
     for(i = 0; i < MAXPLAYERS; i++)
         M_snprintf(player_names[i], sizeof(player_names[i]), "%d: ", i+1);
-#endif
 }
 
 //
@@ -329,18 +313,6 @@ void HU_Start(void)
             HUlib_initIText(&w_inputbuffer[i], 0, 0, 0, 0, &always_off);
 
         headsupactive = true;
-
-#ifndef I_APPSERVICES_NETWORKING
-        // haleyjd 09/18/10: [STRIFE] nickname weirdness. 
-        if(nickname != player_names[consoleplayer])
-        {
-            if(nickname != NULL && *nickname)
-            {
-                DEH_printf("have one\n");
-                nickname = player_names[consoleplayer];
-            }
-        }
-#endif
     }
 }
 
@@ -641,11 +613,7 @@ void HU_Ticker(void)
                         {
                             // haleyjd 20130915 [STRIFE]: set player name
                             DEH_snprintf(player_names[i], sizeof(player_names[i]),
-#ifdef I_APPSERVICES_NETWORKING
                                          "%.27s: ", 
-#else
-                                         "%.13s: ",
-#endif
                                          w_inputbuffer[i].l.l);
                         }
                         HUlib_resetIText(&w_inputbuffer[i]);
@@ -863,11 +831,7 @@ boolean HU_Responder(event_t *ev)
                         // [SVE]: display pretty player name
                         char *oldName = HUlib_makePrettyPlayerName(consoleplayer);
                         DEH_snprintf(lastmessage, sizeof(lastmessage),
-#ifdef I_APPSERVICES_NETWORKING
                             "%s now %.27s", 
-#else
-                            "%s now %.13s",
-#endif
                             oldName,
                             w_chat.l.l);
                         Z_Free(oldName);
@@ -875,11 +839,7 @@ boolean HU_Responder(event_t *ev)
                         // set name for local client
                         M_snprintf(player_names[consoleplayer],
                             sizeof(player_names[consoleplayer]),
-#ifdef I_APPSERVICES_NETWORKING
                             "%.27s: ",
-#else
-                            "%.13s: ",
-#endif
                             w_chat.l.l);
                         hu_setting_name = false;
                     }

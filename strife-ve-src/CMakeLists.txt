@@ -40,13 +40,18 @@ set(PROGRAM_PREFIX "chocolate-")
 
 option(ENABLE_SDL2 "Build with SDL2 support." OFF)
 option(ENABLE_STEAM "Build with Steamworks support." OFF)
+option(ENABLE_GOG "Build GOG version for Linux." OFF)
 
 if(ENABLE_STEAM)
    set(ENABLE_STEAM_RUNTIME ON)
    set(ENABLE_STEAM_SERVICE ON)
+elseif(ENABLE_GOG)
+   set(ENABLE_STEAM_RUNTIME ON)
+   set(ENABLE_STEAM_SERVICE OFF)
 endif()
 
 # If building for Steam, steam_api, FFMPEG, and SDL_net are all in the local dir.
+# Same deal for GOG build
 if(ENABLE_STEAM_RUNTIME)
    set(CMAKE_INSTALL_RPATH "\$ORIGIN")
    set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
@@ -109,8 +114,8 @@ else()
         include_directories(${SDL_NET_INCLUDE_DIR})
         add_link_libraries(${SDL_NET_LIBRARIES})
 
-	message(STATUS >>DIRS>> ${SDL_NET_INCLUDE_DIRS})
-	message(STATUS >>DIR>> ${SDL_NET_INCLUDE_DIR})
+        message(STATUS >>DIRS>> ${SDL_NET_INCLUDE_DIRS})
+        message(STATUS >>DIR>> ${SDL_NET_INCLUDE_DIR})
     endif()
     
     # SDL_mixer

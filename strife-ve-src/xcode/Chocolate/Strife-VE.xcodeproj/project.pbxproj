@@ -355,7 +355,6 @@
 		D847A5021CD6B26100018166 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41C1EEA51A25406500265380 /* libpng.a */; };
 		D847A5031CD6B26100018166 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 41BAC59319D9C05E0098CFFD /* libz.dylib */; };
 		D847A5041CD6B26100018166 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41B30AD819CA17BF0023A235 /* Cocoa.framework */; };
-		D847A5051CD6B26100018166 /* SteamService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41BA10981A1BB78600A5EB23 /* SteamService.framework */; };
 		D847A5061CD6B26100018166 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41BA10971A1BB78600A5EB23 /* SDL.framework */; };
 		D847A5071CD6B26100018166 /* liblibopl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41B30D2819CA1E9F0023A235 /* liblibopl.a */; };
 		D847A5081CD6B26100018166 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41BA10951A1BB78600A5EB23 /* SDL_mixer.framework */; };
@@ -368,7 +367,6 @@
 		D847A5111CD6B26100018166 /* SDL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41BA10971A1BB78600A5EB23 /* SDL.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D847A5121CD6B26100018166 /* SDL_mixer.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41BA10951A1BB78600A5EB23 /* SDL_mixer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D847A5131CD6B26100018166 /* SDL_net.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41BA10961A1BB78600A5EB23 /* SDL_net.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		D847A5141CD6B26100018166 /* SteamService.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41BA10981A1BB78600A5EB23 /* SteamService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D847A5161CD6B26100018166 /* libavcodec.56.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41BDB76D1A3228D1002C912E /* libavcodec.56.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D847A5171CD6B26100018166 /* libavformat.56.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41BDB7751A3228F5002C912E /* libavformat.56.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D847A5181CD6B26100018166 /* libavutil.54.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41BDB7731A3228EE002C912E /* libavutil.54.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -379,6 +377,9 @@
 		D847A5241CD6B64300018166 /* libavcodec.56.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 41BDB76D1A3228D1002C912E /* libavcodec.56.dylib */; };
 		D847A52B1CD6B7A000018166 /* i_steamservices.c in Sources */ = {isa = PBXBuildFile; fileRef = D847A5291CD6B7A000018166 /* i_steamservices.c */; };
 		D847A52C1CD6B7A000018166 /* i_steamservices.c in Sources */ = {isa = PBXBuildFile; fileRef = D847A5291CD6B7A000018166 /* i_steamservices.c */; };
+		D8620D991CDED50900AAB04A /* GOGService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8620D981CDED50900AAB04A /* GOGService.framework */; };
+		D8620DD61CDEDB0B00AAB04A /* i_galaxyservices.c in Sources */ = {isa = PBXBuildFile; fileRef = D8620DD41CDEDB0B00AAB04A /* i_galaxyservices.c */; };
+		D8620DD91CDEDDBD00AAB04A /* GOGService.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = D8620D981CDED50900AAB04A /* GOGService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -516,10 +517,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				D8620DD91CDEDDBD00AAB04A /* GOGService.framework in CopyFiles */,
 				D847A5111CD6B26100018166 /* SDL.framework in CopyFiles */,
 				D847A5121CD6B26100018166 /* SDL_mixer.framework in CopyFiles */,
 				D847A5131CD6B26100018166 /* SDL_net.framework in CopyFiles */,
-				D847A5141CD6B26100018166 /* SteamService.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -880,6 +881,9 @@
 		D847A5211CD6B3B600018166 /* i_social.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = i_social.h; path = ../../../src/i_social.h; sourceTree = "<group>"; };
 		D847A5291CD6B7A000018166 /* i_steamservices.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = i_steamservices.c; path = ../../../src/i_steamservices.c; sourceTree = "<group>"; };
 		D847A52A1CD6B7A000018166 /* i_steamservices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = i_steamservices.h; path = ../../../src/i_steamservices.h; sourceTree = "<group>"; };
+		D8620D981CDED50900AAB04A /* GOGService.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GOGService.framework; path = Frameworks/GOGService.framework; sourceTree = "<group>"; };
+		D8620DD41CDEDB0B00AAB04A /* i_galaxyservices.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = i_galaxyservices.c; path = ../../../src/i_galaxyservices.c; sourceTree = "<group>"; };
+		D8620DD51CDEDB0B00AAB04A /* i_galaxyservices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = i_galaxyservices.h; path = ../../../src/i_galaxyservices.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -909,6 +913,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8620D991CDED50900AAB04A /* GOGService.framework in Frameworks */,
 				D847A4FD1CD6B26100018166 /* libavcodec.56.dylib in Frameworks */,
 				D847A4FE1CD6B26100018166 /* libswscale.3.dylib in Frameworks */,
 				D847A4FF1CD6B26100018166 /* libavutil.54.dylib in Frameworks */,
@@ -917,7 +922,6 @@
 				D847A5021CD6B26100018166 /* libpng.a in Frameworks */,
 				D847A5031CD6B26100018166 /* libz.dylib in Frameworks */,
 				D847A5041CD6B26100018166 /* Cocoa.framework in Frameworks */,
-				D847A5051CD6B26100018166 /* SteamService.framework in Frameworks */,
 				D847A5061CD6B26100018166 /* SDL.framework in Frameworks */,
 				D847A5071CD6B26100018166 /* liblibopl.a in Frameworks */,
 				D847A5081CD6B26100018166 /* SDL_mixer.framework in Frameworks */,
@@ -952,6 +956,7 @@
 		41B30AD719CA17BF0023A235 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D8620D981CDED50900AAB04A /* GOGService.framework */,
 				41B30D2819CA1E9F0023A235 /* liblibopl.a */,
 				41B30D2619CA1E990023A235 /* libpcsound.a */,
 				41B30D2419CA1E6C0023A235 /* libtextscreen.a */,
@@ -1021,6 +1026,7 @@
 				41B30B3319CA1AF00023A235 /* i_cdmus.c */,
 				41B30B3519CA1AF00023A235 /* i_endoom.c */,
 				41BDB7681A32284F002C912E /* i_ffmpeg.c */,
+				D8620DD41CDEDB0B00AAB04A /* i_galaxyservices.c */,
 				41B30B3719CA1AF00023A235 /* i_glscale.c */,
 				41B30B3919CA1AF00023A235 /* i_joystick.c */,
 				41B30B3B19CA1AF00023A235 /* i_main.c */,
@@ -1091,6 +1097,7 @@
 				41B30B3419CA1AF00023A235 /* i_cdmus.h */,
 				41B30B3619CA1AF00023A235 /* i_endoom.h */,
 				41BDB7691A32284F002C912E /* i_ffmpeg.h */,
+				D8620DD51CDEDB0B00AAB04A /* i_galaxyservices.h */,
 				41B30B3819CA1AF00023A235 /* i_glscale.h */,
 				41B30B3A19CA1AF00023A235 /* i_joystick.h */,
 				41B30B3F19CA1AF00023A235 /* i_scale.h */,
@@ -1840,6 +1847,7 @@
 				D847A4CF1CD6B26100018166 /* w_wad.c in Sources */,
 				D847A4D01CD6B26100018166 /* midifile.c in Sources */,
 				D847A4D11CD6B26100018166 /* r_sky.c in Sources */,
+				D8620DD61CDEDB0B00AAB04A /* i_galaxyservices.c in Sources */,
 				D847A4D21CD6B26100018166 /* rb_config.c in Sources */,
 				D847A4D31CD6B26100018166 /* i_video.c in Sources */,
 				D847A4D41CD6B26100018166 /* v_video.c in Sources */,
@@ -2113,7 +2121,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks/ @executable_path/ @rpath/";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					Build/Products/Debug/,
+					Build/Products/Release/,
 					../../ffmpeg/macosx,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.${PRODUCT_NAME:rfc1034identifier}";
@@ -2142,7 +2150,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
-					_USE_STEAM_,
+					GOG_RELEASE,
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -2158,9 +2166,9 @@
 					Frameworks/SDL.framework/Headers,
 					Frameworks/SDL_net.framework/Headers,
 					Frameworks/SDL_mixer.framework/Headers,
-					Frameworks/SteamService.framework/Headers,
+					"/Users/samuelvillarreal/Desktop/development/gog-service/api/source",
 				);
-				INFOPLIST_FILE = "Strife-VE copy-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Chocolate/Strife-VE-Info.plist";
 				LD_DYLIB_INSTALL_NAME = "";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks/ @executable_path/ @rpath/";
 				LIBRARY_SEARCH_PATHS = (
@@ -2193,7 +2201,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Chocolate/Strife-VE-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = _USE_STEAM_;
+				GCC_PREPROCESSOR_DEFINITIONS = GOG_RELEASE;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
@@ -2208,9 +2216,9 @@
 					Frameworks/SDL.framework/Headers,
 					Frameworks/SDL_net.framework/Headers,
 					Frameworks/SDL_mixer.framework/Headers,
-					Frameworks/SteamService.framework/Headers,
+					"/Users/samuelvillarreal/Desktop/development/gog-service/api/source",
 				);
-				INFOPLIST_FILE = "Strife-VE copy-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Chocolate/Strife-VE-Info.plist";
 				LD_DYLIB_INSTALL_NAME = "";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks/ @executable_path/ @rpath/";
 				LIBRARY_SEARCH_PATHS = (
@@ -2218,7 +2226,8 @@
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/textscreen-dfxbpqniiaemxggdnjtsyzgatein/Build/Products/Debug",
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/pcsound-enchygifspioxdgtzllslcrcqiht/Build/Products/Debug",
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/libopl-djoqtqzxbbseifdekesffgbnypfy/Build/Products/Debug",
-					/Users/svillarreal/Desktop/sve/Strife/ffmpeg/macosx,
+					../../ffmpeg/macosx,
+					Build/Products/Release/,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

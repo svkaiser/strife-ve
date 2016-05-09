@@ -2,10 +2,10 @@
 
 BASEDIR=$(dirname $0)
 APPDIR=./xcode/Chocolate/Build/Products/Release/Prepared
-STEAMDIR=./../SteamService
+STEAMDIR=./../steam-service
 CONTENTDIR=$STEAMDIR/sdk/tools/ContentBuilder/content/strife-ve
 BUILDDIR=$STEAMDIR/sdk/tools/ContentBuilder
-SCRIPTDIR=$STEAMDIR/api/SteamService/buildscripts
+SCRIPTDIR=$STEAMDIR/api/steam-service/buildscripts
 APPNAME=Strife-VE.app
 
 cd $BASEDIR

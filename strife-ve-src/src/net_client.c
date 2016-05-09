@@ -44,10 +44,8 @@
 
 #include "i_social.h"
 
-#ifdef I_APPSERVICES_NETWORKING
-// haleyjd 20141023: globally available player persona names
+// [SVE] haleyjd 20141023: globally available player persona names
 char player_names[NET_MAXPLAYERS][MAXPLAYERNAME];
-#endif
 
 #include "net_steamworks.h"
 
@@ -441,9 +439,7 @@ void NET_CL_SendTiccmd(ticcmd_t *ticcmd, int maketic)
 
 static void NET_CL_ParseWaitingData(net_packet_t *packet)
 {
-#ifdef I_APPSERVICES_NETWORKING
     int i;
-#endif
 
     net_waitdata_t wait_data;
 
@@ -471,14 +467,12 @@ static void NET_CL_ParseWaitingData(net_packet_t *packet)
         return;
     }
 
-#ifdef I_APPSERVICES_NETWORKING
-    // haleyjd 20141023: copy player names to global var
+    // [SVE] haleyjd 20141023: copy player names to global var
     for(i = 0; i < wait_data.num_players; i++)
     {
         M_snprintf(player_names[i], sizeof(player_names[i]),
                    "%.27s: ", wait_data.player_names[i]);
     }
-#endif
 
     memcpy(&net_client_wait_data, &wait_data, sizeof(net_waitdata_t));
     net_client_received_wait_data = true;

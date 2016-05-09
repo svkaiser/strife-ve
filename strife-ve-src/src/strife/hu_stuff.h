@@ -65,10 +65,6 @@ void HU_NotifyCheating(player_t *pl);
 
 extern char *chat_macros[10];
 
-#ifndef I_APPSERVICES_NETWORKING
-extern char player_names[8][16];   // villsa [STRIFE]
-#endif
-
 // [SVE]: do not access level names out of bounds
 #define HU_NUMMAPNAMES 38
 

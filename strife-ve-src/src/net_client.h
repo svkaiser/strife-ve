@@ -51,8 +51,7 @@ extern unsigned int net_local_is_freedoom;
 
 extern boolean drone;
 
-#ifdef I_APPSERVICES_NETWORKING
+// [SVE]
 extern char player_names[NET_MAXPLAYERS][MAXPLAYERNAME];
-#endif
 
 #endif /* #ifndef NET_CLIENT_H */
