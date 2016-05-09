@@ -1,6 +1,6 @@
 Strife: Veteran Edition GPL Source Code
 =======================================
-Copyright 2014, Night Dive Studios, Incorporated.
+Copyright 2016, Night Dive Studios, Incorporated.
 
 This file contains the following sections:
 
@@ -36,12 +36,16 @@ All dependencies and settings should already be set inside the workspace.
 Compiling on Linux:
 -------------------
 
+A CMake build system has been added in version 1.3, and is currently up-to-date.
+
 A project file for Codeblocks is provided in codeblocks/chocolate.workspace
 Before compiling, be sure to compile patchelf first by going into the patchelf/
-directory and then running configure and then make.
+directory and then running configure and then make. The project has not been
+updated for 1.3, so some source files may need to be added before you can 
+build successfully.
 
 Codeblocks uses a post-build step that calls patchelf to set up runtime paths
-for the outputted executable.
+for the output executable.
 
 Trademark disclaimers:
 ----------------------
@@ -56,13 +60,13 @@ No license for use or transfer of ownership in any trademark is implied or
 should be construed.
 
 
-Steam:
-------
+Steam and GOG Galaxy:
+---------------------
 The Strife: Veteran Edition GPL Source Code release does not include 
-functionality for integrating with Steam.  This includes roaming profiles,
-achievements, leaderboards, matchmaking, the overlay, or any other Steam 
-features.  It may be necessary to undefine the _USE_STEAM_ symbol in
-build scripts or project files in order to compile.
+functionality for integrating with Steam or GOG Galaxy.  This includes roaming
+profiles, achievements, leaderboards, matchmaking, the overlay, or any other 
+Steam or Galaxy features.  It may be necessary to undefine the `_USE_STEAM_` or
+`GOG_RELEASE` symbols in build scripts or project files in order to compile.
 
 
 Other platforms, updated source code, security issues:
