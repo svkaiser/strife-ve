@@ -30,7 +30,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 set(SOURCE_ROOT_DIR "${CMAKE_SOURCE_DIR}")
 
 set(PACKAGE_NAME "strife-ve")
-set(PACKAGE_STRING "Strife-VE 1.0.0")
+set(PACKAGE_STRING "Strife-VE 1.3")
 set(PACKAGE_TARNAME "strife-ve")
 set(PROGRAM_PREFIX "chocolate-")
 
