@@ -2556,7 +2556,7 @@ static char *GetDefaultConfigDir(void)
         return M_Strdup(SVE_APPLE_PATH_S);
     }
     else
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__OpenBSD__)
     // Linux defaults
     // Configuration settings are stored in $XDG_DATA_HOME instead of $HOME on Linux.
 
