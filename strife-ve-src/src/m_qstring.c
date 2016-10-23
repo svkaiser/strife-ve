@@ -42,6 +42,7 @@
 #include "i_system.h"
 #include "m_misc.h"
 #include "m_qstring.h"
+#include "m_saves.h"
 
 //=============================================================================
 //

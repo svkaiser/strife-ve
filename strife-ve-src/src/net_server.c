@@ -1926,6 +1926,7 @@ void NET_SV_Shutdown(void)
 
         // Don't hog the CPU
 
+        gAppServices->Update(); // [SVE]: keep app services updating
         I_Sleep(1);
     }
 }

@@ -1089,6 +1089,7 @@ void NET_CL_Disconnect(void)
         NET_CL_Run();
         NET_SV_Run();
 
+        gAppServices->Update(); // [SVE]: keep app services updating
         I_Sleep(1);
     }
 
