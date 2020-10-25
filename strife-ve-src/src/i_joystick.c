@@ -45,7 +45,8 @@ boolean i_seejoysticks;
 // When an axis is within the dead zone, it is set to zero.
 // This is 5% of the full range:
 
-#define DEAD_ZONE (32768 / 3)
+#define INVOKE_DEAD_ZONE (32768 / 4)
+#define DIRECT_DEAD_ZONE (0)
 
 float joystick_sensitivity = 0.005f;
 float joystick_threshold = 10.0f;
@@ -218,7 +219,7 @@ const char *I_QueryJoystickName(int index)
 {
     if(index >= 0 && index < SDL_NumJoysticks())
     {
-        return SDL_JoystickName(index);
+        return SDL_JoystickNameForIndex(index);
     }
 
     return NULL;
@@ -256,12 +257,14 @@ static void I_JoystickCalibrateAxis(void)
         return;
     }
 
+    // [Edward] 04082020: We shouldn't be doing this on modern gamepads in SDL2.
+    /*
     numaxis = MIN(SDL_JoystickNumAxes(joystick), 6);
 
     for(i = 0; i < numaxis; ++i)
     {
         joystick_axisoffset[i] = SDL_JoystickGetAxis(joystick, i);
-    }
+    }*/
 }
 
 //
@@ -434,7 +437,7 @@ int I_GetJoystickEventID(void)
 
         axis = I_GetJoystickAxis(i);
 
-        if(axis > DEAD_ZONE*2 || axis < -DEAD_ZONE*2)
+        if(axis > INVOKE_DEAD_ZONE *2 || axis < -INVOKE_DEAD_ZONE *2)
         {
             int absaxis = abs(axis);
             if(absaxis > greatest_absaxisvalue)
@@ -487,7 +490,7 @@ int I_GetJoystickAxisID(int *axisvalue)
     {
         axis = I_GetJoystickAxis(i);
 
-        if(axis > DEAD_ZONE || axis < -DEAD_ZONE)
+        if(axis > INVOKE_DEAD_ZONE || axis < -INVOKE_DEAD_ZONE)
         {
             int absaxis = abs(axis);
             if(absaxis > greatest_absaxisvalue)
@@ -531,7 +534,7 @@ static int GetButtonsState(void)
 
         axis = I_GetJoystickAxis(i);
 
-        if(axis > DEAD_ZONE || axis < -DEAD_ZONE)
+        if(axis > INVOKE_DEAD_ZONE || axis < -INVOKE_DEAD_ZONE)
         {
             if(axis > 0)
             {
@@ -549,7 +552,7 @@ static int GetButtonsState(void)
     {
         axis = I_GetJoystickAxis(5);
 
-        if(axis > DEAD_ZONE || axis < -DEAD_ZONE)
+        if(axis > INVOKE_DEAD_ZONE || axis < -INVOKE_DEAD_ZONE)
         {
             if(axis > 0)
             {
@@ -658,7 +661,7 @@ static int GetAxisState(int axis, int invert)
     {
         result = I_GetJoystickAxis(axis);
 
-        if (result < DEAD_ZONE && result > -DEAD_ZONE)
+        if (result < DIRECT_DEAD_ZONE && result > -DIRECT_DEAD_ZONE)
         {
             result = 0;
         }

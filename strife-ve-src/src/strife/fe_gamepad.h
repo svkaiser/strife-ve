@@ -33,7 +33,9 @@ void FE_CmdGPAutomap(void);
 void FE_CmdGPMenus(void);
 void FE_CmdGPMovement(void);
 void FE_CmdGPInv(void);
+void FE_CmdGPGyro(void);
 void FE_CmdGPProfile(void);
+void FE_CmdJoyBindReset(void);
 
 // Axis binding
 void FE_JoyAxisResponder(void);

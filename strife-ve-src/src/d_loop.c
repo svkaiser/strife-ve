@@ -519,12 +519,12 @@ boolean D_InitNetGame(net_connect_data_t *connect_data)
     }
 #endif
 
+#ifndef SVE_PLAT_SWITCH
     //!
     // @category net
     //
     // Start a multiplayer server, listening for connections.
     //
-
     if (M_CheckParm("-server") > 0
      || M_CheckParm("-privateserver") > 0)
     {
@@ -578,6 +578,7 @@ boolean D_InitNetGame(net_connect_data_t *connect_data)
             }
         }
     }
+#endif
 
     if (addr != NULL)
     {

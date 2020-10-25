@@ -95,6 +95,10 @@ static unsigned int *unscaled_data = NULL;
 static rbfbo_t scaled_framebuffer;
 static int scaled_w, scaled_h;
 
+#ifdef SVE_PLAT_SWITCH
+GL_Context ctx;
+#endif
+
 enum
 {
     GLSCALE_PIPELINE_FBO, // use FBO
@@ -226,8 +230,8 @@ static boolean CreateTextures(void)
 
     if(glscale_pipeline == GLSCALE_PIPELINE_IMM)
     {
-        dglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-        dglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+        dglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        dglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
 
     return true;

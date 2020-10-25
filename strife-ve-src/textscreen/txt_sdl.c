@@ -48,8 +48,9 @@ typedef struct
 
 #define BLINK_PERIOD 250
 
-static SDL_Surface *screen;
+static SDL_Window *windowscreen;
 static SDL_Surface *screenbuffer;
+static SDL_Renderer *sdlRenderer;
 static unsigned char *screendata;
 static int key_mapping = 1;
 
@@ -171,7 +172,8 @@ static txt_font_t *FontForName(char *name)
 
 static void ChooseFont(void)
 {
-    const SDL_VideoInfo *info;
+    font = &main_font;
+    /*const SDL_VideoInfo *info;
     char *env;
 
     // Allow normal selection to be overridden from an environment variable:
@@ -227,7 +229,7 @@ static void ChooseFont(void)
     else
     {
         font = &main_font;
-    }
+    }*/
 }
 
 //
@@ -248,10 +250,9 @@ int TXT_Init(void)
     // Always create the screen at the native screen depth (bpp=0);
     // some systems nowadays don't seem to support true 8-bit palettized
     // screen modes very well and we end up with screwed up colors.
-    screen = SDL_SetVideoMode(TXT_SCREEN_W * font->w,
-                              TXT_SCREEN_H * font->h, 0, 0);
+    SDL_CreateWindowAndRenderer(TXT_SCREEN_W * font->w, TXT_SCREEN_H * font->h, 0, &windowscreen, &sdlRenderer);
 
-    if (screen == NULL)
+    if (windowscreen == NULL)
         return 0;
 
     // Instead, we draw everything into an intermediate 8-bit surface
@@ -260,8 +261,8 @@ int TXT_Init(void)
     screenbuffer = SDL_CreateRGBSurface(0, TXT_SCREEN_W * font->w,
                                         TXT_SCREEN_H * font->h,
                                         8, 0, 0, 0, 0);
-    SDL_SetColors(screenbuffer, ega_colors, 0, 16);
-    SDL_EnableUNICODE(1);
+    SDL_SetPaletteColors(screenbuffer->format->palette, ega_colors, 0, 16);
+    //SDL_EnableUNICODE(1);
 
     screendata = malloc(TXT_SCREEN_W * TXT_SCREEN_H * 2);
     memset(screendata, 0, TXT_SCREEN_W * TXT_SCREEN_H * 2);
@@ -273,7 +274,7 @@ int TXT_Init(void)
     // Repeat key presses so we can hold down arrows to scroll down the
     // menu, for example. This is what setup.exe does.
 
-    SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+    //SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
     return 1;
 }
@@ -401,8 +402,8 @@ void TXT_UpdateScreenArea(int x, int y, int w, int h)
     rect.w = (x_end - x) * font->w;
     rect.h = (y_end - y) * font->h;
 
-    SDL_BlitSurface(screenbuffer, &rect, screen, &rect);
-    SDL_UpdateRects(screen, 1, &rect);
+    SDL_BlitSurface(screenbuffer, &rect, SDL_GetWindowSurface(windowscreen), &rect);
+    SDL_RenderPresent(sdlRenderer);
 }
 
 void TXT_UpdateScreen(void)
@@ -412,7 +413,8 @@ void TXT_UpdateScreen(void)
 
 void TXT_GetMousePosition(int *x, int *y)
 {
-#if SDL_VERSION_ATLEAST(1, 3, 0)
+//#if SDL_VERSION_ATLEAST(1, 3, 0)
+#if 0
     SDL_GetMouseState(0, x, y);
 #else
     SDL_GetMouseState(x, y);
@@ -426,7 +428,7 @@ void TXT_GetMousePosition(int *x, int *y)
 // Translates the SDL key
 //
 
-static int TranslateKey(SDL_keysym *sym)
+static int TranslateKey(SDL_Keysym *sym)
 {
     switch(sym->sym)
     {
@@ -449,7 +451,7 @@ static int TranslateKey(SDL_keysym *sym)
         case SDLK_F10:         return KEY_F10;
         case SDLK_F11:         return KEY_F11;
         case SDLK_F12:         return KEY_F12;
-        case SDLK_PRINT:       return KEY_PRTSCR;
+        case SDLK_PRINTSCREEN:       return KEY_PRTSCR;
 
         case SDLK_BACKSPACE:   return KEY_BACKSPACE;
         case SDLK_DELETE:      return KEY_DEL;
@@ -473,7 +475,7 @@ static int TranslateKey(SDL_keysym *sym)
                                return KEY_RALT;
 
         case SDLK_CAPSLOCK:    return KEY_CAPSLOCK;
-        case SDLK_SCROLLOCK:   return KEY_SCRLCK;
+        case SDLK_SCROLLLOCK:   return KEY_SCRLCK;
 
         case SDLK_HOME:        return KEY_HOME;
         case SDLK_INSERT:      return KEY_INS;
@@ -504,13 +506,13 @@ static int TranslateKey(SDL_keysym *sym)
         // Unicode characters beyond the ASCII range need to be
         // mapped up into textscreen's Unicode range.
 
-        if (sym->unicode < 128)
+        if (sym->sym < 128)
         {
-            return sym->unicode;
+            return sym->sym;
         }
         else
         {
-            return sym->unicode - 128 + TXT_UNICODE_BASE;
+            return sym->sym - 128 + TXT_UNICODE_BASE;
         }
     }
     else
@@ -521,16 +523,16 @@ static int TranslateKey(SDL_keysym *sym)
 
         switch (sym->sym)
         {
-            case SDLK_KP0:         return KEYP_0;
-            case SDLK_KP1:         return KEYP_1;
-            case SDLK_KP2:         return KEYP_2;
-            case SDLK_KP3:         return KEYP_3;
-            case SDLK_KP4:         return KEYP_4;
-            case SDLK_KP5:         return KEYP_5;
-            case SDLK_KP6:         return KEYP_6;
-            case SDLK_KP7:         return KEYP_7;
-            case SDLK_KP8:         return KEYP_8;
-            case SDLK_KP9:         return KEYP_9;
+            case SDLK_KP_0:         return KEYP_0;
+            case SDLK_KP_1:         return KEYP_1;
+            case SDLK_KP_2:         return KEYP_2;
+            case SDLK_KP_3:         return KEYP_3;
+            case SDLK_KP_4:         return KEYP_4;
+            case SDLK_KP_5:         return KEYP_5;
+            case SDLK_KP_6:         return KEYP_6;
+            case SDLK_KP_7:         return KEYP_7;
+            case SDLK_KP_8:         return KEYP_8;
+            case SDLK_KP_9:         return KEYP_9;
 
             case SDLK_KP_PERIOD:   return KEYP_PERIOD;
             case SDLK_KP_MULTIPLY: return KEYP_MULTIPLY;
@@ -586,7 +588,7 @@ static int MouseHasMoved(void)
 // Examine a key press/release and update the modifier key state
 // if necessary.
 
-static void UpdateModifierState(SDL_keysym *sym, int pressed)
+static void UpdateModifierState(SDL_Keysym *sym, int pressed)
 {
     txt_modifier_t mod;
 
@@ -662,6 +664,7 @@ signed int TXT_GetChar(void)
                 UpdateModifierState(&ev.key.keysym, 0);
                 break;
 
+            case SDL_APP_TERMINATING:
             case SDL_QUIT:
                 // Quit = escape
                 return 27;
@@ -865,7 +868,7 @@ void TXT_EnableKeyMapping(int enable)
 
 void TXT_SetWindowTitle(char *title)
 {
-    SDL_WM_SetCaption(title, NULL);
+    //SDL_WM_SetCaption(title, NULL);
 }
 
 void TXT_SDL_SetEventCallback(TxtSDLEventCallbackFunc callback, void *user_data)

@@ -16,6 +16,8 @@
 //    Draw Lists
 //
 
+#include <stdlib.h>
+
 #include "rb_main.h"
 #include "rb_drawlist.h"
 #include "rb_data.h"

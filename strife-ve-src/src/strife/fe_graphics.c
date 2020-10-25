@@ -67,7 +67,7 @@ void FE_WriteBigTextCentered(int y, const char *str)
 //
 void FE_WriteSmallTextCentered(int y, const char *str)
 {
-    M_WriteText(160 - M_StringWidth(str)/2, y, str);
+    M_WriteTextEx(160 - M_StringWidth(str)/2, y, str, false);
 }
 
 //
@@ -157,19 +157,33 @@ void FE_DrawBox(int left, int top, int w, int h)
     if(h > 64)
         h = 64;
 
-    for(x = left; x < left+w; x += 64)
+    for(x = left; x <= left+w-64; x += 64)
         V_DrawBlock(x, top, 64, h, W_CacheLumpName("F_PAVE02", PU_CACHE));
-    
-    for(x = left; x < left+w; x += 8)
+    if(x < left+w)
+        V_DrawBlock(x, top, left+w-x, h, W_CacheLumpName("F_PAVE02", PU_CACHE));
+
+    for(x = left; x <= left+w-8; x += 8)
     {
         V_DrawPatch(x, top-4,   W_CacheLumpName("BRDR_T", PU_CACHE));
         V_DrawPatch(x, top+h-4, W_CacheLumpName("BRDR_B", PU_CACHE));
     }
-    for(y = top; y < top+h; y += 8)
+    if(x < left+w)
+    {
+        V_DrawPatch(left+w-8, top-4,   W_CacheLumpName("BRDR_T", PU_CACHE));
+        V_DrawPatch(left+w-8, top+h-4, W_CacheLumpName("BRDR_B", PU_CACHE));
+    }
+
+    for(y = top; y <= top+h-8; y += 8)
     {
         V_DrawPatch(left-4,   y, W_CacheLumpName("BRDR_L", PU_CACHE));
         V_DrawPatch(left+w-4, y, W_CacheLumpName("BRDR_R", PU_CACHE));
     }
+    if(y < top+h)
+    {
+        V_DrawPatch(left-4,   top+h-8, W_CacheLumpName("BRDR_L", PU_CACHE));
+        V_DrawPatch(left+w-4, top+h-8, W_CacheLumpName("BRDR_R", PU_CACHE));
+    }
+
     V_DrawPatch(left-4,   top-4,   W_CacheLumpName("BRDR_TL", PU_CACHE));
     V_DrawPatch(left+w-4, top-4,   W_CacheLumpName("BRDR_TR", PU_CACHE));
     V_DrawPatch(left-4,   top+h-4, W_CacheLumpName("BRDR_BL", PU_CACHE));

@@ -257,6 +257,7 @@ extern boolean      mapwithspecialtags;
 
 // File handling stuff.
 extern  char *          savegamedir;
+extern  char *          tmpsavegamedir; // edward [SVE]: Temp saves can be written to a different location
 extern	char		basedefault[1024];
 
 // if true, load all graphics at level load
@@ -269,6 +270,12 @@ extern  gamestate_t     wipegamestate;
 
 extern  int             mouseSensitivityX;
 extern  int             mouseSensitivityY;
+
+// Edward [SVE]:
+extern float		    joy_gyrosensitivityh;
+extern float		    joy_gyrosensitivityv;
+extern int		        joy_gyroscope;
+extern int              joy_gyrostyle;
 
 //extern  int             bodyqueslot; [STRIFE] unused
 

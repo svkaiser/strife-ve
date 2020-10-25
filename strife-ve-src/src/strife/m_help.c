@@ -101,6 +101,7 @@ static char *bglow[HELP_NUMPAGES] =
 };
 
 // high-res backgrounds; used for widescreen
+#if 0
 static char *bghigh[HELP_NUMPAGES] =
 {
     "HELP1W",
@@ -110,6 +111,7 @@ static char *bghigh[HELP_NUMPAGES] =
     "HELP5W",
     "HELP6W"
 };
+#endif
 
 //
 // Variables for each page
@@ -482,7 +484,11 @@ void M_InitHelp(void)
 {
     M_LoadHelpFonts();
 
+#ifdef SVE_PLAT_SWITCH
+    helpstate     = HELP_STATE_GAMEPAD;
+#else
     helpstate     = HELP_STATE_KEYBOARD;
+#endif
     helpstatetics = HELP_STATE_TIME;
     helppage      = HELP_PG_MOVEMENT;
     
@@ -577,11 +583,13 @@ boolean M_HelpResponder(event_t *ev)
 void M_HelpTicker(void)
 {
     // count down state cycle
+#ifndef SVE_PLAT_SWITCH
     if(--helpstatetics == 0)
     {
         helpstatetics = HELP_STATE_TIME;
         M_NextHelpState();
     }
+#endif
 }
 
 //

@@ -132,7 +132,7 @@ static boolean hu_setting_name = false;
 // haleyjd 08/31/10: [STRIFE] Changed for Strife level names.
 // List of names for levels.
 
-char *mapnames[HU_NUMMAPNAMES] =
+const char *const mapnames[HU_NUMMAPNAMES] =
 {
     // Strife map names
 
@@ -242,7 +242,7 @@ void HU_Stop(void)
 void HU_Start(void)
 {
     int         i;
-    char*       s;
+    const char *s;
 
     // haleyjd 20120211: [STRIFE] not called here.
     //if (headsupactive)
@@ -445,14 +445,14 @@ void HU_ShowTime(void)
 //
 //  Fastcall Registers:   edx          ebx
 //      Temp Registers:   esi          edi
-void HU_addMessage(char *prefix, char *message)
+void HU_addMessage(const char *prefix, const char *message)
 {
-    char  c;         // eax
-    int   width = 0; // edx
-    char *rover1;    // ebx (in first loop)
-    char *rover2;    // ecx (in second loop)
-    char *bufptr;    // ebx (in second loop)
-    char buffer[HU_MAXLINELENGTH+2];  // esp+52h
+    char        c;         // eax
+    int         width = 0; // edx
+    const char *rover1;    // ebx (in first loop)
+    const char *rover2;    // ecx (in second loop)
+    char       *bufptr;    // ebx (in second loop)
+    char        buffer[HU_MAXLINELENGTH+2];  // esp+52h
 
     // Loop 1: Total up width of prefix.
     rover1 = prefix;
@@ -460,7 +460,7 @@ void HU_addMessage(char *prefix, char *message)
     {
         while((c = *rover1))
         {
-            c = toupper(c) - HU_FONTSTART;
+            c = toupper((int)(byte)c) - HU_FONTSTART;
             ++rover1;
 
             if(c < 0 || c >= HU_FONTSIZE)
@@ -682,12 +682,11 @@ boolean HU_Responder(event_t *ev)
 {
     static char         lastmessage[HU_MAXLINELENGTH+1];
     char*               macromessage;
-    boolean             eatkey = false;
     static boolean      altdown = false;
-    unsigned char       c;
+    static boolean      discardinput = false;
     int                 i;
     int                 numplayers;
-    
+
     static int          num_nobrainers = 0;
 
     numplayers = 0;
@@ -705,15 +704,15 @@ boolean HU_Responder(event_t *ev)
     }
 
     // [SVE]: frags chart
-    if(netgame && ev->data1 == key_menu_save)
+    if (netgame && ev->data1 == key_menu_save)
     {
-        if(ev->type == ev_keydown)
+        if (ev->type == ev_keydown)
             showfragschart = true;
-        else if(ev->type == ev_keyup)
+        else if (ev->type == ev_keyup)
             showfragschart = false;
     }
 
-    if (ev->type != ev_keydown)
+    if (ev->type != ev_keydown && ev->type != ev_text)
         return false;
 
     if (!chat_on)
@@ -722,139 +721,159 @@ boolean HU_Responder(event_t *ev)
         {
             message_on = true;
             message_counter = HU_MSGTIMEOUT;
-            eatkey = true;
+            return true;
         }
-        else if (netgame && ev->data2 == key_multi_msg)
+        else if (netgame && ev->data1 == key_multi_msg)
         {
-            eatkey = chat_on = true;
+            chat_on = true;
             HUlib_resetIText(&w_chat);
             HU_queueChatChar(HU_BROADCAST);
+            if (isprint(ev->data1))
+                discardinput = true;
+            return true;
         }
+        return false;
         // [STRIFE]: You cannot go straight to chatting with a particular
         // player from here... you must press 't' first. See below.
     }
-    else
+
+    if (ev->type == ev_text && discardinput)
     {
-        c = ev->data2;
-        // send a macro
-        if (altdown)
+        discardinput = false;
+        return true;
+    }
+
+    // send a macro
+    if (altdown)
+    {
+        if (ev->data1 > '9' || ev->data1 < '0')
+            return false;
+        // fprintf(stderr, "got here\n");
+        macromessage = chat_macros[ev->data1 - '0'];
+
+        // kill last message with a '\n'
+        HU_queueChatChar(KEY_ENTER); // DEBUG!!!
+
+        // send the macro message
+        while (*macromessage)
+            HU_queueChatChar(*macromessage++);
+        HU_queueChatChar(KEY_ENTER);
+
+        // leave chat mode and notify that it was sent
+        chat_on = false;
+        M_StringCopy(lastmessage, chat_macros[ev->data1 - '0'],
+                     sizeof(lastmessage));
+        plr->message = lastmessage;
+        return true;
+    }
+
+    if (ev->data1 == KEY_ENTER)
+    {
+        chat_on = false;
+        if (w_chat.l.len)
         {
-            c = c - '0';
-            if (c > 9)
-                return false;
-            // fprintf(stderr, "got here\n");
-            macromessage = chat_macros[c];
-
-            // kill last message with a '\n'
-            HU_queueChatChar(KEY_ENTER); // DEBUG!!!
-
-            // send the macro message
-            while (*macromessage)
-                HU_queueChatChar(*macromessage++);
             HU_queueChatChar(KEY_ENTER);
 
-            // leave chat mode and notify that it was sent
-            chat_on = false;
-            M_StringCopy(lastmessage, chat_macros[c], sizeof(lastmessage));
-            plr->message = lastmessage;
-            eatkey = true;
-        }
-        else
-        {
-            if(w_chat.l.len) // [STRIFE]: past first char of chat?
+            // [STRIFE]: name setting
+            if (hu_setting_name)
             {
-                eatkey = HUlib_keyInIText(&w_chat, c);
-                if (eatkey)
-                    HU_queueChatChar(c);
+                // [SVE]: display pretty player name
+                char *oldName = HUlib_makePrettyPlayerName(consoleplayer);
+                DEH_snprintf(lastmessage, sizeof(lastmessage),
+                             "%s now %.27s", oldName, w_chat.l.l);
+                Z_Free(oldName);
+
+                // set name for local client
+                M_snprintf(player_names[consoleplayer],
+                           sizeof(player_names[consoleplayer]),
+                           "%.27s: ", w_chat.l.l);
+                hu_setting_name = false;
             }
             else
             {
-                // [STRIFE]: check for player-specific message;
-                // slightly different than vanilla, to allow keys to be customized
-                for(i = 0; i < MAXPLAYERS; i++)
-                {
-                    if(c == key_multi_msgplayer[i])
-                        break;
-                }
-                if(i < MAXPLAYERS)
-                {
-                    // talking to self?
-                    if(i == consoleplayer)
-                    {
-                        num_nobrainers++;
-                        if (num_nobrainers < 3)
-                            plr->message = DEH_String(HUSTR_TALKTOSELF1);
-                        else if (num_nobrainers < 6)
-                            plr->message = DEH_String(HUSTR_TALKTOSELF2);
-                        else if (num_nobrainers < 9)
-                            plr->message = DEH_String(HUSTR_TALKTOSELF3);
-                        else if (num_nobrainers < 32)
-                            plr->message = DEH_String(HUSTR_TALKTOSELF4);
-                        else
-                            plr->message = DEH_String(HUSTR_TALKTOSELF5);
-                    }
-                    else
-                    {
-                        eatkey = true;
-                        HU_queueChatChar(i+1);
-                        DEH_snprintf(lastmessage, sizeof(lastmessage),
-                            "Talking to: %c", '1' + i);
-                        plr->message = lastmessage;
-                    }
-                }
-                else if(c == '$') // [STRIFE]: name changing
-                {
-                    eatkey = true;
-                    HU_queueChatChar(HU_CHANGENAME);
-                    M_StringCopy(lastmessage, DEH_String("Changing Name:"),
-                                 sizeof(lastmessage));
-                    plr->message = lastmessage;
-                    hu_setting_name = true;
-                }
-
-                else
-                {
-                    eatkey = HUlib_keyInIText(&w_chat, c);
-                    if (eatkey)
-                        HU_queueChatChar(c);
-                }
+                M_StringCopy(lastmessage, w_chat.l.l, sizeof(lastmessage));
             }
+            plr->message = lastmessage;
+        }
+        return true;
+    }
+    else if (ev->data1 == KEY_ESCAPE)
+    {
+        chat_on = false;
+        return true;
+    }
 
-            if (c == KEY_ENTER)
+    if (ev->type == ev_keydown && isprint(ev->data1))
+    {
+        return true; // eat keydown inputs that have text equivalent
+    }
+
+    if (w_chat.l.len) // [STRIFE]: past first char of chat?
+    {
+        const unsigned char c = (unsigned char) ev->data1;
+        if (HUlib_keyInIText(&w_chat, c) == true)
+        {
+            if (isprint(c))
             {
-                chat_on = false;
-                if (w_chat.l.len)
-                {
-                    // [STRIFE]: name setting
-                    if(hu_setting_name)
-                    {
-                        // [SVE]: display pretty player name
-                        char *oldName = HUlib_makePrettyPlayerName(consoleplayer);
-                        DEH_snprintf(lastmessage, sizeof(lastmessage),
-                            "%s now %.27s", 
-                            oldName,
-                            w_chat.l.l);
-                        Z_Free(oldName);
-
-                        // set name for local client
-                        M_snprintf(player_names[consoleplayer],
-                            sizeof(player_names[consoleplayer]),
-                            "%.27s: ",
-                            w_chat.l.l);
-                        hu_setting_name = false;
-                    }
-                    else
-                    {
-                        M_StringCopy(lastmessage, w_chat.l.l,
-                                     sizeof(lastmessage));
-                    }
-                    plr->message = lastmessage;
-                }
+                HU_queueChatChar(c);
             }
-            else if (c == KEY_ESCAPE)
-                chat_on = false;
+            return true;
+        }
+    }
+    else
+    {
+        // [STRIFE]: check for player-specific message;
+        // slightly different than vanilla, to allow keys to be customized
+        for(i = 0; i < MAXPLAYERS; i++)
+        {
+            if (ev->data1 == key_multi_msgplayer[i])
+                break;
+        }
+        if (i < MAXPLAYERS)
+        {
+            // talking to self?
+            if (i == consoleplayer)
+            {
+                num_nobrainers++;
+                if (num_nobrainers < 3)
+                    plr->message = DEH_String(HUSTR_TALKTOSELF1);
+                else if (num_nobrainers < 6)
+                    plr->message = DEH_String(HUSTR_TALKTOSELF2);
+                else if (num_nobrainers < 9)
+                    plr->message = DEH_String(HUSTR_TALKTOSELF3);
+                else if (num_nobrainers < 32)
+                    plr->message = DEH_String(HUSTR_TALKTOSELF4);
+                else
+                    plr->message = DEH_String(HUSTR_TALKTOSELF5);
+            }
+            else
+            {
+                HU_queueChatChar(i+1);
+                DEH_snprintf(lastmessage, sizeof(lastmessage),
+                             "Talking to: %c", '1' + i);
+                plr->message = lastmessage;
+                return true;
+            }
+        }
+        else if (ev->data1 == '$') // [STRIFE]: name changing
+        {
+            HU_queueChatChar(HU_CHANGENAME);
+            M_StringCopy(lastmessage, DEH_String("Changing Name:"),
+                         sizeof(lastmessage));
+            plr->message = lastmessage;
+            hu_setting_name = true;
+            return true;
+        }
+
+        else
+        {
+            if (HUlib_keyInIText(&w_chat, ev->data1) == true)
+            {
+                HU_queueChatChar(ev->data1);
+                return true;
+            }
         }
     }
 
-    return eatkey;
+    return false;
 }

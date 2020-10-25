@@ -146,6 +146,8 @@ void FromCurr(void)
         if(!strcmp(f->d_name, ".") || !strcmp(f->d_name, ".."))
             continue;
 
+        
+
         // haleyjd: use M_SafeFilePath, NOT sprintf.
         srcfilename = M_SafeFilePath(savepathtemp, f->d_name);
         dstfilename = M_SafeFilePath(savepath,     f->d_name);
@@ -453,7 +455,15 @@ void M_CreateSaveDirs(const char *savedir)
         char *compositedir;
 
         // compose the full path by concatenating with savedir
-        compositedir = M_SafeFilePath(savedir, M_MakeStrifeSaveDir(i, ""));
+        // edward [SVE]: 7th slot is a special case
+        if (i == 6)
+        {
+            compositedir = M_SafeFilePath(tmpsavegamedir, M_MakeStrifeSaveDir(i, ""));
+        }
+        else
+        {
+            compositedir = M_SafeFilePath(savedir, M_MakeStrifeSaveDir(i, ""));
+        }
 
         M_MakeDirectory(compositedir);
 

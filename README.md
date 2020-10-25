@@ -1,11 +1,11 @@
 Strife: Veteran Edition GPL Source Code
 =======================================
-Copyright 2016, Night Dive Studios, Incorporated.
+Copyright 2020, Night Dive Studios, Incorporated.
 
 This file contains the following sections:
 
-GENERAL NOTES
-LICENSE
+- GENERAL NOTES
+- LICENSE
 
 GENERAL NOTES
 =============
@@ -16,22 +16,24 @@ Game data and patching:
 This source release does not contain any game data, the game data is still
 covered by the original EULA and must be obeyed as usual.
 
-Note that Strife: Veteran Edition is available from the Steam store at
+Strife: Veteran Edition is available from GOG at
+https://www.gog.com/game/strife_veteran_edition
+
+Strife: Veteran Edition is available from the Steam store at
 http://store.steampowered.com/app/317040/
 
+Compiling on Windows:
+---------------------
 
-Compiling on Win32:
--------------------
-
-A project file for Microsoft Visual Studio 2008 is provided in 
-msvc/chocolate.sln 
-The solution file is compatible with the Express releases.
+A project file for Microsoft Visual Studio 2015 is provided in 
+msvc2015/chocolate.sln and should compile with any edition.
 
 Compiling on MacOS 10.x:
--------------------
+------------------------
 
 A project file for XCode is provided in xcode/Chocolate/Strife-VE.xcodeproj
 All dependencies and settings should already be set inside the workspace.
+The XCode project may currently be out of date as of this source release.
 
 Compiling on Linux:
 -------------------
@@ -60,13 +62,14 @@ No license for use or transfer of ownership in any trademark is implied or
 should be construed.
 
 
-Steam and GOG Galaxy:
----------------------
+Steam, GOG Galaxy, and Nintendo Switch:
+---------------------------------------
 The Strife: Veteran Edition GPL Source Code release does not include 
-functionality for integrating with Steam or GOG Galaxy.  This includes roaming
-profiles, achievements, leaderboards, matchmaking, the overlay, or any other 
-Steam or Galaxy features.  It may be necessary to undefine the `_USE_STEAM_` or
-`GOG_RELEASE` symbols in build scripts or project files in order to compile.
+functionality for integrating with Steam, GOG Galaxy, or Nintendo Switch.
+This includes roaming profiles, achievements, leaderboards, matchmaking, the
+overlay, or any other Steam or Galaxy features.  It may be necessary to 
+undefine the `_USE_STEAM_`, `GOG_RELEASE`, or `SVE_PLAT_SWITCH` symbols in 
+build scripts or project files in order to compile.
 
 
 Other platforms, updated source code, security issues:
@@ -86,16 +89,12 @@ LICENSE
 The Strife: Veteran Edition source code is available under the terms of the GNU
 General Public License v2.0
 
+Exceptions for linking with Steam, GOG Galaxy, and Nintendo Switch runtimes,
+which are subject to non-disclosure agreements, were obtained by Night Dive
+Studios, Inc. Code subject to NDA is not included with this public source 
+release.
+
 See COPYING.txt for the GNU GENERAL PUBLIC LICENSE
-
-FFmpeg
-------
-FFmpeg is used under the terms of the LGPL v2.1; see COPYING-LGPL.txt.
-
-SDL
----
-SDL, SDL_mixer, and SDL_net are used under the terms of the LGPL v2.1; 
-see COPYING-LGPL.txt.
 
 
 EXCLUDED CODE: The code described below and contained in the Strife: Veteran 
@@ -103,6 +102,37 @@ Edition GPL Source Code release is not part of the Program covered by the GPL
 and is expressly excluded from its terms.  You are solely responsible for 
 obtaining from the copyright holder a license for such code and complying with
 the applicable license terms.
+
+libogg, libtheora, libvorbis
+----------------------------
+Copyright (c) 2002-2018 Xiph.org Foundation
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+- Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+
+- Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+- Neither the name of the Xiph.org Foundation nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE FOUNDATION
+OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 libpng
 -------------------------------------------------------------------------------
@@ -136,6 +166,26 @@ fee, and encourage the use of this source code as a component to
 supporting the PNG file format in commercial products.  If you use this
 source code in a product, acknowledgment is not required but would be
 appreciated.
+
+SDL
+---
+SDL2, SDL2_mixer, and SDL2_net are used under the terms of SDL license:
+
+This software is provided 'as-is', without any express or implied
+warranty.  In no event will the authors be held liable for any damages
+arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+
+1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software
+   in a product, an acknowledgment in the product documentation would be
+   appreciated but is not required.
+2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+3. This notice may not be removed or altered from any source distribution.
 
 zlib
 -------------------------------------------------------------------------------

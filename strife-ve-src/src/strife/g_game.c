@@ -74,6 +74,7 @@
 #include "i_joystick.h"
 #include "net_client.h"
 #include "hu_lib.h"
+#include "i_platsystem.h"
 
 #define SAVEGAMESIZE	0x2c000
 
@@ -89,7 +90,7 @@ void	G_DoPlayDemo (void);
 void	G_DoCompleted (void); 
 void	G_DoVictory (void); 
 void	G_DoWorldDone (void); 
-void	G_DoSaveGame (char *path); 
+void	G_DoSaveGame (char *path, char *tempPath);
  
 // Gamestate the last time G_Ticker was called.
 
@@ -131,7 +132,6 @@ boolean         turbodetected[MAXPLAYERS];
  
 int             consoleplayer;          // player taking events and displaying 
 int             displayplayer;          // view being displayed 
-int             gametic; 
 int             levelstarttic;          // gametic at level start 
 int             totalkills, /*totalitems,*/ totalsecret;    // for intermission 
  
@@ -268,6 +268,11 @@ mobj_t*		bodyque[BODYQUESIZE];
 int             vanilla_savegame_limit = 0;
 int             vanilla_demo_limit = 0;
 
+// edward: [SVE] New weapon cycling behaviour;
+int i_weaponCycleTics = 0;
+int i_weaponCycleTo = 0;
+static const weapontype_t i_weaponCycleMap[NUMWEAPONS] = { wp_fist,  wp_elecbow, wp_poisonbow, wp_rifle, wp_missile, wp_hegrenade, wp_wpgrenade, wp_flame, wp_mauler, wp_torpedo, wp_sigil };
+
 int G_CmdChecksum (ticcmd_t* cmd) 
 { 
     size_t		i;
@@ -279,7 +284,7 @@ int G_CmdChecksum (ticcmd_t* cmd)
     return sum; 
 } 
 
-static boolean WeaponSelectable(weapontype_t weapon)
+boolean WeaponSelectable(weapontype_t weapon)
 {
     player_t *player;
 
@@ -433,8 +438,10 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
     // allowed an autorun effect
 
     speed = gamekeydown[key_speed] 
-         || joybuttons[joybspeed]
-         || autorun; // [SVE] imagine having a proper autorun setting?!
+         || joybuttons[joybspeed]; 
+    
+    // [SVE] imagine having a proper autorun setting?!
+    speed ^= autorun;
  
     forward = side = 0;
 
@@ -495,8 +502,15 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
     }
 
     // [SVE] svillarreal
-    forward -= joyymove;
-    side += joystrafemove;
+    if (joyymove != 0)
+    {
+        forward -= (joyymove * 100 / 32767) * forwardmove[speed] / 100;
+    }
+
+    if (joystrafemove != 0)
+    {
+        side += (joystrafemove * 100 / 32767) * sidemove[speed] / 100;
+    }
 
     if (gamekeydown[key_strafeleft]
      || joybuttons[joybstrafeleft]
@@ -553,6 +567,62 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
         next_inv = 0;
     }
 
+#ifdef SVE_PLAT_SWITCH
+    int cycleIt;
+    if (next_weapon != 0)
+    {
+        if (i_weaponCycleTics <= 0)
+        {
+            if (players[consoleplayer].pendingweapon == wp_nochange)
+            {
+                i_weaponCycleTo = players[consoleplayer].readyweapon;
+            }
+            else
+            {
+                i_weaponCycleTo = players[consoleplayer].pendingweapon;
+            }
+
+            // Map the selected weapon back to the cycle order
+            for (cycleIt = 0; cycleIt < NUMWEAPONS; cycleIt++)
+            {
+                if (i_weaponCycleTo == i_weaponCycleMap[cycleIt])
+                {
+                    i_weaponCycleTo = cycleIt;
+                    break;
+                }
+            }
+        }
+
+        i_weaponCycleTics = 5 * TICRATE;
+        for (cycleIt = 0; cycleIt < NUMWEAPONS; cycleIt++)
+        {
+            i_weaponCycleTo += next_weapon;
+
+            if (i_weaponCycleTo < 0)
+            {
+                i_weaponCycleTo = NUMWEAPONS - 1;
+            }
+            else if (i_weaponCycleTo >= NUMWEAPONS)
+            {
+                i_weaponCycleTo = 0;
+            }
+
+            if (WeaponSelectable(i_weaponCycleMap[i_weaponCycleTo]))
+            {
+                break;
+            }
+        }
+        next_weapon = 0;
+    }
+    if (i_weaponCycleTics > 0 && (cmd->buttons & BT_ATTACK))
+    {
+        cmd->buttons &= ~BT_ATTACK;
+        gamekeydown[key_fire] = joybuttons[joybfire] = false;
+        cmd->buttons |= BT_CHANGE;
+        cmd->buttons |= i_weaponCycleMap[i_weaponCycleTo] << BT_WEAPONSHIFT;
+        i_weaponCycleTics = 0;
+    }
+#else
     // If the previous or next weapon button is pressed, the
     // next_weapon variable is set to change weapons when
     // we generate a ticcmd.  Choose a new weapon.
@@ -564,6 +634,7 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
         cmd->buttons |= i << BT_WEAPONSHIFT;
         next_weapon = 0;
     }
+#endif
     else
     {
         // Check weapon keys.
@@ -778,7 +849,7 @@ void G_BuildTiccmd (ticcmd_t* cmd, int maketic)
 //
 void G_SetSkyTexture()
 {
-    char *skytexturename;
+    const char *skytexturename;
 
     // [STRIFE] Strife skies (of which there are but two)
     // [SVE] svillarreal - red sky for map35
@@ -803,6 +874,9 @@ void G_DoLoadLevel(void)
     // haleyjd 20140816: [SVE] Fix sky texture problems
     if(!classicmode)
         G_SetSkyTexture();
+
+    // edward: [SVE] Clear weapon cycler
+    i_weaponCycleTics = 0;
 
     levelstarttic = gametic;        // for time calculation
 
@@ -1038,9 +1112,29 @@ boolean G_Responder (event_t* ev)
 
     case ev_joystick:
         SetJoyTurnThreshold(ev->data2, ev->data1);
-        joyymove = (int)((float)ev->data3 * 0.0015f);
-        joystrafemove = (int)((float)ev->data4 * 0.0015f);
+        joyymove = ev->data3;
+        joystrafemove = ev->data4;
         return true;    // eat events 
+
+    case ev_gyro:
+        if (joy_gyroscope != 0)
+        {
+            switch (joy_gyrostyle)
+            {
+            default:
+            case 0: // use yaw for turning
+                joyxmove += (ev->data3 * 0.5) * joy_gyrosensitivityh;
+                break;
+            case 1: // use roll for turning
+                joyxmove += (-ev->data2 * 0.5) * joy_gyrosensitivityh;
+                break;
+            case 2: // reverse roll
+                joyxmove += (ev->data2 * 0.5) * joy_gyrosensitivityh;
+                break;
+            }
+            joylookmove += (ev->data1 * 0.25) * joy_gyrosensitivityv;
+        }
+        return true;
 
     case ev_joybtndown:
         joybuttons[ev->data1] = 1;
@@ -1096,12 +1190,18 @@ void G_Ticker (void)
             M_SaveMoveHereToMap(); // [STRIFE]
             M_ReadMisObj();
             P_SetLocationsFromFile(savepathtemp);
+
+			// dimitrisg 20200629 : commit save data to NX
+            I_FlushSaves();
             break; 
         case ga_savegame: 
             M_SaveMoveMapToHere(); // [STRIFE]
             M_SaveMisObj(savepath);
             P_WriteActiveLocations(savepath);
-            G_DoSaveGame(savepath); 
+            G_DoSaveGame(savepath, savegamedir); 
+
+            // dimitrisg 20200629 : commit save data to NX
+            I_FlushSaves();
             break; 
         case ga_playdemo: 
             G_DoPlayDemo (); 
@@ -1258,6 +1358,12 @@ void G_Ticker (void)
         ST_Ticker (); 
         AM_Ticker (); 
         HU_Ticker ();
+
+        // edward 20200903: [SVE] For the new weapon selector
+        if (i_weaponCycleTics > 0)
+        {
+            i_weaponCycleTics--;
+        }
         break; 
 
     // haleyjd 08/23/10: [STRIFE] No intermission.
@@ -1784,7 +1890,7 @@ void G_DoCompleted(void)
 
     // [STRIFE] HUB SAVE
     if(!deathmatch)
-        G_DoSaveGame(savepathtemp);
+        G_DoSaveGame(savepathtemp, tmpsavegamedir);
     
     // [SVE]: Capture the Chalice intermission
     if(capturethechalice)
@@ -1900,7 +2006,7 @@ void G_DoWorldDone (void)
 
         // [STRIFE] HUB SAVE
         G_RiftPlayer();
-        G_DoSaveGame(savepathtemp);
+        G_DoSaveGame(savepathtemp, tmpsavegamedir);
         M_SaveMisObj(savepathtemp);
         P_WriteActiveLocations(savepathtemp);
     }
@@ -2263,6 +2369,10 @@ void G_DoLoadGame(boolean userload)
         return;
     }
 
+    // edward [SVE]: vastly reduce the number of reads performed on flash storage
+    static char readBuffer[256 * 1024];
+    setvbuf(save_stream, readBuffer, _IOFBF, sizeof(readBuffer));
+
     savegame_error = false;
     savedcurskill  = gameskill;
 
@@ -2364,7 +2474,7 @@ boolean G_WriteSaveName(int slot, const char *charname)
     // M_SafeFilePath routine, which isn't limited to 128 characters.
     if(savepathtemp)
         Z_Free(savepathtemp);
-    savepathtemp = M_SafeFilePath(savegamedir, "strfsav6.ssg");
+    savepathtemp = M_SafeFilePath(tmpsavegamedir, "strfsav6.ssg");
 
     // haleyjd: as above.
     if(savepath)
@@ -2380,6 +2490,9 @@ boolean G_WriteSaveName(int slot, const char *charname)
 
     // Write the "name" file under the directory
     retval = M_WriteFile(tmpname, character_name, 32);
+
+    // dimitrisg 20200629 : commit save data to NX
+    I_FlushSaves();
 
     Z_Free(tmpname);
 
@@ -2405,7 +2518,7 @@ G_SaveGame
 }
 */
 
-void G_DoSaveGame (char *path)
+void G_DoSaveGame (char *path, char *tempPath)
 { 
     char *current_path;
     char *savegame_file;
@@ -2413,7 +2526,7 @@ void G_DoSaveGame (char *path)
     byte gamemapbytes[4];
     char gamemapstr[33];
 
-    temp_savegame_file = P_TempSaveGameFile();
+    temp_savegame_file = P_TempSaveGameFile(tempPath);
     
     // [STRIFE] custom save file path logic
     memset(gamemapstr, 0, sizeof(gamemapstr));
@@ -2442,6 +2555,10 @@ void G_DoSaveGame (char *path)
     {
         return;
     }
+
+    // edward [SVE]: vastly reduce the number of writes performed on flash storage
+    static char writeBuffer[256 * 1024];
+    setvbuf(save_stream, writeBuffer, _IOFBF, sizeof(writeBuffer));
 
     savegame_error = false;
 

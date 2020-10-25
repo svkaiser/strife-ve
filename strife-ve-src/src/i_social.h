@@ -107,6 +107,7 @@ void I_InitAppServices(void);
 // Include app provider headers for support defines
 #include "i_steamservices.h"
 #include "i_galaxyservices.h"
+#include "i_switchservices.h"
 
 #ifndef I_APPSERVICES_PLATFORMNAME
 #define I_APPSERVICES_PLATFORMNAME "Strife"

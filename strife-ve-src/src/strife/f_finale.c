@@ -66,7 +66,7 @@ finalestage_t finalestage;
 unsigned int finalecount;
 
 // haleyjd 09/12/10: [STRIFE] Slideshow variables
-char         *slideshow_panel;
+const char   *slideshow_panel;
 unsigned int  slideshow_tics;
 int           slideshow_state;
 
@@ -925,7 +925,7 @@ stopattack:
 //
 boolean F_CastResponder (event_t* ev)
 {
-    if (ev->type != ev_keydown)
+    if (ev->type != ev_keydown && ev->type != ev_joybtndown)
         return false;
 
     if (castdeath)
@@ -950,9 +950,9 @@ boolean F_CastResponder (event_t* ev)
 //
 // [STRIFE] Verified unmodified, and unused.
 //
-void F_CastPrint (char* text)
+void F_CastPrint (const char* text)
 {
-    char*	ch;
+    const char*	ch;
     int		c;
     int		cx;
     int		w;

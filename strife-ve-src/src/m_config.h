@@ -60,5 +60,6 @@ boolean M_SetVariableByFlags(const char *name, const char *value, int flags);
 int M_GetIntVariableDefault(const char *name);
 const char *M_GetStrVariableDefault(const char *name);
 float M_GetFloatVariableDefault(const char *name);
+char *M_GetTmpSaveGameDir(char *iwadname);
 
 #endif

@@ -195,7 +195,11 @@ static femenu_t gamepadAxisMenu =
     65,
     40,
     4,
+#ifdef SVE_PLAT_SWITCH
+    "Axes",
+#else
     "Gamepad Axes",
+#endif
     FE_BG_RSKULL,
     NULL,
     FE_CURSOR_LASER,
@@ -237,7 +241,11 @@ static femenu_t gamepadAutomapMenu =
     70,
     40,
     4,
+#ifdef SVE_PLAT_SWITCH
+    "Automap",
+#else
     "Gamepad Automap",
+#endif
     FE_BG_RSKULL,
     NULL,
     FE_CURSOR_LASER,
@@ -300,9 +308,11 @@ void FE_CmdGPMenus(void)
 
 static femenuitem_t gamepadMovementItems[] =
 {
+#ifndef SVE_PLAT_SWITCH
     { FE_MITEM_JBIND, "Strafe Left",     "joyb_strafeleft"  },
     { FE_MITEM_JBIND, "Strafe Right",    "joyb_straferight" },
     { FE_MITEM_JBIND, "Strafe On",       "joyb_strafe"      },
+#endif
     { FE_MITEM_JBIND, "Attack",          "joyb_fire"        },
     { FE_MITEM_JBIND, "Use / Activate",  "joyb_use"         },
     { FE_MITEM_JBIND, "Run",             "joyb_speed"       },
@@ -320,7 +330,11 @@ static femenu_t gamepadMovementMenu =
     70,
     40,
     4,
+#ifdef SVE_PLAT_SWITCH
+    "Movement",
+#else
     "Gamepad Movement",
+#endif
     FE_BG_RSKULL,
     NULL,
     FE_CURSOR_LASER,
@@ -359,7 +373,11 @@ static femenu_t gamepadInvMenu =
     70,
     40,
     4,
+#ifdef SVE_PLAT_SWITCH
+    "Inventory",
+#else
     "Gamepad Inventory",
+#endif
     FE_BG_RSKULL,
     NULL,
     FE_CURSOR_LASER,
@@ -372,6 +390,42 @@ static femenu_t gamepadInvMenu =
 void FE_CmdGPInv(void)
 {
     FE_PushMenu(&gamepadInvMenu);
+}
+
+//=============================================================================
+// 
+// Gyroscope
+//
+
+static femenuitem_t gamepadGyroItems[] =
+{
+    { FE_MITEM_TOGGLE, "Enable",        "joy_gyroscope"  },
+    { FE_MITEM_VALUES, "Turning Style", "joy_gyrostyle"  },
+    { FE_MITEM_SLIDER, "Horiz. Sensitivity", "joy_gyrosensitivityh" },
+    { FE_MITEM_SLIDER, "Verti. Sensitivity", "joy_gyrosensitivityv" },
+    { FE_MITEM_END, "", "" }
+};
+
+static femenu_t gamepadGyroMenu =
+{
+    gamepadGyroItems,
+    arrlen(gamepadGyroItems),
+    70,
+    40,
+    4,
+    "Gyroscope",
+    FE_BG_RSKULL,
+    NULL,
+    FE_CURSOR_LASER,
+    0,
+    false,
+    false
+};
+
+// "gpgyro" command
+void FE_CmdGPGyro(void)
+{
+    FE_PushMenu(&gamepadGyroMenu);
 }
 
 //=============================================================================
@@ -472,6 +526,18 @@ void FE_JoyAxisBindDrawer(void)
 {
     FE_DrawBox(64, 84, 192, 32);
     
+#ifdef SVE_PLAT_SWITCH
+    if (fe_joyawaittics)
+    {
+        FE_WriteYellowTextCentered(90, "Release all sticks.");
+        FE_WriteYellowTextCentered(102, "(Please wait...)");
+    }
+    else
+    {
+        FE_WriteYellowTextCentered(90, "Push a stick.");
+        FE_WriteYellowTextCentered(102, "(Wait to cancel)");
+    }
+#else
     if(fe_joyawaittics)
     {
         FE_WriteYellowTextCentered(90,  "Release all sticks/pads.");
@@ -482,6 +548,7 @@ void FE_JoyAxisBindDrawer(void)
         FE_WriteYellowTextCentered(90,  "Push a stick or pad.");
         FE_WriteYellowTextCentered(102, "(Wait to cancel)");
     }
+#endif
 }
 
 
@@ -603,6 +670,14 @@ void FE_JoyBindDrawer(void)
     }
 }
 
+//
+// Start keybinding change
+//
+void FE_CmdJoyBindReset(void)
+{
+    frontend_state = FE_STATE_RESETCON;
+}
+
 //=============================================================================
 //
 // Gamepad Mapping DB
@@ -647,6 +722,7 @@ typedef struct fepad_s
     size_t       numaxes;
     const int   *profile;
 } fepad_t;
+
 
 #if defined(WIN32) || defined(_WIN32)
 // Windows Pad Mappings
@@ -958,6 +1034,63 @@ static fepad_t pads[] =
         x360Profile
     },
 };
+
+#elif SVE_PLAT_SWITCH
+
+static const char *nxButtons[] =
+{
+	"Up", "Down", "Left", "Right", "A","B","X","Y","L", "R", "ZL", "ZR", "L Stick", "R Stick","+","-",
+};
+
+static const char *nxAxes[] =
+{
+	"L Stick X", "L Stick Y", "R Stick X", "R Stick Y",
+};
+
+static const int nxProfile[FE_JOYPROF_MAX] =
+{
+	 1,  2,  0,  3, // axes     LY RX LX RY
+	 0,  0,  0,  0, // invert 
+
+	 15, 0, 1, 3,
+	 2, 4, 5, 13,
+	 6, 7,
+
+	 14, 0, 1, 2,
+	 3, 5, 4, 4,
+	 5,
+
+	 -1, -1, -1, 11,
+	 4, 10,  5,  -1,
+	 8,  9,  2,  3,
+     6,  1,  0,  12,
+	 7
+};
+
+static fepad_t pads[] =
+{
+	{
+		"Joy-Con (Dual)",
+		nxButtons, arrlen(nxButtons),
+		nxAxes,    arrlen(nxAxes),
+		nxProfile
+	},
+	{
+		"Switch Pro Controller compatible",
+		nxButtons, arrlen(nxButtons),
+		nxAxes,    arrlen(nxAxes),
+		nxProfile
+	},
+	{
+		"Joy-Cons connected to console",
+		nxButtons, arrlen(nxButtons),
+		nxAxes,    arrlen(nxAxes),
+		nxProfile
+	},
+
+	
+};
+ 
 #else
 // No platform
 static const char *noPadButtons[] =
@@ -1134,6 +1267,15 @@ void FE_AutoApplyPadProfile(void)
 
 static femenuitem_t gamepadMenuItems[] =
 {
+#ifdef SVE_PLAT_SWITCH	 
+	{ FE_MITEM_CMD, "Axes",          "gpaxes",     FE_FONT_BIG    },
+	{ FE_MITEM_CMD, "Automap",       "gpautomap",  FE_FONT_BIG    },
+	{ FE_MITEM_CMD, "Inventory",     "gpinv",      FE_FONT_BIG    },
+	{ FE_MITEM_CMD, "Movement",      "gpmovement", FE_FONT_BIG    },
+    { FE_MITEM_CMD, "Gyroscope",     "gpgyro",      FE_FONT_BIG    },
+    { FE_MITEM_CMD, "Default",       "gpdefault",  FE_FONT_BIG    },
+	{ FE_MITEM_END, "", "" }
+#else
     { FE_MITEM_CMD, "Select Device", "gamepaddev", FE_FONT_BIG    },
     { FE_MITEM_CMD, "Apply Profile", "gpprofile",  FE_FONT_BIG, 0 },
     { FE_MITEM_CMD, "Axes",          "gpaxes",     FE_FONT_BIG    },
@@ -1142,6 +1284,7 @@ static femenuitem_t gamepadMenuItems[] =
     { FE_MITEM_CMD, "Menus",         "gpmenus",    FE_FONT_BIG    },
     { FE_MITEM_CMD, "Movement",      "gpmovement", FE_FONT_BIG    },
     { FE_MITEM_END, "", "" }
+#endif
 };
 
 static femenu_t gamepadMenu =
@@ -1151,7 +1294,11 @@ static femenu_t gamepadMenu =
     80,
     40,
     4,
+#ifdef SVE_PLAT_SWITCH
+    "Controller Options",
+#else
     "Gamepad Options",
+#endif
     FE_BG_RSKULL,
     NULL,
     FE_CURSOR_SIGIL,

@@ -24,6 +24,7 @@
 #define FE_MENUENGINE_H_
 
 #include "doomtype.h"
+#include "SDL.h"
 
 // menu item types
 enum
@@ -104,6 +105,7 @@ typedef struct femenu_s
     int           itemon;
     boolean       hasMerchant;
     boolean       exitForcedOnly;
+	void        (*ExitCallback)(void);
     
     // runtime fields
     struct femenu_s *prevMenu; // menu we came to this one from
@@ -132,6 +134,8 @@ void FE_PopMenu(boolean forced);
 void FE_MenuChangeSfx(void);
 
 const char *FE_GetKeyName(const char *varname);
+
+void FE_NX_DrawToolTips(int type);
 
 #endif
 

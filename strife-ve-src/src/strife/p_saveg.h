@@ -28,7 +28,7 @@
 
 // temporary filename to use while saving.
 
-char *P_TempSaveGameFile(void);
+char *P_TempSaveGameFile(const char* dir);
 
 // filename to use for a savegame slot
 

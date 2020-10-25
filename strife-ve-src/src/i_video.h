@@ -162,6 +162,7 @@ extern int screen_width;
 extern int screen_height;
 extern int screen_bpp;
 extern int fullscreen;
+extern int window_noborder;
 extern int aspect_ratio_correct;
 
 // [SVE]: defaults
@@ -169,5 +170,5 @@ extern int default_screen_width;
 extern int default_screen_height;
 
 extern boolean i_seemouses;
-
+ 
 #endif

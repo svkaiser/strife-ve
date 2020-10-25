@@ -18,6 +18,8 @@
 
 #include "rb_texture.h"
 
+extern SDL_Window *windowscreen;
+
 //
 // RB_RoundPowerOfTwo
 //
@@ -261,8 +263,16 @@ void RB_BindFrameBuffer(rbTexture_t *rbTexture)
     
     RB_SetReadBuffer(GL_BACK);
     
-    rbTexture->origwidth   = SDL_GetVideoSurface()->w;
-    rbTexture->origheight  = SDL_GetVideoSurface()->h;
+#if 0
+    rbTexture->origwidth   = SDL_GetWindowSurface(windowscreen)->w;
+    rbTexture->origheight  = SDL_GetWindowSurface(windowscreen)->h;
+#else
+	int w;
+	int h;
+	SDL_GetWindowSize(windowscreen, &w, &h);
+	rbTexture->origwidth = w;
+	rbTexture->origheight = h;
+#endif
     rbTexture->width       = rbTexture->origwidth;
     rbTexture->height      = rbTexture->origheight;
     
@@ -300,8 +310,16 @@ void RB_BindDepthBuffer(rbTexture_t *rbTexture)
         rbState.textureUnits[unit].currentTexture = rbTexture->texid;
     }
     
-    rbTexture->origwidth   = SDL_GetVideoSurface()->w;
-    rbTexture->origheight  = SDL_GetVideoSurface()->h;
+#if 1
+	int w;
+	int h;
+	SDL_GetWindowSize(windowscreen, &w, &h);
+	rbTexture->origwidth = w;
+	rbTexture->origheight = h;
+#else
+    rbTexture->origwidth   = SDL_GetWindowSurface(windowscreen)->w;
+    rbTexture->origheight  = SDL_GetWindowSurface(windowscreen)->h;
+#endif
     rbTexture->width       = rbTexture->origwidth;
     rbTexture->height      = rbTexture->origheight;
     

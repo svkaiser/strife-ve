@@ -69,7 +69,7 @@ extern char *chat_macros[10];
 #define HU_NUMMAPNAMES 38
 
 // haleyjd [STRIFE] externalized:
-extern char *mapnames[HU_NUMMAPNAMES];
+extern const char *const mapnames[HU_NUMMAPNAMES];
 
 // [STRIFE]
 extern patch_t* yfont[HU_FONTSIZE];   // haleyjd 09/18/10: [STRIFE]

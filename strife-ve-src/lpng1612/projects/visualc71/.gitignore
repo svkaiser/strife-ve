@@ -1,3 +1,5 @@
 *.user
 Win32_LIB_Debug
 Win32_LIB_Release
+GoG Release
+GoG Debug

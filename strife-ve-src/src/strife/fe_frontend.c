@@ -21,6 +21,7 @@
 //
 
 #include <time.h>
+#include <stdlib.h>
 
 #include "SDL.h"
 
@@ -49,7 +50,7 @@
 #include "fe_multiplayer.h"
 #include "fe_gamepad.h"
 
-extern int TranslateKey(SDL_keysym *sym);
+extern int TranslateKey(SDL_Keysym *sym);
 
 //
 // State Vars
@@ -72,6 +73,8 @@ boolean  frontend_ingame;       // doing in-game options menu access
 boolean  frontend_waitframe;    // svillarreal: let the frame finish after a wipe
 
 const char *frontend_modalmsg; // message to display if in modal net state
+
+extern SDL_Window *windowscreen;
 
 //
 // Mark the frontend as finished; the game proper will start after the end of
@@ -107,9 +110,10 @@ void FE_UpdateFocus(void)
 
     SDL_PumpEvents();
 
-    state = SDL_GetAppState();
+    state = SDL_GetWindowFlags(windowscreen);
 
-    fe_window_focused = (state & SDL_APPINPUTFOCUS) && (state & SDL_APPACTIVE);
+    //fe_window_focused = (state & SDL_APPINPUTFOCUS) && (state & SDL_APPACTIVE);
+    fe_window_focused = true;
 
     // The above check can still be true even if Steam is eating input, but to
     // SDL it's the same as having lost focus.
@@ -122,12 +126,12 @@ void FE_UpdateFocus(void)
         {
             SDL_Event ev;
             while(SDL_PollEvent(&ev));
-            SDL_EnableKeyRepeat(
+            /*SDL_EnableKeyRepeat(
                 SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL
-            );
+            );*/
         }
-        else
-            SDL_EnableKeyRepeat(0, 0);
+        /*else
+            SDL_EnableKeyRepeat(0, 0);*/
 
         currently_focused = fe_window_focused;
     }
@@ -241,8 +245,12 @@ static void FE_Drawer(void)
     if(frontend_wipe)
     {
         frontend_wipe = false;
-        wipe = true;
-        wipe_StartScreen(0, 0, SCREENWIDTH, SCREENHEIGHT);
+
+        if(!netgame)
+        {
+            wipe = true;
+            wipe_StartScreen(0, 0, SCREENWIDTH, SCREENHEIGHT);
+        }
     }
 
     if(use3drenderer)
@@ -277,6 +285,12 @@ static void FE_Drawer(void)
         break;
     case FE_STATE_JAINPUT:
         FE_JoyAxisBindDrawer();
+        break;
+    case FE_STATE_RESETCON:
+        FE_DrawBox(64, 84, 192, 32);
+        FE_WriteYellowTextCentered(90, "Reset controls to defaults?");
+        FE_WriteYellowTextCentered(102, "(Press confirm or cancel)");
+        FE_NX_DrawToolTips(5);
         break;
     case FE_STATE_EXITING:
         // draw character to ask quit question
@@ -534,10 +548,10 @@ static void FE_HandleKey(SDL_Event *ev)
         char ch;
 
         // jump to item by first letter
-        if(!ev->key.keysym.unicode || ev->key.keysym.unicode >= 0x7f)
+        if(!ev->key.keysym.sym || ev->key.keysym.sym >= 0x7f)
             return;
 
-        ch = (char)(ev->key.keysym.unicode & 0x7f);
+        ch = (char)(ev->key.keysym.sym & 0x7f);
         ch = tolower(ch);
 
         if(isalnum(ch))
@@ -586,6 +600,19 @@ static void FE_HandleJoyButtons(int joybuttons)
         {
             frontend_state = FE_STATE_MAINMENU;
             I_StartVoice(NULL);
+        }
+        return;
+    }
+    else if (frontend_state == FE_STATE_RESETCON)
+    {
+        if (joybmenu_back >= 0 && (joybuttons & (1 << joybmenu_back)))
+        {
+            frontend_state = FE_STATE_MAINMENU;
+        }
+        else if (joybmenu_forward >= 0 && (joybuttons & (1 << joybmenu_forward)))
+        {
+            frontend_state = FE_STATE_MAINMENU;
+            FE_AutoApplyPadProfile();
         }
         return;
     }
@@ -658,9 +685,16 @@ static boolean FE_MouseInValueRect(Uint32 mx, Uint32 my, femenuitem_t *item)
 //
 static void FE_TransformCoordinates(Uint16 mx, Uint16 my, Uint32 *sx, Uint32 *sy)
 {
-    SDL_Surface *display = SDL_GetVideoSurface();
-    int w = display->w;
-    int h = display->h;
+#ifndef SVE_PLAT_SWITCH
+    SDL_Surface *display = SDL_GetWindowSurface(windowscreen);
+	int w = display->w;
+	int h = display->h;
+#else
+	int w;
+	int h;
+	SDL_GetWindowSize(windowscreen, &w, &h);	
+#endif
+    
     fixed_t aspectRatio = w * FRACUNIT / h;
 
     if(aspectRatio == 4 * FRACUNIT / 3) // nominal
@@ -896,6 +930,7 @@ static void FE_HandleMouseMotion(SDL_Event *ev)
 }
 
 static int fe_joywait;
+static const int i_deadzone = (32767 / 2);
 
 //
 // Gamepad axis handling
@@ -912,14 +947,14 @@ static void FE_HandleJoyAxes(void)
 
     if(fe_joywait < frontend_tic)
     {
-        if(y_axis < 0 || l_axis < 0)
+        if(y_axis < -i_deadzone || l_axis < -i_deadzone)
         {
             i_seejoysticks = true;
             i_seemouses = false;
             FE_HandleMenuUp();
             fe_joywait = frontend_tic + 10;
         }
-        else if(y_axis > 0 || l_axis > 0)
+        else if(y_axis > i_deadzone || l_axis > i_deadzone)
         {
             i_seejoysticks = true;
             i_seemouses = false;
@@ -927,14 +962,14 @@ static void FE_HandleJoyAxes(void)
             fe_joywait = frontend_tic + 10;
         }
 
-        if(x_axis < 0 || s_axis < 0)
+        if(x_axis < -i_deadzone || s_axis < -i_deadzone)
         {
             i_seejoysticks = true;
             i_seemouses = false;
             FE_HandleMenuLeft(mi);
             fe_joywait = frontend_tic + 10;
         }
-        else if(x_axis > 0 || s_axis > 0)
+        else if(x_axis > i_deadzone || s_axis > i_deadzone)
         {
             i_seejoysticks = true;
             i_seemouses = false;
@@ -989,6 +1024,7 @@ static void FE_Responder(void)
         case SDL_KEYDOWN:
             FE_HandleKey(&ev);
             break;
+#ifndef SVE_PLAT_SWITCH
         case SDL_MOUSEBUTTONDOWN:
             i_seemouses = true;
             i_seejoysticks = false;
@@ -1015,12 +1051,27 @@ static void FE_Responder(void)
             i_seejoysticks = false;
             FE_HandleMouseMotion(&ev);
             break;
+        case SDL_MOUSEWHEEL:
+            if(ev.wheel.y > 0 || ev.wheel.y < 0)
+            {
+                i_seemouses = true;
+                i_seejoysticks = false;
+                if(frontend_state == FE_STATE_MBINPUT)
+                {
+                    // rebind mouse button
+                    FE_SetMouseButton(fe_kbitem, &ev);
+                }
+            }
+            break;
+#endif
+        case SDL_APP_TERMINATING:
         case SDL_QUIT:
             I_Quit();
             break;
+            /*
         case SDL_ACTIVEEVENT:
             FE_UpdateFocus();
-            break;
+            break;*/
         default:
             break;
         }
@@ -1194,6 +1245,7 @@ void FE_StartInGameOptionsMenu(void)
 
     frontend_running = true;
     frontend_ingame  = true;
+
 }
 
 //

@@ -36,7 +36,8 @@ function build_sdl_mixer {
 	tar xvf SDL_mixer-${SDL_mixer_version}.tar.gz
 	pushd SDL_mixer-${SDL_mixer_version}
 
-	./configure --prefix=${install_dir}
+	./configure --prefix=${install_dir} \
+		--disable-music-ogg-shared
 	make
 	make install
 

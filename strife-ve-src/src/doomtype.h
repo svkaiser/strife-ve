@@ -24,9 +24,11 @@
 
 // [SVE] svillarreal - disable annoying compiler warnings
 
+#if defined(_MSC_VER)
 #pragma warning (disable : 4018) // signed/unsigned mismatch warnings
 #pragma warning (disable : 4244) // conversion #x to #y: possible loss of data
 #pragma warning (disable : 4305) // truncation from #x to #y
+#endif
 
 // #define macros to provide functions missing in Windows.
 // Outside Windows, we use strings.h for str[n]casecmp.
@@ -53,7 +55,7 @@
 // to disk.
 //
 
-#ifdef __GNUC__
+#if defined(__GNUC__) || defined(__clang__)
 #define PACKEDATTR __attribute__((packed))
 #else
 #define PACKEDATTR
@@ -69,13 +71,13 @@
 
 #include <inttypes.h>
 
-#ifdef __cplusplus
+//#ifdef __cplusplus
 
 // Use builtin bool type with C++.
 
-typedef bool boolean;
+//typedef bool boolean;
 
-#else
+//#else
 
 typedef enum 
 {
@@ -83,7 +85,7 @@ typedef enum
     true
 } boolean;
 
-#endif
+//#endif
 
 typedef uint8_t byte;
 
@@ -106,7 +108,7 @@ typedef uint16_t word;
 
 #endif
 
-#define arrlen(array) (sizeof(array) / sizeof(*array))
+#define arrlen(arr) (sizeof(arr) / sizeof(*arr))
 
 #ifndef MAX
 #define MAX(a,b) ((a)>(b)?(a):(b))

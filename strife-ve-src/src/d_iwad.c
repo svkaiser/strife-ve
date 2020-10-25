@@ -566,7 +566,7 @@ static void AddDoomWadPath(void)
     }
 }
 
-#if !defined(_WIN32) && !defined(__APPLE__)
+#if !defined(_WIN32) && !defined(__APPLE__) && !defined(SVE_PLAT_SWITCH)
 #include <unistd.h>
 
 //
@@ -604,7 +604,10 @@ static void BuildIWADDirList(void)
 
     // Look in the current directory.  Doom always does this.
 
+#ifndef SVE_PLAT_SWITCH
+	// dimitrisg 20201506 - dont do this on NX
     AddIWADDir(".");
+#endif
 
     // Add DOOMWADDIR if it is in the environment
 
@@ -631,7 +634,9 @@ static void BuildIWADDirList(void)
     // Check for GUS patches installed with the BFG edition!
 
     CheckSteamGUSPatches();
-
+#elif SVE_PLAT_SWITCH
+	// dimitrisg 20200615 - add NX mounted resource
+	AddIWADDir("rom://");
 #else
 
     // Standard places where IWAD files are installed under Unix.
@@ -640,7 +645,7 @@ static void BuildIWADDirList(void)
     AddIWADDir("/usr/local/share/games/doom");
 
     // [SVE] svillarreal
-#if !defined(__APPLE__)
+#if !defined(__APPLE__) && !defined(SVE_PLAT_SWITCH)
     if((doomwaddir = GetApplicationPath()))
         AddIWADDir(doomwaddir);
 #endif
@@ -664,10 +669,13 @@ char *D_FindWADByName(char *name)
 
     // Absolute path?
 
+#ifndef SVE_PLAT_SWITCH
+	// dimitrisg 20201506 - this code breaks nx
     if (M_FileExists(name))
     {
         return name;
     }
+#endif
 
     BuildIWADDirList();
 

@@ -63,6 +63,8 @@ rbfbo_t spriteFBO;
 
 boolean skyvisible = false;
 
+extern SDL_Window *windowscreen;
+
 //=============================================================================
 //
 // Locals
@@ -232,8 +234,12 @@ void RB_InitDrawer(void)
     RB_InitLightPointTexture();
     RB_InitMouseCursor();
 
-    w = SDL_GetVideoSurface()->w;
-    h = SDL_GetVideoSurface()->h;
+#if 1
+	SDL_GetWindowSize(windowscreen, &w, &h);
+#else
+    w = SDL_GetWindowSurface(windowscreen)->w;
+    h = SDL_GetWindowSurface(windowscreen)->h;
+#endif
 
     FBO_InitColorAttachment(&spriteFBO, 0, w, h);
     FBO_InitColorAttachment(&fxaaFBO, 0, w, h);
@@ -412,7 +418,7 @@ void RB_DrawScreenTexture(rbTexture_t *texture, const int width, const int heigh
 
     RB_BindTexture(texture);
 
-    screen = SDL_GetVideoSurface();
+    screen = SDL_GetWindowSurface(windowscreen);
     ws = screen->w;
     hs = screen->h;
 
@@ -1138,12 +1144,20 @@ void RB_RenderFXAA(void)
 
     RB_SetBlend(GLSRC_SRC_ALPHA, GLDST_ONE_MINUS_SRC_ALPHA);
 
-    FBO_CopyBackBuffer(&fxaaFBO, 0, 0, SDL_GetVideoSurface()->w, SDL_GetVideoSurface()->h);
+#if 1
+	int w;
+	int h;
+	SDL_GetWindowSize(windowscreen, &w, &h);
+	FBO_CopyBackBuffer(&fxaaFBO, 0, 0, w, h);
+#else
+    FBO_CopyBackBuffer(&fxaaFBO, 0, 0, SDL_GetWindowSurface(windowscreen)->w, SDL_GetWindowSurface(windowscreen)->h);
+#endif
     SP_Enable(&fxaaShader);
 
     SP_SetUniform1i(&fxaaShader, "uDiffuse", 0);
-    SP_SetUniform1f(&fxaaShader, "uViewWidth", (float)SDL_GetVideoSurface()->w);
-    SP_SetUniform1f(&fxaaShader, "uViewHeight", (float)SDL_GetVideoSurface()->h);
+
+    SP_SetUniform1f(&fxaaShader, "uViewWidth", (float)w);
+    SP_SetUniform1f(&fxaaShader, "uViewHeight", (float)h);
 
     SP_SetUniform1f(&fxaaShader, "uMaxSpan", 8.0f);
     SP_SetUniform1f(&fxaaShader, "uReduceMax", 8.0f);
@@ -1232,8 +1246,12 @@ void RB_RenderBloom(void)
     SP_SetUniform1i(&blurShader, "uDiffuse", 0);
     SP_SetUniform1f(&blurShader, "uBlurRadius", 1.0f);
 
-    w = SDL_GetVideoSurface()->w;
-    h = SDL_GetVideoSurface()->h;
+#if 1
+	SDL_GetWindowSize(windowscreen, &w, &h);
+#else
+    w = SDL_GetWindowSurface(windowscreen)->w;
+    h = SDL_GetWindowSurface(windowscreen)->h;
+#endif
 
     // pass 2: blur
     for(i = 0; i < 2; ++i)

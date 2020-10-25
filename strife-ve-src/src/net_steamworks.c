@@ -27,6 +27,7 @@
 #include "net_steamworks.h"
 
 #include "i_social.h"
+#include <stdlib.h>
 
 //
 // Globals
@@ -214,16 +215,13 @@ void NET_Steamworks_AddrToString(net_addr_t *addr, char *buffer, int buffer_len)
     M_snprintf(buffer, buffer_len, "%llu", csid);
 }
 
-#if defined(_MSC_VER)
-#define atoll _atoi64
-#endif
-
 //
 // Resolve a string to an address
 //
 net_addr_t *NET_Steamworks_ResolveAddress(char *address)
 {
-    uint64_t addr = (uint64_t)(atoll(address));
+    char* end;
+    uint64_t addr = (uint64_t)(strtoull(address, &end, 10));
 
     if(!gAppServices->ResolveAddress(&addr))
     {

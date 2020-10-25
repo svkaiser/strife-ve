@@ -65,7 +65,7 @@ static fehelpstr_t helpStrs[] =
     },
     {
         "autorun",
-        "You will run automatically without needing to hold down an extra key."
+        "You will run automatically, the run button will make you walk instead."
     },
     { 
         "classicmode", 
@@ -419,6 +419,11 @@ static fehelpstr_t helpStrs[] =
         "If using the high quality renderer, your view will kick back in response "
         "to heavy arms fire."
     },
+    {
+        "window_noborder",
+        "Select whether or not to hide the window border. "
+        "You must restart for this setting to take effect."
+    },
 };
 
 //
@@ -481,6 +486,7 @@ static fecmd_t cmds[] =
     { "back",         FE_CmdPopMenu         },
     { "options",      FE_CmdOptions         },
     { "gameplay",     FE_CmdGameplay        },
+#ifndef SVE_PLAT_SWITCH	
     { "keyboard",     FE_CmdKeyboard        },
     { "kb_functions", FE_CmdKeyboardFuncs   },
     { "kb_inventory", FE_CmdKeyboardInv     },
@@ -490,6 +496,7 @@ static fecmd_t cmds[] =
     { "kb_weapons",   FE_CmdKeyboardWeapons },
     { "mouse",        FE_CmdMouse           },
     { "mbuttons",     FE_CmdMouseButtons    },
+#endif
     { "graphics",     FE_CmdGraphics        },
     { "gfxbasic",     FE_CmdGfxBasic        },
     { "gfxlights",    FE_CmdGfxLights       },
@@ -518,7 +525,9 @@ static fecmd_t cmds[] =
     { "gpmenus",      FE_CmdGPMenus         },
     { "gpmovement",   FE_CmdGPMovement      },
     { "gpinv",        FE_CmdGPInv           },
+    { "gpgyro",       FE_CmdGPGyro          },
     { "gpprofile",    FE_CmdGPProfile       },
+    {"gpdefault",     FE_CmdJoyBindReset    },
 
     { NULL,           NULL                  }
 };
@@ -574,6 +583,8 @@ static fevar_t feVariables[] =
     { "sfx_volume",                FE_VAR_INT,     0,   15, 1, 0.0f, 0.0f, 0.0f,   FE_SetSfxVolume   },
     { "timelimit",                 FE_VAR_INT,     0,   15, 1                      },
     { "voice_volume",              FE_VAR_INT,     0,   15, 1, 0.0f, 0.0f, 0.0f,   FE_SetVoiceVolume },
+    { "joy_gyrosensitivityh",      FE_VAR_FLOAT,   0,    0, 0, 0.1f, 1.0f, 0.1f    },
+    { "joy_gyrosensitivityv",      FE_VAR_FLOAT,   0,    0, 0, 0.1f, 1.0f, 0.1f    },
     { NULL,                        FE_VAR_INT,     0,    0, 0                      },
 };
 
@@ -771,7 +782,8 @@ static int             curModeNum;
 static void FE_BuildModeList(void)
 {
     int i;
-    SDL_Rect **modes;
+    int prevWidth, prevHeight;
+    SDL_DisplayMode mode;
     boolean curModeInList = false;
     static boolean modesBuilt;
     int numModesAlloc;
@@ -779,9 +791,9 @@ static void FE_BuildModeList(void)
     if(modesBuilt)
         return;
     
-    modes = SDL_ListModes(NULL, SDL_FULLSCREEN);
+    const int numDisplays = SDL_GetNumDisplayModes(0);
 
-    if(!modes || modes == (SDL_Rect **)-1 || !modes[0])
+    if(numDisplays <= 0)
     {
         char buf[32];
         
@@ -805,10 +817,22 @@ static void FE_BuildModeList(void)
     }
 
     // count modes, and check if current mode is in list
-    for(i = 0; modes[i]; i++)
+    prevWidth = prevHeight = -1;
+    for(i = 0; i < numDisplays; i++)
     {
-        ++numModes;
-        if(screen_width == modes[i]->w && screen_height == modes[i]->h)
+        if(SDL_GetDisplayMode(0, i, &mode) < 0)
+        {
+            continue;
+        }
+
+        if(prevWidth != mode.w || prevHeight != mode.h)
+        {
+            numModes++;
+            prevWidth = mode.w;
+            prevHeight = mode.h;
+        }
+
+        if(screen_width == mode.w && screen_height == mode.h)
         {
             curModeInList = true;
         }
@@ -819,19 +843,32 @@ static void FE_BuildModeList(void)
     modeStrings = Z_Calloc(numModesAlloc, sizeof(*modeStrings), PU_STATIC, NULL);
     modeStructs = Z_Calloc(numModesAlloc, sizeof(*modeStructs), PU_STATIC, NULL);
 
-    for(i = 0; i < numModes; i++)
+    prevWidth = prevHeight = -1;
+    // Keeping same ordering as old builds under SDL2 requires counting down
+    int index = numModesAlloc - 1;
+    for(i = 0; i < numDisplays; i++)
     {
         char buf[32];
-        int modeIdx = numModes - (i + 1);
+        //int modeIdx = numModes - (i + 1);
 
-        modeStructs[i].w = modes[modeIdx]->w;
-        modeStructs[i].h = modes[modeIdx]->h;
+        SDL_GetDisplayMode(0, i, &mode);
 
-        M_snprintf(buf, sizeof(buf), "%dx%d", modes[modeIdx]->w, modes[modeIdx]->h);
-        modeStrings[i] = M_Strdup(buf);
+        // don't add modes for resolutions already present
+        if(prevWidth == mode.w && prevHeight == mode.h)
+        {
+            continue;
+        }
 
-        if(screen_width == modes[modeIdx]->w && screen_height == modes[modeIdx]->h)
-            curModeNum = i;
+        modeStructs[index].w = prevWidth = mode.w;
+        modeStructs[index].h = prevHeight = mode.h;
+
+        M_snprintf(buf, sizeof(buf), "%dx%d", mode.w, mode.h);
+        modeStrings[index] = M_Strdup(buf);
+
+        if(screen_width == mode.w && screen_height == mode.h)
+            curModeNum = index;
+
+        index--;
     }
 
     if(!curModeInList)
@@ -839,12 +876,12 @@ static void FE_BuildModeList(void)
         char buf[32];
 
         ++numModes;
-        modeStructs[numModes-1].w = screen_width;
-        modeStructs[numModes-1].h = screen_height;
+        modeStructs[0].w = screen_width;
+        modeStructs[0].h = screen_height;
         
         M_snprintf(buf, sizeof(buf), "%dx%d", screen_width, screen_height);
-        modeStrings[numModes-1] = M_Strdup(buf);
-        curModeNum = numModes - 1;
+        modeStrings[0] = M_Strdup(buf);
+        curModeNum = 0;
     }
 
     modesBuilt = true;
@@ -910,7 +947,7 @@ typedef struct fevaluerange_s
     const char *name;    // name of variable
     int min;             // minimum value 
     int max;             // maximum value
-    const char **values; // array of values
+    const char *const *values; // array of values
     int (*callback)(struct fevaluerange_s *, int); // value callback
 } fevaluerange_t;
 
@@ -939,6 +976,13 @@ static const char *dynLightTypes[] =
 {
     "Quality", 
     "Fast"
+};
+
+static const char *gyroTypes[] =
+{
+    "Yaw",
+    "Roll",
+    "Inverse Roll"
 };
 
 enum
@@ -1065,6 +1109,13 @@ static fevaluerange_t values[] =
         1,
         musDeviceNames,
         FE_doChangeMusicEngine
+    },
+    {
+        true,
+        "joy_gyrostyle",
+        0,
+        2,
+        gyroTypes
     },
 };
 

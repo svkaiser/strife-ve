@@ -173,8 +173,9 @@ void S_Init(int sfxVolume, int musicVolume, int voiceVolume)
     {
         S_sfx[i].lumpnum = S_sfx[i].usefulness = -1;
     }
-
+#ifndef SVE_PLAT_SWITCH
     I_AtExit(S_Shutdown, true);
+#endif
 }
 
 void S_Shutdown(void)

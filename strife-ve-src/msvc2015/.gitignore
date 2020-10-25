@@ -1,0 +1,18 @@
+*.cfg
+*.db
+*.ncb
+*.opendb
+*.suo
+*.user
+savegames
+movies
+music
+strfsav*
+*.pcx
+*.wad
+*.png
+*.txt
+*.ogv
+*.log
+GoG Release
+GoG Debug

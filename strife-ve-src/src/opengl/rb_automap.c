@@ -42,20 +42,30 @@ extern int f_w, f_h;
 static rbTexture_t *markTextures[10];
 static rbTexture_t *objMarkIcon;
 
+extern SDL_Window *windowscreen;
 //
 // RB_SetupAutomapView
 //
 
 static void RB_SetupAutomapView(rbView_t *view)
 {
-    SDL_Surface *screen = SDL_GetVideoSurface();
-    float delta = (float)screen->h / ((float)SCREENHEIGHT / 16.0f);
-    float amx, amy;
-    float px, py;
-    float fscale;
+	float amx, amy;
+	float px, py;
+	float fscale;
 
-    dglViewport(0, delta, screen->w, screen->h);
+#if 0
+    SDL_Surface *screen = SDL_GetWindowSurface(windowscreen);
+	float delta = (float)screen->h / ((float)SCREENHEIGHT / 16.0f);
+	dglViewport(0, delta, screen->w, screen->h);
+#else
+	int w;
+	int h;
+	SDL_GetWindowSize(windowscreen, &w, &h);
 
+	float delta = (float)h / ((float)SCREENHEIGHT / 16.0f);
+	dglViewport(0, delta, w, h);
+#endif
+    
     fscale = FIXED2FLOAT(scale_ftom);
 
     px = FIXED2FLOAT(players[consoleplayer].mo->x);

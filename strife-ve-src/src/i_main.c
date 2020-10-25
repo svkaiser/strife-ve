@@ -30,6 +30,7 @@
 // [SVE] svillarreal
 #include "m_parser.h"
 #include "i_social.h"
+#include "i_cpumode.h"
 
 //
 // D_DoomMain()
@@ -121,16 +122,14 @@ static void LockCPUAffinity(void)
 // [SVE]: this is unused.
 //#warning No known way to set processor affinity on this platform.
 //#warning You may experience crashes due to SDL_mixer.
-
+#if 0
 static void LockCPUAffinity(void)
 {
-#if 0
     fprintf(stderr, 
     "WARNING: No known way to set processor affinity on this platform.\n"
     "         You may experience crashes due to SDL_mixer.\n");
-#endif
 }
-
+#endif
 #endif
 
 // haleyjd 20140821: [SVE] debug console
@@ -153,6 +152,9 @@ int main(int argc, char **argv)
 #if defined(_WIN32) && defined(_DEBUG)
     I_W32_DebugConsole();
 #endif
+
+    // Edward [SVE]: Speed things up
+    I_SetCPUHighPerformance(1);
 
     // [SVE] initialize application services provider
     I_InitAppServices();

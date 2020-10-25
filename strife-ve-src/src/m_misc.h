@@ -33,7 +33,7 @@ char *M_TempFile(char *s);
 boolean M_FileExists(const char *file);
 long M_FileLength(FILE *handle);
 boolean M_StrToInt(const char *str, int *result);
-void M_ExtractFileBase(char *path, char *dest);
+void M_ExtractFileBase(const char *path, char *dest);
 void M_ForceUppercase(char *text);
 char *M_StrCaseStr(char *haystack, char *needle);
 boolean M_StringCopy(char *dest, const char *src, size_t dest_size);

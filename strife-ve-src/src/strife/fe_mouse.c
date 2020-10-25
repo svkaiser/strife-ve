@@ -58,7 +58,20 @@ const char *feMVarNames[FE_MVAR_NUMVARS] =
 int FE_CfgNumForSDLMouseButton(SDL_Event *ev)
 {
     if(ev->button.button == 0 || ev->button.button > MAX_MOUSE_BUTTONS)
-        return -1;
+    {
+        if(ev->wheel.y > 0)
+        {
+            return 3;
+        }
+        else if(ev->wheel.y < 0)
+        {
+            return 4;
+        }
+        else
+        {
+            return -1;
+        }
+    }
 
     switch(ev->button.button)
     {
@@ -69,7 +82,7 @@ int FE_CfgNumForSDLMouseButton(SDL_Event *ev)
     case SDL_BUTTON_MIDDLE:
         return 2;
     default:
-        return ev->button.button - 1;
+        return (ev->button.button - 1) + 2;
     }
 }
 

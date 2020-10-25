@@ -31,7 +31,11 @@ boolean rbDynamicLights = true;
 boolean rbDynamicLightFastBlend = false;
 boolean rbForceSync = false;
 boolean rbCrosshair = false;
+#ifdef SVE_PLAT_SWITCH
+boolean rbVsync = true;
+#else
 boolean rbVsync = false;
+#endif
 boolean rbDecals = true;
 int     rbMaxDecals = 128;
 float   rbFOV = 74.0f;

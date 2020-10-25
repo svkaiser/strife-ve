@@ -31,15 +31,15 @@
 #include "m_argv.h"
 #include "r_state.h"
 
-static int          viewWidth;
-static int          viewHeight;
-static int          viewWindowX;
-static int          viewWindowY;
+//static int          viewWidth;
+//static int          viewHeight;
+//static int          viewWindowX;
+//static int          viewWindowY;
 static int          maxTextureUnits;
 static int          maxTextureSize;
 static int          maxColorAttachments;
 static float        maxAnisotropic;
-static boolean      bIsInit;
+//static boolean      bIsInit;
 static SDL_Surface  *screen;
 
 static boolean      bPrintStats;
@@ -50,19 +50,22 @@ static const char   *gl_version;
 
 rbState_t rbState;
 
+extern SDL_Window *windowscreen;
+
 //
 // RB_Init
 //
 
 void RB_Init(void)
 {
-    screen = SDL_GetVideoSurface();
-
+#if 0
+    screen = SDL_GetWindowSurface(windowscreen);
+#endif
     gl_vendor = (const char*)dglGetString(GL_VENDOR);
     gl_renderer = (const char*)dglGetString(GL_RENDERER);
     gl_version = (const char*)dglGetString(GL_VERSION);
     
-    dglGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+	dglGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
     dglGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
     dglGetIntegerv(GL_MAX_COLOR_ATTACHMENTS_EXT, &maxColorAttachments);
     dglGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropic);
@@ -78,8 +81,9 @@ void RB_Init(void)
     RB_InitDrawer();
 
     bPrintStats = M_CheckParm("-printglstats");
-
+#ifndef SVE_PLAT_SWITCH
     I_AtExit(RB_Shutdown, true);
+#endif
 }
 
 //
@@ -150,7 +154,14 @@ void RB_InitDefaultState(void)
 
 void RB_ResetViewPort(void)
 {
+#if 1
+	int w;
+	int h;
+	SDL_GetWindowSize(windowscreen, &w, &h);
+	dglViewport(0, 0, w, h);
+#else
     dglViewport(0, 0, screen->w, screen->h);
+#endif
 }
 
 //
@@ -317,7 +328,7 @@ angle_t RB_PointToBam(fixed_t x, fixed_t y)
             an = 2.0f - an;
         }
 
-        return (angle_t)(an * ANG90);
+        return (angle_t)(int64_t)(an * ANG90);
     }
 
     return 0;
@@ -347,7 +358,7 @@ void RB_SwapBuffers(void)
         dglFinish();
     }
 
-    SDL_GL_SwapBuffers();
+    SDL_GL_SwapWindow(windowscreen);
 
     // reset debugging info
     rbState.numStateChanges = 0;
@@ -766,8 +777,10 @@ void RB_SetTextureUnit(int unit)
         return; // already binded
     }
         
+#ifndef SVE_PLAT_SWITCH
     dglActiveTextureARB(GL_TEXTURE0_ARB + unit);
     dglClientActiveTextureARB(GL_TEXTURE0_ARB + unit);
+#endif
     rbState.currentUnit = unit;
 }
 
@@ -777,7 +790,10 @@ void RB_SetTextureUnit(int unit)
 
 void RB_SetScissorRect(const int x, const int y, const int w, const int h)
 {
-    dglScissor(x, screen->h - y, w, h);
+    int wsw;
+	int wsh;
+	SDL_GetWindowSize(windowscreen, &wsw, &wsh);
+    dglScissor(x, wsh - y, w, h);
 }
 
 //

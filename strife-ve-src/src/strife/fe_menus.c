@@ -53,13 +53,16 @@ static femenuitem_t mainMenuItems[] =
     { FE_MITEM_CMD, "Multiplayer", "multi",   FE_FONT_BIG },
 #endif
     { FE_MITEM_CMD, "Options",     "options", FE_FONT_BIG },
+#ifndef SVE_PLAT_SWITCH
     { FE_MITEM_CMD, "Quit",        "exit",    FE_FONT_BIG },
+#endif
     { FE_MITEM_END, "",            ""                     }
 };
 
 static void FE_DrawMainMenu(void)
 {
     V_DrawPatch(80, 2, W_CacheLumpName("M_STRIFE", PU_CACHE));
+ 
 }
 
 femenu_t mainMenu =
@@ -81,11 +84,17 @@ femenu_t mainMenu =
 static femenuitem_t optionsMenuMainItems[] =
 {
     { FE_MITEM_CMD, "Gameplay", "gameplay", FE_FONT_BIG },
+#ifndef SVE_PLAT_SWITCH
     { FE_MITEM_CMD, "Keyboard", "keyboard", FE_FONT_BIG },
     { FE_MITEM_CMD, "Mouse",    "mouse",    FE_FONT_BIG },
     { FE_MITEM_CMD, "Gamepad",  "gamepad",  FE_FONT_BIG },
+#else
+    { FE_MITEM_CMD,"Controller","gamepad",  FE_FONT_BIG },
+#endif
     { FE_MITEM_CMD, "Graphics", "graphics", FE_FONT_BIG },
+#ifndef SVE_PLAT_SWITCH
     { FE_MITEM_CMD, "Audio",    "audio",    FE_FONT_BIG },
+#endif
     { FE_MITEM_CMD, "About",    "about",    FE_FONT_BIG },
     { FE_MITEM_END, "",     "" }
 };
@@ -505,9 +514,11 @@ void FE_CmdMouseButtons(void)
 static femenuitem_t optionsGraphicsItems[] =
 {
     { FE_MITEM_CMD, "Basic Settings", "gfxbasic",    FE_FONT_BIG },
+#ifndef SVE_PLAT_SWITCH
     { FE_MITEM_CMD, "Lights",         "gfxlights",   FE_FONT_BIG },
     { FE_MITEM_CMD, "Sprites",        "gfxsprites",  FE_FONT_BIG },
     { FE_MITEM_CMD, "Advanced",       "gfxadvanced", FE_FONT_BIG },
+#endif
     { FE_MITEM_END }
 };
 
@@ -534,13 +545,16 @@ void FE_CmdGraphics(void)
 
 static femenuitem_t optionsGraphicsBasicItems[] = 
 {
+#ifndef SVE_PLAT_SWITCH
     { FE_MITEM_VIDMODE, "Resolution",       "screen_width"        },
     { FE_MITEM_TOGGLE,  "Fullscreen",       "fullscreen",         FE_FONT_SMALL, FE_TOGGLE_DEFAULT },
+    { FE_MITEM_TOGGLE,  "Hide Window Border", "window_noborder",  FE_FONT_SMALL, FE_TOGGLE_DEFAULT },
     { FE_MITEM_TOGGLE,  "High Quality",     "gl_enable_renderer", FE_FONT_SMALL, FE_TOGGLE_DEFAULT },
     { FE_MITEM_TOGGLE,  "Linear Filtering", "gl_linear_filtering" },
     { FE_MITEM_TOGGLE,  "Interpolation",    "interpolate_frames"  },
     { FE_MITEM_TOGGLE,  "Cap Framerate",    "d_fpslimit"          },
     { FE_MITEM_TOGGLE,  "Textured Automap", "gl_textured_automap" },  
+#endif
     { FE_MITEM_SLIDER,  "Field of View",    "gl_fov"              },
     { FE_MITEM_END,     "", "" }
 };
@@ -667,8 +681,10 @@ static femenuitem_t optionsAudioItems[] =
     { FE_MITEM_SLIDER, "Sfx Volume",   "sfx_volume"      },
     { FE_MITEM_SLIDER, "Voice Volume", "voice_volume"    },
     { FE_MITEM_SLIDER, "Music Volume", "music_volume"    },
+#ifndef SVE_PLAT_SWITCH
     { FE_MITEM_VALUES, "Music Type",   "snd_musicdevice" },
     { FE_MITEM_MUSIC,  "Music Test",   "fe_musicnum"     },
+#endif
     { FE_MITEM_END, "", "" }
 };
 
@@ -709,47 +725,97 @@ static femenuitem_t optionsAboutItems[] =
 
 enum
 {
-   CAT_PRODUCER,
+   CAT_CEO,
+   CAT_CFO,
+   CAT_BIZDEV,
+   CAT_PRODUCER1,
+   CAT_PRODUCER2,
    CAT_BY,
    CAT_PROGRAMMING1,
    CAT_PROGRAMMING2,
-   CAT_GRAPHICS,
+   CAT_SWITCHPORT1,
+   CAT_SWITCHPORT2,
+   CAT_SWITCHPORT3,
+   CAT_SWITCHPORT4,
+   CAT_ARTWORK,
    CAT_QALEAD,
-   CAT_QATEST,
+   CAT_QATEST1,
+   CAT_QATEST2,
    CAT_SPECIALTHANKS,
    NUMCATS // meow!
 };
 
 static const char *cat_strs[NUMCATS] =
 {
-    "Producer:",
+    "CEO:",
+    "CFO:",
+    "Business Dev:",
+    "Producers:",
+    "",
     "Strife By:",
     "Code & Design:",
     "",
+	"Console Port:",
+	"",
+	"",
+	"",
     "Artwork:",
     "QA Lead:",
-    "QA Tester:",
+    "QA Testers:",
+    "",
     "Special Thanks:",
 };
 
 static const char *val_strs[NUMCATS] =
 {
     "Stephen Kick",
+    "Alix Kick",
+    "Larry Kuperman",
+    "Daniel Grayshon",
+    "Karlee Wetzel",
     "Rogue Entertainment",
     "Samuel Villarreal",
     "James Haley",
+	"Dimitris Giannakis",
+	"Sebastian Reddi",
+	"Edward Richardson",
+	"Max Waine",
     "Sven Ruthner",
-    "Daniel Grayshon",
-    "Casey Day",
+    "Leo Mikkola",
+    "James Ager",
+    "Adam Grayshon",
     "Simon Howard",
 };
+
+static int about_menu_open_ms = 0;
+
+static void FE_OnAboutMenuPop(void)
+{
+	about_menu_open_ms = 0;
+}
 
 static void FE_DrawAboutMenu(void)
 {
     static int cat_width = -1, val_width = -1, line_x;
-    int i, y;
-    
-    FE_DrawMainMenu();
+	static int content_height = 0;
+    int i, y = 0;
+
+	const int current_ms = I_GetTimeMS();
+
+	if(about_menu_open_ms == 0)
+		about_menu_open_ms = current_ms;
+
+	int yoffs = ((2000 + about_menu_open_ms - current_ms) * 8) / 1000;
+	if(yoffs <= SCREENHEIGHT - content_height)
+		yoffs = SCREENHEIGHT - content_height;
+	if(yoffs < 0)
+		y += yoffs;
+
+	y += 2;
+	V_DrawPatch(80, y, W_CacheLumpName("M_STRIFE", PU_CACHE));
+
+	y += 50;
+	V_WriteBigText("Veteran Edition", 160 - V_BigFontStringWidth("Veteran Edition") / 2, y);
 
     if(cat_width == -1)
     {
@@ -775,7 +841,7 @@ static void FE_DrawAboutMenu(void)
         line_x = ((SCREENWIDTH - (cat_width + val_width + 8)) >> 1) - 8;
     }
 
-    y = 82;
+    y += 30;
 
     // draw info categories
     for(i = 0; i < NUMCATS; i++)
@@ -787,9 +853,12 @@ static void FE_DrawAboutMenu(void)
         y += 11;
     }
 
-    y += 11;
+    y += 8;
 
-    FE_WriteSmallTextCentered(y, "Copyright 2015 Night Dive Studios");
+    FE_WriteSmallTextCentered(y, "Copyright 2020 Night Dive Studios, Inc");
+
+	if(content_height == 0)
+		content_height = y + 11;
 }
 
 static femenu_t optionsMenuAbout =
@@ -798,12 +867,15 @@ static femenu_t optionsMenuAbout =
     arrlen(optionsAboutItems),
     144,
     188,
-    52,
-    "Veteran Edition",
+    0,
+    NULL,
     FE_BG_SIGIL,
     FE_DrawAboutMenu,
     FE_CURSOR_NONE,
-    0
+    0,
+	false,
+	false,
+	FE_OnAboutMenuPop
 };
 
 // "about" command
@@ -822,15 +894,26 @@ static femenuitem_t optionsAboutItems2[] =
     { FE_MITEM_END, "",     "" }
 };
 
-// NB: These are legally required notices in the case of FFmpeg and SDL.
+// NB: These are legally required notices in the case of FFmpeg.
 // Others are courtesy to end user and to the Chocolate Doom team.
 static const char *licText =
 "The \"Strife: Veteran Edition\" program code is Free Software available under the "
-"GNU GPL v2.0. See the SRCLICENSE.txt file in your " I_APPSERVICES_PLATFORMNAME " directory for details.\n\n"
-"Based on \"Chocolate Strife\", (c) 2015 Simon Howard et al.\n\n"
+"GNU GPL v2.0. For details see SRCLICENSE.txt in the strife-ve repository at "
+"https://github.com/NightDive-Studio\n\n"
+"Based on \"Chocolate Strife\", (c) 2015 Simon Howard et al.\n"
+#if defined(SVE_PLAT_SWITCH)
+"Permission obtained for use on Nintendo Switch.\n\n"
+#else
+"\n"
+#endif
+#if defined(SVE_USE_THEORAPLAY)
+"Theoraplay is used under terms of the zlib license\n"
+"See https://www.icculus.org/theoraplay\n\n"
+#else
 "FFmpeg is used under terms of the LGPL 2.1\n"
 "See https://www.ffmpeg.org\n\n"
-"SDL is used under terms of the LGPL 2.1\n"
+#endif
+"SDL is used under terms of the zlib license\n"
 "See https://www.libsdl.org"; 
 static char *licCopy;
 
@@ -839,10 +922,11 @@ static void FE_DrawAboutMenu2(void)
     if(!licCopy)
     {
         licCopy = M_Strdup(licText);
-        M_DialogDimMsg(30, 30, licCopy, true);
+        M_DialogDimMsg(30, 1, licCopy, true);
     }
 
-    HUlib_drawYellowText(30, 30, licCopy, true);
+    HUlib_drawYellowText(30, 1, licCopy, true);
+
 }
 
 static femenu_t optionsMenuAbout2 =
@@ -852,7 +936,7 @@ static femenu_t optionsMenuAbout2 =
     144,
     188,
     2,
-    "Legal",
+    "",
     FE_BG_SIGIL,
     FE_DrawAboutMenu2,
     FE_CURSOR_NONE,
@@ -862,6 +946,8 @@ static femenu_t optionsMenuAbout2 =
 // "about2" command
 void FE_CmdAbout2(void)
 {
+	if(currentFEMenu && currentFEMenu->ExitCallback)
+		currentFEMenu->ExitCallback();
     currentFEMenu           = &optionsMenuAbout2;
     currentFEMenu->prevMenu = optionsMenuAbout.prevMenu;
     frontend_wipe  = true;
@@ -898,6 +984,7 @@ static femenu_t multiMenu =
 void FE_CmdMulti(void)
 {
     FE_PushMenu(&multiMenu);
+
 }
 
 // Lobby Server Menu ---------------------------------------

@@ -507,6 +507,10 @@ void P_PlayerThink (player_t* player)
         // The actual changing of the weapon is done
         //  when the weapon psprite can do it
         //  (read: not in the middle of an attack).
+#ifdef SVE_PLAT_SWITCH
+        // edward: [SVE] We should access the extra weapons directly for the Switch
+        newweapon = (cmd->buttons & BT_WEAPONMASKEX) >> BT_WEAPONSHIFT;
+#else
         newweapon = (cmd->buttons & BT_WEAPONMASK) >> BT_WEAPONSHIFT;
 
         // villsa [STRIFE] select poison bow
@@ -539,6 +543,7 @@ void P_PlayerThink (player_t* player)
                     newweapon = wp_torpedo;
             }
         }
+#endif
 
         if(player->weaponowned[newweapon] && newweapon != player->readyweapon)
         {

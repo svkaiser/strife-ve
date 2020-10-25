@@ -182,7 +182,7 @@ typedef struct player_s
     int         secretcount;  // [SVE] svillarreal
 
     // Hint messages.
-    char*		message;	
+    const char*		message;	
     
     // For screen flashing (red or bright).
     int			damagecount;

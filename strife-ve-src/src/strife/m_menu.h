@@ -94,6 +94,7 @@ void M_StartControlPanel (void);
 
 // haleyjd 09/04/10: Externalized. Draws menu text.
 int M_WriteText(int x, int y, const char *string);
+int M_WriteTextEx(int x, int y, const char *string, boolean breakearly);
 int M_StringWidth(const char* string);
 int M_StringHeight(const char* string);
 

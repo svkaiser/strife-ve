@@ -36,6 +36,8 @@
 
 rbView_t rbPlayerView;
 
+extern SDL_Window *windowscreen;
+
 #define Z_NEAR          0.1f
 #define FIXED_ASPECT    1.2f
 
@@ -45,12 +47,19 @@ rbView_t rbPlayerView;
 
 static void RB_SetupMatrices(rbView_t *view, const float fov)
 {
-    SDL_Surface *screen;
     matrix transform;
 
     // setup projection matrix
-    screen = SDL_GetVideoSurface();
-    MTX_ViewFrustum(view->projection, (float)screen->w, (float)screen->h, fov, Z_NEAR);
+#ifdef SVE_PLAT_SWITCH 
+	MTX_ViewFrustum(view->projection, (float)1280, (float)720, fov, Z_NEAR);
+#else
+    int w;
+	int h;
+	SDL_GetWindowSize(windowscreen, &w, &h);
+    //screen = SDL_GetWindowSurface(windowscreen);
+	MTX_ViewFrustum(view->projection, (float)w, (float)h, fov, Z_NEAR);
+#endif
+    
 
     // setup rotation matrix
     // start off with the matrix on it's z-axis and then rotate it along the x-axis
@@ -173,10 +182,19 @@ static void RB_SetupView(player_t *player, rbView_t *view, const float fov)
     // adjust viewport to match the resizing screen
     if(viewheight != SCREENHEIGHT)
     {
-        SDL_Surface *screen = SDL_GetVideoSurface();
-        float delta = (float)screen->h / ((float)SCREENHEIGHT / 16.0f);
-
-        dglViewport(0, delta, screen->w, screen->h);
+#if 1
+		int w;
+		int h;
+		SDL_GetWindowSize(windowscreen, &w, &h);
+		 
+		float delta = (float)h / ((float)SCREENHEIGHT / 16.0f);
+		dglViewport(0, delta, w, h);
+#else
+		SDL_Surface *screen = SDL_GetWindowSurface(windowscreen);
+		float delta = (float)screen->h / ((float)SCREENHEIGHT / 16.0f);
+		dglViewport(0, delta, screen->w, screen->h);
+#endif
+        
     }
 
     view->x = FIXED2FLOAT(viewx);
@@ -384,7 +402,7 @@ void RB_RenderPlayerView(player_t *player)
     
     if(rbDynamicLights)
     {
-        RB_AddDynLights();
+		RB_AddDynLights();
     }
 
     // setup draw lists
@@ -430,7 +448,10 @@ void RB_RenderPlayerView(player_t *player)
     // fancy post-process stuff
     RB_RenderMotionBlur();
     RB_RenderBloom();
+#ifndef SVE_PLAT_SWITCH
+	// dimitrisg 20201806 : broken on NX 
     RB_RenderFXAA();
+#endif
     
     // render player flash
     RB_DrawPlayerFlash(player);

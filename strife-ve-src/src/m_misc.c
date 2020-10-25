@@ -120,6 +120,10 @@ boolean M_WriteFile(char *name, void *source, int length)
     if (handle == NULL)
 	return false;
 
+    // edward [SVE]: vastly reduce the number of writes performed on flash storage
+    static char writeBuffer[256 * 1024];
+    setvbuf(handle, writeBuffer, _IOFBF, sizeof(writeBuffer));
+
     count = fwrite(source, 1, length, handle);
     fclose(handle);
 	
@@ -143,6 +147,10 @@ int M_ReadFile(char *name, byte **buffer)
     handle = fopen(name, "rb");
     if (handle == NULL)
 	I_Error ("Couldn't read file %s", name);
+
+    // edward [SVE]: vastly reduce the number of reads performed on flash storage
+    static char readBuffer[256 * 1024];
+    setvbuf(handle, readBuffer, _IOFBF, sizeof(readBuffer));
 
     // find the size of the file by seeking to the end and
     // reading the current position
@@ -234,10 +242,10 @@ boolean M_StrToInt(const char *str, int *result)
         || sscanf(str, " %d", result) == 1;
 }
 
-void M_ExtractFileBase(char *path, char *dest)
+void M_ExtractFileBase(const char *path, char *dest)
 {
-    char *src;
-    char *filename;
+    const char *src;
+    const char *filename;
     int length;
 
     src = path + strlen(path) - 1;
@@ -267,7 +275,7 @@ void M_ExtractFileBase(char *path, char *dest)
             break;
         }
 
-	dest[length++] = toupper((int)*src++);
+	dest[length++] = toupper((int)(byte)*src++);
     }
 }
 

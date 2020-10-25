@@ -61,7 +61,7 @@ void RB_RenderBloom(void);
 //
 // RB_DrawVtxQuadImmediate
 //
-
+ 
 static dinline void RB_DrawVtxQuadImmediate(vtx_t *v)
 {
     dglBegin(GL_QUADS);

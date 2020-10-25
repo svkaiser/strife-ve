@@ -240,19 +240,16 @@ int console_main(int argc, char *argv[])
 	appname = bufp;
 
 	/* Load SDL dynamic link library */
-	if ( SDL_Init(SDL_INIT_NOPARACHUTE) < 0 ) {
+	if ( SDL_Init(0) < 0 ) {
 		ShowError("WinMain() error", SDL_GetError());
 		return(FALSE);
 	}
 	atexit(cleanup_output);
 	atexit(cleanup);
 
-	/* Sam:
-	   We still need to pass in the application handle so that
-	   DirectInput will initialize properly when SDL_RegisterApp()
-	   is called later in the video initialization.
-	 */
-	SDL_SetModuleHandle(GetModuleHandle(NULL));
+    // MaxW: SDL_SetModuleHandle used to be called here, but based on
+    // research of SDL2's WIN_CreateDevice and SDL_windowsevent.c's
+    // SDL_RegisterApp I've concluded an equivanelt is not needed.
 
 	/* Run the application main() code */
 	status = SDL_main(argc, argv);

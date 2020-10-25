@@ -5,6 +5,7 @@
 ## LICENSE:
 ##
 ## Copyright(C) 2014 Zohar Malamant
+## Copyright(C) 2020 Alex Mayfield
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License
@@ -22,7 +23,9 @@
 ## 02111-1307, USA.
 ##
 
-cmake_minimum_required(VERSION 2.6)
+include(ExternalProject)
+
+cmake_minimum_required(VERSION 3.10)
 
 project(strife-ve)
 
@@ -38,7 +41,6 @@ set(PROGRAM_PREFIX "chocolate-")
 ## Options
 ##
 
-option(ENABLE_SDL2 "Build with SDL2 support." OFF)
 option(ENABLE_STEAM "Build with Steamworks support." OFF)
 option(ENABLE_GOG "Build GOG version for Linux." OFF)
 
@@ -83,59 +85,93 @@ endfunction()
 ## Set up external dependencies
 ##
 
-if (ENABLE_SDL2)
-    # SDL2
-    find_package(SDL2 REQUIRED)
-    include_directories(${SDL2_INCLUDE_DIR})
-    add_link_libraries(${SDL2_LIBRARIES})
+# SDL2
+find_package(SDL2 REQUIRED)
 
-    # SDL2_net
-    find_package(SDL2_net REQUIRED)
-    include_directories(${SDL2_NET_INCLUDE_DIR})
-    add_link_libraries(${SDL2_NET_LIBRARIES})
+# SDL2_mixer
+find_package(SDL2_mixer REQUIRED)
 
-    # SDL2_mixer
-    find_package(SDL2_mixer REQUIRED)
-    include_directories(${SDL2_MIXER_INCLUDE_DIR})
-    add_link_libraries(${SDL2_MIXER_LIBRARIES})
-else()
-    # SDL
-    find_package(SDL REQUIRED)
-    include_directories(${SDL_INCLUDE_DIR})
-    add_link_libraries(${SDL_LIBRARY})
-
-    # SDL_net
-    if(ENABLE_STEAM_RUNTIME)
-        # The steam-runtime does not include SDL_net so we have to build it ourselves inside the runtime.
-        include_directories("${CMAKE_SOURCE_DIR}/build_ext/include/SDL")
-        add_link_libraries("${CMAKE_SOURCE_DIR}/build_ext/lib/libSDL_net.so")
-    else()
-        find_package(SDL_net REQUIRED)
-        include_directories(${SDL_NET_INCLUDE_DIR})
-        add_link_libraries(${SDL_NET_LIBRARIES})
-
-        message(STATUS >>DIRS>> ${SDL_NET_INCLUDE_DIRS})
-        message(STATUS >>DIR>> ${SDL_NET_INCLUDE_DIR})
-    endif()
-    
-    # SDL_mixer
-    find_package(SDL_mixer REQUIRED)
-    include_directories(${SDLMIXER_INCLUDE_DIR})
-    add_link_libraries(${SDLMIXER_LIBRARY})
-endif()
+# SDL2_net
+find_package(SDL2_net REQUIRED)
 
 # ffmpeg
 if(ENABLE_STEAM_RUNTIME)
-   include_directories(${CMAKE_SOURCE_DIR}/build_ext/include)
-   add_link_libraries(
-    "${CMAKE_SOURCE_DIR}/build_ext/lib/libavcodec.so.56"
-    "${CMAKE_SOURCE_DIR}/build_ext/lib/libavdevice.so.56"
-    "${CMAKE_SOURCE_DIR}/build_ext/lib/libavfilter.so.5"
-    "${CMAKE_SOURCE_DIR}/build_ext/lib/libavformat.so.56"
-    "${CMAKE_SOURCE_DIR}/build_ext/lib/libavutil.so.54"
-    "${CMAKE_SOURCE_DIR}/build_ext/lib/libswresample.so.1"
-    "${CMAKE_SOURCE_DIR}/build_ext/lib/libswscale.so.3")
+	# Enabling Steam means we want to prefer building a specific version
+	# in the chroot.
+	set(FFMPEG_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-local")
+	set(FFMPEG_WANTED_LIBS
+		"${FFMPEG_PREFIX}/lib/libavcodec.so.56"
+		"${FFMPEG_PREFIX}/lib/libavdevice.so.56"
+		"${FFMPEG_PREFIX}/lib/libavfilter.so.5"
+		"${FFMPEG_PREFIX}/lib/libavformat.so.56"
+		"${FFMPEG_PREFIX}/lib/libavutil.so.54"
+		"${FFMPEG_PREFIX}/lib/libswresample.so.1"
+		"${FFMPEG_PREFIX}/lib/libswscale.so.3")
+	make_directory("${FFMPEG_PREFIX}/include")
+
+	# Download and compile ffmpeg at build-time.
+	ExternalProject_Add(
+		ffmpeg-project EXCLUDE_FROM_ALL ON
+		# Download
+		URL "http://ffmpeg.org/releases/ffmpeg-2.5.4.tar.bz2"
+		# Configure
+		CONFIGURE_COMMAND "../ffmpeg-project/configure"
+			"--prefix=${FFMPEG_PREFIX}"
+			"--disable-all"
+			"--disable-debug"
+			"--disable-hwaccels"
+			"--disable-vaapi"
+			"--disable-yasm"
+			"--enable-avcodec"
+			"--enable-avdevice"
+			"--enable-avfilter"
+			"--enable-avformat"
+			"--enable-avutil"
+			"--enable-decoder=theora"
+			"--enable-decoder=vorbis"
+			"--enable-demuxer=ogg"
+			"--enable-protocol=file"
+			"--enable-shared"
+			"--enable-swresample"
+			"--enable-swscale"
+		BUILD_BYPRODUCTS ${FFMPEG_WANTED_LIBS}
+	)
+
+	# Create imported targets for the shared libraries we are interested in.
+	add_library(FFmpeg::avcodec SHARED IMPORTED)
+	set_target_properties(FFmpeg::avcodec PROPERTIES
+		IMPORTED_LOCATION "${FFMPEG_PREFIX}/lib/libavcodec.so.56")
+	add_library(FFmpeg::avdevice SHARED IMPORTED)
+	set_target_properties(FFmpeg::avdevice PROPERTIES
+		IMPORTED_LOCATION "${FFMPEG_PREFIX}/lib/libavdevice.so.56")
+	add_library(FFmpeg::avfilter SHARED IMPORTED)
+	set_target_properties(FFmpeg::avfilter PROPERTIES
+		IMPORTED_LOCATION "${FFMPEG_PREFIX}/lib/libavfilter.so.5")
+	add_library(FFmpeg::avformat SHARED IMPORTED)
+	set_target_properties(FFmpeg::avformat PROPERTIES
+		IMPORTED_LOCATION "${FFMPEG_PREFIX}/lib/libavformat.so.56")
+	add_library(FFmpeg::avutil SHARED IMPORTED)
+	set_target_properties(FFmpeg::avutil PROPERTIES
+		IMPORTED_LOCATION "${FFMPEG_PREFIX}/lib/libavutil.so.54")
+	add_library(FFmpeg::swresample SHARED IMPORTED)
+	set_target_properties(FFmpeg::swresample PROPERTIES
+		IMPORTED_LOCATION "${FFMPEG_PREFIX}/lib/libswresample.so.1")
+	add_library(FFmpeg::swscale SHARED IMPORTED)
+	set_target_properties(FFmpeg::swscale PROPERTIES
+		IMPORTED_LOCATION "${FFMPEG_PREFIX}/lib/libswscale.so.3")
+
+	# Unite all of the shared library targets under one interface target.
+	add_library(FFmpeg::FFmpeg INTERFACE IMPORTED)
+	add_dependencies(FFmpeg::FFmpeg ffmpeg-project)
+	set_target_properties(
+		FFmpeg::FFmpeg PROPERTIES
+		INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_PREFIX}/include")
+	set_property(TARGET FFmpeg::FFmpeg PROPERTY INTERFACE_LINK_LIBRARIES
+		FFmpeg::avcodec FFmpeg::avdevice FFmpeg::avfilter FFmpeg::avformat
+		FFmpeg::avutil FFmpeg::swresample FFmpeg::swscale)
 else()
+	message(FATAL_ERROR "Not Implemented")
+
    find_package(FFMPEG REQUIRED)
    include_directories(${FFMPEG_INCLUDE_DIR})
    add_link_libraries(${FFMPEG_LIBRARIES})
@@ -584,7 +620,9 @@ add_sources(src/strife
 
 include_directories(${SOURCE_ROOT_DIR})
 add_executable(strife-ve ${SOURCES})
-target_link_libraries(strife-ve ${LIBRARIES} ${LIB_STEAM} ${LIB_STEAMSVC} m)
+target_link_libraries(strife-ve
+	SDL2::SDL2main SDL2::SDL2 SDL2::mixer SDL2::net FFmpeg::FFmpeg
+	${LIBRARIES} ${LIB_STEAM} ${LIB_STEAMSVC} m)
 
 ##------------------------------------------------------------------------------
 ## Install target

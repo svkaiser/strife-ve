@@ -21,7 +21,9 @@
 
 
 
+#include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "i_system.h"
 #include "i_video.h"
@@ -536,6 +538,7 @@ void ST_InvRight(void)
     st_invtics = 50;
 }
 
+boolean ST_CheatResponder(event_t *ev);
 
 // Respond to keyboard input events,
 //  intercept cheats.
@@ -608,6 +611,8 @@ boolean ST_Responder(event_t* ev)
     }
 
     // if a user keypress...
+	if(ev->type == ev_text)
+		return ST_CheatResponder(ev);
     if(ev->type != ev_keydown)
         return false;
 
@@ -718,12 +723,26 @@ boolean ST_Responder(event_t* ev)
         st_invtics = 50;
     }
 
+	return bKeyPressed;
+}
+
+boolean ST_CheatResponder(event_t *ev)
+{
+	int i;
+
+	if(ev->type != ev_text)
+	{
+		return false;
+	}
+
+	const char input = tolower(ev->data1);
+
     //
     // [STRIFE] Cheats which are allowed in netgames/demos:
     //
 
     // 'spin' cheat for changing music
-    if (cht_CheckCheat(&cheat_mus, ev->data2))
+    if (cht_CheckCheat(&cheat_mus, input))
     {
         char        buf[3];
         int         musnum;
@@ -737,9 +756,11 @@ boolean ST_Responder(event_t* ev)
             plyr->message = DEH_String(STSTR_NOMUS);
         else
             S_ChangeMusic(musnum, 1);
+
+		return true;
     }
     // [STRIFE]: "dev" cheat - "DOTS"
-    else if (cht_CheckCheat(&cheat_dev, ev->data2))
+    else if (cht_CheckCheat(&cheat_dev, input))
     {
         devparm = !devparm;
         if (devparm)
@@ -752,10 +773,10 @@ boolean ST_Responder(event_t* ev)
     }
 
     // [STRIFE] Cheats below are not allowed in netgames or demos
-    if(netgame || !usergame)
-        return bKeyPressed;
+	if(netgame || !usergame)
+		return false;
 
-    if (cht_CheckCheat(&cheat_god, ev->data2))
+    if (cht_CheckCheat(&cheat_god, input))
     {
         // 'omnipotent' cheat for toggleable god mode
         plyr->cheats ^= CF_GODMODE;
@@ -775,8 +796,10 @@ boolean ST_Responder(event_t* ev)
         }
         // [SVE]: used beneficial cheats
         HU_NotifyCheating(plyr);
+
+		return true;
     }
-    else if (cht_CheckCheat(&cheat_ammo, ev->data2))
+    else if (cht_CheckCheat(&cheat_ammo, input))
     {
         // [SVE]: used beneficial cheats
         HU_NotifyCheating(plyr);
@@ -796,8 +819,10 @@ boolean ST_Responder(event_t* ev)
             plyr->ammo[i] = plyr->maxammo[i];
 
         plyr->message = DEH_String(STSTR_FAADDED);
+
+		return true;
     }
-    else if(cht_CheckCheat(&cheat_keys, ev->data2))
+    else if(cht_CheckCheat(&cheat_keys, input))
     {
         // villsa [STRIFE]: "JIMMY" cheat for all keys
         #define FIRSTKEYSETAMOUNT   16
@@ -828,8 +853,10 @@ boolean ST_Responder(event_t* ev)
         }
         // [SVE]: used beneficial cheats
         HU_NotifyCheating(plyr);
+
+		return true;
     }
-    else if (cht_CheckCheat(&cheat_noclip, ev->data2))
+    else if (cht_CheckCheat(&cheat_noclip, input))
     {
         // [STRIFE] Removed idspispopd, added NOCLIP flag setting/removal
         // Noclip cheat - "ELVIS" (hah-hah :P )
@@ -848,8 +875,10 @@ boolean ST_Responder(event_t* ev)
         }
         // [SVE]: used beneficial cheats
         HU_NotifyCheating(plyr);
+
+		return true;
     }
-    else if(cht_CheckCheat(&cheat_stealth, ev->data2))
+    else if(cht_CheckCheat(&cheat_stealth, input))
     {
         // villsa [STRIFE]: "GRIPPER" cheat; nothing to do with stealth...
         plyr->cheats ^= CF_NOMOMENTUM;
@@ -859,12 +888,14 @@ boolean ST_Responder(event_t* ev)
             plyr->message = DEH_String("STEALTH BOOTS OFF");
         // [SVE]: used beneficial cheats
         HU_NotifyCheating(plyr);
+
+		return true;
     }
     
     for(i = 0; i < ST_PUMPUP_B + 3; ++i)
     {
         // [STRIFE]: Handle berserk, invisibility, and envirosuit
-        if(cht_CheckCheat(&cheat_powerup[i], ev->data2))
+        if(cht_CheckCheat(&cheat_powerup[i], input))
         {
             // [SVE]: used beneficial cheats
             HU_NotifyCheating(plyr);
@@ -873,9 +904,11 @@ boolean ST_Responder(event_t* ev)
             else
                 P_GivePower(plyr, i);
             plyr->message = DEH_String(STSTR_BEHOLDX);
+
+			return true;
         }
     }
-    if(cht_CheckCheat(&cheat_powerup[ST_PUMPUP_H], ev->data2))
+    if(cht_CheckCheat(&cheat_powerup[ST_PUMPUP_H], input))
     {
         // [SVE]: used beneficial cheats
         HU_NotifyCheating(plyr);
@@ -884,8 +917,10 @@ boolean ST_Responder(event_t* ev)
         P_GiveItemToPlayer(plyr, SPR_MDKT, MT_INV_MED2);
         P_GiveItemToPlayer(plyr, SPR_FULL, MT_INV_MED3);
         plyr->message = DEH_String("you got the stuff!");
+
+		return true;
     }
-    if(cht_CheckCheat(&cheat_powerup[ST_PUMPUP_P], ev->data2))
+    if(cht_CheckCheat(&cheat_powerup[ST_PUMPUP_P], input))
     {
         // [STRIFE]: PUMPUPP gives backpack
         if(!plyr->backpack)
@@ -900,8 +935,10 @@ boolean ST_Responder(event_t* ev)
         for(i = 0; i < NUMAMMO; ++i)
             P_GiveAmmo(plyr, i, 1);
         plyr->message = DEH_String("you got the stuff!");
+
+		return true;
     }
-    if(cht_CheckCheat(&cheat_powerup[ST_PUMPUP_S], ev->data2))
+    if(cht_CheckCheat(&cheat_powerup[ST_PUMPUP_S], input))
     {
         // [SVE]: used beneficial cheats
         HU_NotifyCheating(plyr);
@@ -909,24 +946,28 @@ boolean ST_Responder(event_t* ev)
         P_GiveItemToPlayer(plyr, SPR_TOKN, MT_TOKEN_STAMINA);
         P_GiveItemToPlayer(plyr, SPR_TOKN, MT_TOKEN_NEW_ACCURACY);
         plyr->message = DEH_String("you got the stuff!");
+
+		return true;
     }
-    if(cht_CheckCheat(&cheat_powerup[ST_PUMPUP_T], ev->data2))
+    if(cht_CheckCheat(&cheat_powerup[ST_PUMPUP_T], input))
     {
         // [SVE]: used beneficial cheats
         HU_NotifyCheating(plyr);
         // [STRIFE] PUMPUPT gives targeter
         P_GivePower(plyr, pw_targeter);
         plyr->message = DEH_String("you got the stuff!");
+
+		return true;
     }
     // [STRIFE]: PUMPUP
-    if (cht_CheckCheat(&cheat_powerup[ST_PUMPUP], ev->data2))
+    if (cht_CheckCheat(&cheat_powerup[ST_PUMPUP], input))
     {
         // 'behold' power-up menu
         plyr->message = DEH_String(STSTR_BEHOLD);
-        return bKeyPressed;
+		return true;
     }
 
-    if (cht_CheckCheat(&cheat_mypos, ev->data2))
+    if (cht_CheckCheat(&cheat_mypos, input))
     {
         // [STRIFE] 'GPS' for player position
         static char buf[ST_MSGWIDTH];
@@ -936,10 +977,12 @@ boolean ST_Responder(event_t* ev)
                    players[consoleplayer].mo->x,
                    players[consoleplayer].mo->y);
         plyr->message = buf;
+
+		return true;
     }
 
     // 'rift' change-level cheat
-    if (cht_CheckCheat(&cheat_clev, ev->data2))
+    if (cht_CheckCheat(&cheat_clev, input))
     {
         char            buf[3];
         int             map;
@@ -957,12 +1000,12 @@ boolean ST_Responder(event_t* ev)
         {
             if ((isdemoversion && (map < 32 || map > 35)) ||
                 (isregistered  && (map <= 0 || map > 38)))
-                return bKeyPressed;
+				return true;
         }
         else
         {
             if (map <= 0 || map > 40)
-                return bKeyPressed;
+				return true;
         }
         // [SVE]: used beneficial cheats
         HU_NotifyCheating(plyr);
@@ -970,8 +1013,10 @@ boolean ST_Responder(event_t* ev)
         // So be it.
         plyr->message = DEH_String(STSTR_CLEV);
         G_RiftExitLevel(map, 0, plyr->mo->angle);
+
+		return true;
     }
-    else if(cht_CheckCheat(&cheat_scoot, ev->data2))
+    else if(cht_CheckCheat(&cheat_scoot, input))
     {
         char            buf[3];
         int             spot;
@@ -987,32 +1032,36 @@ boolean ST_Responder(event_t* ev)
             HU_NotifyCheating(plyr);
             plyr->message = DEH_String("Spawning to spot");
             G_RiftCheat(spot);
-            return bKeyPressed;
+			return true;
         }
+
+		return true;
     }
 
     // villsa [STRIFE]
-    if(cht_CheckCheat(&cheat_nuke, ev->data2))
+    if(cht_CheckCheat(&cheat_nuke, input))
     {
         stonecold ^= 1;
         plyr->message = DEH_String("Kill 'em.  Kill 'em All");
         // [SVE]: used beneficial cheats
         HU_NotifyCheating(plyr);
-        return bKeyPressed;
+		return true;
     }
 
     // villsa [STRIFE]
-    if(cht_CheckCheat(&cheat_midas, ev->data2))
+    if(cht_CheckCheat(&cheat_midas, input))
     {
         // [SVE]: used beneficial cheats
         HU_NotifyCheating(plyr);
         plyr->message = DEH_String("YOU GOT THE MIDAS TOUCH, BABY");
         P_GiveItemToPlayer(plyr, SPR_HELT, MT_TOKEN_TOUGHNESS);
+
+		return true;
     }
 
     // villsa [STRIFE] 
     // haleyjd 20110224: No sigil in demo version
-    if(!isdemoversion && cht_CheckCheat(&cheat_lego, ev->data2))
+    if(!isdemoversion && cht_CheckCheat(&cheat_lego, input))
     {
         // [SVE]: used beneficial cheats
         HU_NotifyCheating(plyr);
@@ -1038,11 +1087,13 @@ boolean ST_Responder(event_t* ev)
         // haleyjd 20140817: [SVE] fix Sigil -1 glitch
         if(classicmode || plyr->weaponowned[wp_sigil])
             plyr->pendingweapon = wp_sigil;
+
+		return true;
     }
 
 #ifdef _DEBUG
     // haleyjd 20140914: [SVE] "gimme" debug cheat
-    if(cht_CheckCheat(&cheat_gimme, ev->data2))
+    if(cht_CheckCheat(&cheat_gimme, input))
     {
         char buf[4];
         char *end = NULL;
@@ -1064,10 +1115,12 @@ boolean ST_Responder(event_t* ev)
                 strncpy(itembuf, "You got the stuff", sizeof(itembuf));
             plyr->message = itembuf;
         }
+
+		return true;
     }
 #endif
 
-    return bKeyPressed;
+	return false;
 }
 
 
@@ -1690,6 +1743,111 @@ static boolean ST_drawKeysPopup(void)
 }
 
 //
+// ST_DrawWeaponCycle
+//
+// edward 20200830: [SVE] 
+//
+
+/*    wp_fist,
+    wp_elecbow,
+    wp_rifle,
+    wp_missile,
+    wp_hegrenade,
+    wp_flame,
+    wp_mauler,
+    wp_sigil,
+    wp_poisonbow,
+    wp_wpgrenade,
+    wp_torpedo,*/
+
+static const char* s_weaponIcons[NUMWEAPONS] = { "PNCSA0", "CBOWA0", "CBOWA0", "RIFLA0", "MMSLA0", "GRNDA0", "GRNDA0", "FLAMA0", "TRPDA0", "TRPDA0", "SIGLE0" };
+static const char* s_typeIcons[NUMWEAPONS] =   { NULL,     "XQRLA0", "PQRLA0", NULL,     NULL,     "GRN1A0", "GRN2A0", NULL,     "SHT2A0", "TORSA0", NULL };
+static const weapontype_t i_typeMap[NUMWEAPONS] = { wp_fist,  wp_elecbow, wp_poisonbow, wp_rifle, wp_missile, wp_hegrenade, wp_wpgrenade, wp_flame, wp_mauler, wp_torpedo, wp_sigil };
+
+extern int i_weaponCycleTics;
+extern int i_weaponCycleTo;
+extern boolean WeaponSelectable(weapontype_t weapon);
+
+void ST_DrawWeaponCycle(void)
+{
+    if (!(i_weaponCycleTo >= 0 && i_weaponCycleTo < NUMWEAPONS) || i_weaponCycleTics <= 0)
+    {
+        return;
+    }
+
+    int i;
+    const int span = 60;
+    int xDraw = (SCREENWIDTH / 2);
+    const int yDrawSub = 150;
+
+    for (i = i_weaponCycleTo; i > 0 && xDraw > ((SCREENWIDTH / 2) - (span * 2));)
+    {
+        i--;
+        if (plyr->weaponowned[i_typeMap[i]])
+        {
+            xDraw -= span;
+        }
+    }
+
+    V_DrawXlaPatch((SCREENWIDTH / 2), 140, W_CacheLumpName("WEPBAK", PU_CACHE));
+
+    for (; i < NUMWEAPONS && xDraw <= ((SCREENWIDTH / 2) + (span * 2)); ++i)
+    {
+        const weapontype_t thisWep = i_typeMap[i];
+        if (plyr->weaponowned[thisWep] == false)
+        {
+            continue;
+        }
+
+        const int yDraw = thisWep == wp_sigil ? 150 : 140;
+        patch_t* pPatchWep = s_weaponIcons[i] != NULL ? W_CacheLumpName(s_weaponIcons[i], PU_CACHE) : NULL;
+        patch_t* pPatchTyp = s_typeIcons[i] != NULL ? W_CacheLumpName(s_typeIcons[i], PU_CACHE) : NULL;
+
+        if (pPatchWep != NULL || pPatchTyp != NULL)
+        {
+            if (i != i_weaponCycleTo)
+            {
+                if (WeaponSelectable(thisWep))
+                {
+                    if (pPatchWep != NULL)
+                    {
+                        V_DrawXlaPatch(xDraw, yDraw, pPatchWep);
+                    }
+                    if (pPatchTyp != NULL)
+                    {
+                        V_DrawXlaPatch(xDraw - 20, yDrawSub, pPatchTyp);
+                    }
+                }
+                else
+                {
+                    if (pPatchWep != NULL)
+                    {
+                        V_DrawXlaPatchMore(xDraw, yDraw, pPatchWep);
+                    }
+                    if (pPatchTyp != NULL)
+                    {
+                        V_DrawXlaPatchMore(xDraw - 20, yDrawSub, pPatchTyp);
+                    }
+                }
+            }
+            else
+            {
+                if (pPatchWep != NULL)
+                {
+                    V_DrawPatchDirect(xDraw, yDraw, pPatchWep);
+                }
+                if (pPatchTyp != NULL)
+                {
+                    V_DrawPatchDirect(xDraw - 20, yDrawSub, pPatchTyp);
+                }
+            }
+        }
+
+        xDraw += span;
+    }
+}
+
+//
 // ST_DrawExternal
 //
 // haleyjd 20100901: [STRIFE] New function.
@@ -1698,6 +1856,8 @@ static boolean ST_drawKeysPopup(void)
 boolean ST_DrawExternal(void)
 {
     int i;
+
+    ST_DrawWeaponCycle();
 
     if(st_statusbaron)
     {
@@ -1909,7 +2069,7 @@ boolean ST_DrawExternal(void)
     return true;
 }
 
-typedef void (*load_callback_t)(char *lumpname, patch_t **variable); 
+typedef void (*load_callback_t)(const char *lumpname, patch_t **variable); 
 
 //
 // ST_loadUnloadGraphics
@@ -1980,7 +2140,7 @@ static void ST_loadUnloadGraphics(load_callback_t callback)
 
 }
 
-static void ST_loadCallback(char *lumpname, patch_t **variable)
+static void ST_loadCallback(const char *lumpname, patch_t **variable)
 {
     *variable = W_CacheLumpName(lumpname, PU_STATIC);
 }
@@ -1999,7 +2159,7 @@ void ST_loadData(void)
     ST_loadGraphics();
 }
 
-static void ST_unloadCallback(char *lumpname, patch_t **variable)
+static void ST_unloadCallback(const char *lumpname, patch_t **variable)
 {
     W_ReleaseLumpName(lumpname);
     *variable = NULL;
@@ -2108,4 +2268,3 @@ void ST_Init (void)
     // haleyjd 20100919: This is not used by Strife. More memory for voices!
     //st_backing_screen = (byte *) Z_Malloc(ST_WIDTH * ST_HEIGHT, PU_STATIC, 0);
 }
-

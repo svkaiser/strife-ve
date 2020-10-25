@@ -196,7 +196,7 @@ void R_GenerateComposite (int texnum)
 
     block = Z_Malloc (texturecompositesize[texnum],
 		      PU_STATIC, 
-		      &texturecomposite[texnum]);	
+		      (void **)&texturecomposite[texnum]);	
 
     collump = texturecolumnlump[texnum];
     colofs = texturecolumnofs[texnum];
@@ -272,7 +272,7 @@ void R_GenerateLookup (int texnum)
     //  that are covered by more than one patch.
     // Fill in the lump / offset, so columns
     //  with only a single patch are all done.
-    patchcount = (byte *) Z_Malloc(texture->width, PU_STATIC, &patchcount);
+    patchcount = (byte *) Z_Malloc(texture->width, PU_STATIC, (void **)&patchcount);
     memset (patchcount, 0, texture->width);
     patch = texture->patches;
 
@@ -706,7 +706,7 @@ void R_InitData (void)
 // R_FlatNumForName
 // Retrieval, get a flat number for a flat name.
 //
-int R_FlatNumForName (char* name)
+int R_FlatNumForName (const char* name)
 {
     int		i;
     char	namet[9];
@@ -715,7 +715,7 @@ int R_FlatNumForName (char* name)
 
     if (i == -1)
     {
-	namet[8] = 0;
+	namet[8] = '\0';
 	memcpy (namet, name,8);
 	I_Error ("R_FlatNumForName: %s not found",namet);
     }
@@ -730,7 +730,7 @@ int R_FlatNumForName (char* name)
 // Check whether texture is available.
 // Filter out NoTexture indicator.
 //
-int	R_CheckTextureNumForName (char *name)
+int	R_CheckTextureNumForName (const char *name)
 {
     texture_t *texture;
     int key;
@@ -761,7 +761,7 @@ int	R_CheckTextureNumForName (char *name)
 // Calls R_CheckTextureNumForName,
 //  aborts with error message.
 //
-int	R_TextureNumForName (char* name)
+int	R_TextureNumForName (const char* name)
 {
     int		i;
 	

@@ -228,7 +228,7 @@ static boolean ClearCache(int size)
 // You can pass a NULL user if the tag is < PU_PURGELEVEL.
 //
 
-void *Z_Malloc(int size, int tag, void *user)
+void *Z_Malloc(int size, int tag, void **user)
 {
     memblock_t *newblock;
     unsigned char *data;

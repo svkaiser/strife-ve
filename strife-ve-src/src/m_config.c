@@ -42,6 +42,7 @@
 #include "rb_config.h"
 #include "i_joystick.h"
 #include "i_social.h"
+#include "i_platsystem.h"
 
 //
 // DEFAULTS
@@ -549,6 +550,30 @@ static default_t	doom_defaults_list[] =
     CONFIG_VARIABLE_INT(joyb_invkey),
 
     //!
+    // @game strife [SVE]
+    //
+
+    CONFIG_VARIABLE_INT(joy_gyroscope),
+
+    //!
+    // @game strife [SVE]
+    //
+
+    CONFIG_VARIABLE_INT(joy_gyrostyle),
+
+    //!
+    // @game strife [SVE]
+    //
+
+    CONFIG_VARIABLE_FLOAT(joy_gyrosensitivityh),
+
+    //!
+    // @game strife [SVE]
+    //
+
+    CONFIG_VARIABLE_FLOAT(joy_gyrosensitivityv),
+
+    //!
     // @game doom heretic hexen
     //
     // Screen size, range 3-11.
@@ -851,6 +876,13 @@ static default_t extra_defaults_list[] =
     //
 
     CONFIG_VARIABLE_INT(fullscreen),
+
+
+    //!
+    // If non-zero, the game will not display window borders.
+    //
+
+    CONFIG_VARIABLE_INT(window_noborder),
 
     //!
     // If non-zero, the screen will be stretched vertically to display
@@ -1194,6 +1226,7 @@ static default_t extra_defaults_list[] =
     CONFIG_VARIABLE_INT(joystick_physical_button12),
     CONFIG_VARIABLE_INT(joystick_physical_button13),
     CONFIG_VARIABLE_INT(joystick_physical_button14),
+    CONFIG_VARIABLE_INT(joystick_physical_button15),
 
     //!
     // Joystick virtual button to make the player strafe left.
@@ -2250,6 +2283,9 @@ void M_SaveDefaults (void)
 {
     SaveDefaultCollection(&doom_defaults);
     SaveDefaultCollection(&extra_defaults);
+
+    // dimitrisg 20200629 : commit save data to NX
+    I_FlushSaves();
 }
 
 //
@@ -2605,9 +2641,15 @@ void M_SetConfigDir(char *dir)
         printf("Using %s for configuration and saves\n", configdir);
     }
 
+#ifdef SVE_PLAT_SWITCH
+	// dimitrisg : 20201506 use the default mount path for NX
+	configdir = "save://";
+#else
+
     // Make the directory if it doesn't already exist:
 
     M_MakeDirectory(configdir);
+#endif
 }
 
 //
@@ -2630,8 +2672,12 @@ char *M_GetSaveGameDir(char *iwadname)
     else
     {
         // ~/.chocolate-doom/savegames
-
+#ifdef SVE_PLAT_SWITCH
+		// dimitrisg 20201506 
+		topdir = M_StringJoin("save://", "savegames", NULL);
+#else
         topdir = M_StringJoin(configdir, "savegames", NULL);
+#endif
         M_MakeDirectory(topdir);
 
         // eg. ~/.chocolate-doom/savegames/doom2.wad/
@@ -2643,6 +2689,44 @@ char *M_GetSaveGameDir(char *iwadname)
 
         free(topdir);
     }
+
+    return savegamedir;
+}
+
+// edward [SVE]: new function for dealing with the temp save directory
+
+char *M_GetTmpSaveGameDir(char *iwadname)
+{
+    char *savegamedir;
+    char *topdir;
+
+    // If not "doing" a configuration directory (Windows), don't "do"
+    // a savegame directory, either.
+
+    if (!strcmp(configdir, ""))
+    {
+        savegamedir = M_Strdup("");
+    }
+    else
+    {
+        // ~/.chocolate-doom/savegames
+#ifdef SVE_PLAT_SWITCH
+        // dimitrisg 20201506 
+        topdir = M_StringJoin(I_TempSaveDir(), "savegames", NULL);
+#else
+        topdir = M_StringJoin(configdir, "savegames", NULL);
+#endif
+        M_MakeDirectory(topdir);
+
+        // eg. ~/.chocolate-doom/savegames/doom2.wad/
+
+        savegamedir = M_StringJoin(topdir, DIR_SEPARATOR_S, iwadname,
+            DIR_SEPARATOR_S, NULL);
+
+        M_MakeDirectory(savegamedir);
+
+        free(topdir);
+}
 
     return savegamedir;
 }

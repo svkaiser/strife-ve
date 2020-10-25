@@ -47,14 +47,16 @@ boolean savegame_error;
 // the file has been successfully saved, it will be renamed to the 
 // real file.
 
-char *P_TempSaveGameFile(void)
+char *P_TempSaveGameFile(const char* dir)
 {
     static char *filename = NULL;
 
-    if (filename == NULL)
+    if (filename != NULL)
     {
-        filename = M_StringJoin(savegamedir, "temp.dsg", NULL);
+        free(filename);
+        filename = NULL;
     }
+    filename = M_StringJoin(dir, "temp.dsg", NULL);
 
     return filename;
 }
@@ -188,10 +190,10 @@ static void saveg_write_pad(void)
 
 static void *saveg_readp(void)
 {
-    return (void *) saveg_read32();
+    return (void *)(intptr_t)saveg_read32();
 }
 
-static void saveg_writep(void *p)
+static void saveg_writep(const void *p)
 {
     saveg_write32((int) p);
 }

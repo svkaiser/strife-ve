@@ -453,7 +453,7 @@ static void M_ParserGetStringToken(lexer_t *lexer)
 {
     char c = (byte)M_ParserGetChar(lexer);
 
-    while(parser.charcode[c] != CHAR_QUOTE)
+    while(parser.charcode[(byte)c] != CHAR_QUOTE)
     {
         QStrPutc(&lexer->token, c);
         c = M_ParserGetChar(lexer);

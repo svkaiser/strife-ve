@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "SDL.h"
 #include "SDL_mixer.h"
 
@@ -115,10 +116,19 @@ char *timidity_cfg_path = "";
 
 static char *temp_timidity_cfg = NULL;
 
+// [SVE]
+#define SVE_USE_RWOPS_MUSIC
+#if defined(SVE_USE_RWOPS_MUSIC)
+static SDL_RWops *rw_music_cache;
+static void      *rw_music_data;
+#endif
+
 // If true, we are playing a substitute digital track rather than in-WAD
 // MIDI/MUS track, and file_metadata contains loop metadata.
 static boolean playing_substitute = false;
+#if !defined(SVE_USE_RWOPS_MUSIC)
 static file_metadata_t file_metadata;
+#endif
 
 // Position (in samples) that we have reached in the current track.
 // This is updated by the TrackPositionCallback function.
@@ -130,13 +140,7 @@ static Mix_Music *current_track_music = NULL;
 // If true, the currently playing track is being played on loop.
 static boolean current_track_loop;
 
-// [SVE]
-#define SVE_USE_RWOPS_MUSIC
-#if defined(SVE_USE_RWOPS_MUSIC)
-static SDL_RWops *rw_music_cache;
-static void      *rw_music_data;
-#endif
-
+#if !defined(SVE_USE_RWOPS_MUSIC)
 // Given a time string (for LOOP_START/LOOP_END), parse it and return
 // the time (in # samples since start of track) it represents.
 static unsigned int ParseVorbisTime(unsigned int samplerate_hz, char *value)
@@ -415,6 +419,7 @@ static void ReadLoopPoints(char *filename, file_metadata_t *metadata)
     // Only valid if at the very least we read the sample rate.
     metadata->valid = metadata->samplerate_hz > 0;
 }
+#endif
 
 // Given a MUS lump, look up a substitute MUS file to play instead
 // (or NULL to just use normal MIDI playback).
@@ -657,6 +662,9 @@ static void LoadSubstituteConfigs(void)
     char *path;
     unsigned int i;
 
+#ifdef SVE_PLAT_SWITCH
+	musicdir = M_Strdup(SDL_GetBasePath());
+#else
     if (!strcmp(configdir, ""))
     {
         musicdir = M_Strdup("");
@@ -665,6 +673,7 @@ static void LoadSubstituteConfigs(void)
     {
         musicdir = M_StringJoin(configdir, "music", DIR_SEPARATOR_S, NULL);
     }
+#endif
 
     // Load all music packs. We always load all music substitution packs for
     // all games. Why? Suppose we have a Doom PWAD that reuses some music from
@@ -677,6 +686,7 @@ static void LoadSubstituteConfigs(void)
         free(path);
     }
 
+#ifndef SVE_PLAT_SWITCH
     // [SVE]: try also cwd
     if(*musicdir)
     {    
@@ -687,6 +697,7 @@ static void LoadSubstituteConfigs(void)
             free(path);
         }
     }
+#endif
 
     free(musicdir);
 
@@ -943,7 +954,7 @@ static boolean I_SDL_InitMusic(void)
         {
             fprintf(stderr, "Unable to set up sound.\n");
         }
-        else if (Mix_OpenAudio(snd_samplerate, AUDIO_S16SYS, 2, 4096) < 0)
+        else if (Mix_OpenAudioDevice(snd_samplerate, AUDIO_S16SYS, 2, 4096, NULL, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE) < 0)
         {
             fprintf(stderr, "Error initializing SDL_mixer: %s\n",
                     Mix_GetError());
@@ -1172,7 +1183,7 @@ static void *I_SDL_RegisterSong(void *data, int len)
 #if defined(SVE_USE_RWOPS_MUSIC)
         int size = M_ReadFile(filename, (byte **)&rw_music_data);
         rw_music_cache = SDL_RWFromMem(rw_music_data, size);
-        music = Mix_LoadMUS_RW(rw_music_cache);
+        music = Mix_LoadMUS_RW(rw_music_cache, 0);
 #else
         music = Mix_LoadMUS(filename);
 #endif
@@ -1252,6 +1263,7 @@ static boolean I_SDL_MusicIsPlaying(void)
 }
 
 // Get position in substitute music track, in seconds since start of track.
+#if !defined(SVE_USE_RWOPS_MUSIC)
 static double GetMusicPosition(void)
 {
     unsigned int music_pos;
@@ -1293,6 +1305,7 @@ static void RestartCurrentTrack(void)
         playing_substitute = false;
     }
 }
+#endif
 
 // Poll music position; if we have passed the loop point end position
 // then we need to go back.

@@ -85,6 +85,8 @@
 #include "rb_config.h"
 #include "m_qstring.h"
 #include "i_ffmpeg.h"
+#include "i_cpumode.h"
+#include "i_platsystem.h"
 
 //
 // D-DoomLoop()
@@ -102,6 +104,7 @@ static boolean D_AddFile(char *filename);
 // Location where savegames are stored
 
 char *          savegamedir;
+char *          tmpsavegamedir;
 
 // location of IWAD and WAD files
 
@@ -529,6 +532,12 @@ void D_BindVariables(void)
     M_BindVariable("startskill",  &startskill);
     M_BindVariable("timelimit",   &timelimit);
     M_BindVariable("d_fpslimit",  &d_fpslimit);
+
+    // [SVE]: Gyroscope
+    M_BindVariable("joy_gyroscope", &joy_gyroscope);
+    M_BindVariable("joy_gyrostyle", &joy_gyrostyle);
+    M_BindVariable("joy_gyrosensitivityh", &joy_gyrosensitivityh);
+    M_BindVariable("joy_gyrosensitivityv", &joy_gyrosensitivityv);
 }
 
 //
@@ -677,7 +686,7 @@ void D_DoomLoop (void)
 //
 int             demosequence;
 int             pagetic;
-char                    *pagename;
+const char     *pagename;
 
 // From the original instruction manual:
 static char storytext[] =
@@ -976,7 +985,7 @@ static char *banners[] =
 static char *GetGameName(char *gamename)
 {
     size_t i;
-    char *deh_sub;
+    const char *deh_sub;
     
     for (i=0; i<arrlen(banners); ++i)
     {
@@ -1181,7 +1190,7 @@ void PrintDehackedBanners(void)
 
     for (i=0; i<arrlen(copyright_banners); ++i)
     {
-        char *deh_s;
+        const char *deh_s;
 
         deh_s = DEH_String(copyright_banners[i]);
 
@@ -1316,9 +1325,8 @@ static void D_Endoom(void)
 boolean D_PatchClipCallback(patch_t *patch, int x, int y)
 {
     // note that offsets were already accounted for in V_DrawPatch
-    return (x >= 0 && y >= 0 
-            && x + SHORT(patch->width) <= SCREENWIDTH 
-            && y + SHORT(patch->height) <= SCREENHEIGHT);
+    return (x + SHORT(patch->width) >= 0 && y + SHORT(patch->height) >= 0
+            && x <= SCREENWIDTH && y <= SCREENHEIGHT);
 }
 
 //
@@ -1391,11 +1399,28 @@ static void D_InitFrontend()
         // [SVE] svillarreal - play nightdive and strife intro movies
         if(!d_skipmovies)
         {
-            I_AVStartVideoStream("movies/NightDive.ogv");
-            I_AVStartVideoStream("movies/Strife.ogv");
+#ifdef SVE_PLAT_SWITCH
+		   I_AVStartVideoStream("rom://movies/NightDive.ogv");
+		   I_AVStartVideoStream("rom://movies/Strife.ogv");
+#else
+           I_AVStartVideoStream("movies/NightDive.ogv");
+           I_AVStartVideoStream("movies/Strife.ogv");
+#endif
         }
 
+        // Edward [SVE]: Signal to the platform that we want to handle quit events
+        I_SetupPlatformQuit();
+
+#ifndef SVE_PLAT_SWITCH
+        // [Edward]: Not much use for the frontend on NX for now
+        I_SetCPUHighPerformance(0);
         FE_StartFrontend(); // returns when user starts the game
+#endif
+    }
+    else
+    {
+        // Edward [SVE]: Signal to the platform that we want to handle quit events
+        I_SetupPlatformQuit();
     }
 }
 
@@ -1424,6 +1449,12 @@ static void D_IntroBackground(void)
 {
     if(!showintro)
         return;
+
+    // Edward - clear buffer for 3d render mode
+    if (use3drenderer)
+    {
+        RB_ClearBuffer(GLCB_ALL);
+    }
 
     // Fill the background entirely (wasn't needed in vanilla)
     V_DrawFilledBox(0, 0, SCREENWIDTH, SCREENHEIGHT, 0);
@@ -1597,8 +1628,9 @@ void D_DoomMain (void)
     char file[256];
     char demolumpname[9];
     int setcheating = CHEAT_NONE; // haleyjd [SVE] 20140914
-
+#ifndef SVE_PLAT_SWITCH
     I_AtExit(D_Endoom, false);
+#endif
 
     // haleyjd 20110206 [STRIFE]: -nograph parameter
 
@@ -1632,6 +1664,15 @@ void D_DoomMain (void)
     devparm = M_CheckParm ("-devparm");
     if(devparm)
         setcheating |= CHEAT_ANY;
+
+
+#ifdef SVE_PLAT_SWITCH
+	// dimitris 20200614: nx mount resources on first call
+	
+	SDL_GetBasePath(); // mount rom:
+	SDL_GetPrefPath("Nightdive Studios", PACKAGE); // mount save:
+
+#endif
 
     // print banner
 
@@ -1992,6 +2033,7 @@ void D_DoomMain (void)
     InitGameVersion();
     D_SetGameDescription();
     savegamedir = M_GetSaveGameDir("strife1.wad");
+    tmpsavegamedir = M_GetTmpSaveGameDir("strife1.wad");
 
     // fraggle 20130405: I_InitTimer is needed here for the netgame
     // startup. Start low-level sound init here too.
@@ -2275,6 +2317,9 @@ void D_DoomMain (void)
         M_LoadSelect(startloadgame);
     }
     D_IntroTick(); // [STRIFE]
+
+    // Edward [SVE]: Slow things back down
+    I_SetCPUHighPerformance(0);
 
 
     if (gameaction != ga_loadgame )

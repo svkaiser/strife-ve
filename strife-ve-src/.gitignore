@@ -23,6 +23,7 @@ tags
 
 # Ignore build directories on linux
 /build/
+/build_schroot/
 /build_ext/
 
 # These are the default patterns globally ignored by Subversion:
@@ -41,3 +42,12 @@ tags
 .#*
 .*.swp
 .DS_store
+/msvc2015/.vs
+/nx-vc2017/.vs
+/nx-vc2017/NX64
+/nx-vc2017/*.user
+*.ogg
+sdl/lib/nintendoswitch/SDL.a
+sdl/lib/nintendoswitch/SDLmain.a
+nx-vc2017/res/voices.wad
+nx-nonnda/nx-profile.cpp

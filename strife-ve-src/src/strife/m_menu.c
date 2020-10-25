@@ -63,9 +63,11 @@
 #include "p_dialog.h"
 
 // [SVE]
+#include "fe_menuengine.h"
 #include "fe_frontend.h"
 #include "fe_graphics.h"
 #include "i_social.h"
+#include "i_softkey.h"
 
 // declared here because the rb_** headers causes msvc to throw a big fuss
 void RB_InitExtraHudTextures(void);
@@ -85,6 +87,12 @@ extern boolean          sendsave;       // [STRIFE]
 int			mouseSensitivityX = 5;
 int         mouseSensitivityY = 5;
 
+// Edward [SVE]:
+float		joy_gyrosensitivityh = 0.8f;
+float		joy_gyrosensitivityv = 0.5f;
+int		    joy_gyroscope = 1;
+int         joy_gyrostyle = 0;
+
 // [STRIFE]: removed this entirely
 // Show messages has default, 0 = off, 1 = on
 //int			showMessages = 1;
@@ -103,7 +111,10 @@ int			quickSaveSlot;
  // 1 = message to be printed
 int			messageToPrint;
 // ...and here is the message string!
-char*			messageString;
+const char*			messageString;
+
+// Edward [SVE]: print help text
+int         messageHelp;
 
 // message x & y
 int			messx;
@@ -223,7 +234,7 @@ void M_DrawEmptyCell(menu_t *menu,int item);
 void M_DrawSelCell(menu_t *menu,int item);
 int  M_StringWidth(const char *string);
 int  M_StringHeight(const char *string);
-void M_StartMessage(char *string,void *routine,boolean input);
+void M_StartMessage(const char *string,void *routine,boolean input);
 void M_StopMessage(void);
 
 //
@@ -245,8 +256,10 @@ enum
     options,
     loadgame,
     savegame,
+#ifndef SVE_PLAT_SWITCH
     readthis,
     quitdoom,
+#endif
     main_end
 } main_e;
 
@@ -257,8 +270,10 @@ menuitem_t MainMenu[]=
     {1,"M_LOADG",M_LoadGame,'l'},
     {1,"M_SAVEG",M_SaveGame,'s'},
     // Another hickup with Special edition.
+#ifndef SVE_PLAT_SWITCH
     {1,"M_RDTHIS",M_ReadThis,'h'}, // haleyjd 08/28/10: 'r' -> 'h'
     {1,"M_QUITG",M_QuitStrife,'q'}
+#endif
 };
 
 menu_t  MainDef =
@@ -671,6 +686,8 @@ void M_DrawLoad(void)
         M_DrawSaveLoadBorder(LoadDef.x,LoadDef.y+LINEHEIGHT*i);
         M_WriteText(LoadDef.x,LoadDef.y+LINEHEIGHT*i,savegamestrings[i]);
     }
+
+	FE_NX_DrawToolTips(4);
 }
 
 
@@ -732,6 +749,10 @@ void M_LoadGame (int choice)
         return;
     }
 
+    // Edward 20200710: Make absolutly sure load game clears the namingCharacter flag.
+    if (gameversion == exe_strife_1_31)
+        namingCharacter = false;
+
     M_SetupNextMenu(&LoadDef);
     M_ReadSaveStrings();
 }
@@ -762,6 +783,8 @@ void M_DrawSave(void)
         i = M_StringWidth(savegamestrings[quickSaveSlot]);
         M_WriteText(LoadDef.x + i,LoadDef.y+LINEHEIGHT*quickSaveSlot,"_");
     }
+	 
+	FE_NX_DrawToolTips(4);
 }
 
 //
@@ -838,6 +861,9 @@ void M_SaveGame (int choice)
     // [STRIFE]
     if(gameversion == exe_strife_1_31)
     {
+        // Edward 20200710: Make absolutly sure save game clears the namingCharacter flag.
+        namingCharacter = false;
+
         // haleyjd 20130301: in 1.31, we can choose a slot again.
         M_SetupNextMenu(&SaveDef);
         M_ReadSaveStrings();
@@ -1001,6 +1027,8 @@ void M_DrawSound(void)
 
     M_DrawThermo(SoundDef.x,SoundDef.y+LINEHEIGHT*(voice_vol+1),
                  16,voiceVolume);
+ 
+	FE_NX_DrawToolTips(4);
 }
 
 void M_Sound(int choice)
@@ -1080,6 +1108,15 @@ void M_DrawMainMenu(void)
 {
     V_DrawPatchDirect(84, 2,
                       W_CacheLumpName(DEH_String("M_STRIFE"), PU_CACHE));
+
+    if (currentMenu->prevMenu == NULL)
+    {
+        FE_NX_DrawToolTips(2);
+    }
+    else
+    {
+        FE_NX_DrawToolTips(4);
+    }
 }
 
 
@@ -1094,6 +1131,9 @@ void M_DrawNewGame(void)
 {
     V_DrawPatchDirect(96, 14, W_CacheLumpName(DEH_String("M_NGAME"), PU_CACHE));
     V_DrawPatchDirect(54, 38, W_CacheLumpName(DEH_String("M_SKILL"), PU_CACHE));
+ 
+	FE_NX_DrawToolTips(4);
+ 
 }
 
 void M_NewGame(int choice)
@@ -1107,6 +1147,7 @@ void M_NewGame(int choice)
     if(gameversion == exe_strife_1_31)
        namingCharacter = true; // for 1.31 save logic
     M_SetupNextMenu(&NewDef);
+ 
 }
 
 
@@ -1120,6 +1161,8 @@ void M_NewGame(int choice)
 void M_DrawEpisode(void)
 {
     V_WriteBigText("Choose Campaign", 54, 38);
+
+	FE_NX_DrawToolTips(4);
 }
 
 void M_ChooseSkill(int choice)
@@ -1127,6 +1170,7 @@ void M_ChooseSkill(int choice)
     // haleyjd 09/07/10: Removed nightmare confirmation
     menuskill = choice;
     M_SetupNextMenu(&EpiDef); // [SVE]: episode menu
+ 
 }
 
 // haleyjd [STRIFE] Unused
@@ -1159,10 +1203,13 @@ void M_DrawOptions(void)
     // [SVE]: only range of 7 -> 8 is allowed
     M_DrawThermo(OptionsDef.x,OptionsDef.y+LINEHEIGHT*(scrnsize+1),
                  9, screenSize == 7 ? 0 : 8);
+ 
+	FE_NX_DrawToolTips(4);
 }
 
 void M_Options(int choice)
 {
+#ifndef SVE_PLAT_SWITCH
     // haleyjd 20141031: [SVE] make cast call context sensitive
     if(usergame)
         OptionsDef.numitems = opt_end - 1;
@@ -1170,6 +1217,7 @@ void M_Options(int choice)
         OptionsDef.numitems = opt_end;
     if(OptionsDef.lastOn >= OptionsDef.numitems)
         OptionsDef.lastOn = 0;
+#endif
 
     M_SetupNextMenu(&OptionsDef);
 }
@@ -1234,7 +1282,11 @@ void M_ChangeMessages(int choice)
 //
 void M_EndGameResponse(int key)
 {
+#ifdef SVE_PLAT_SWITCH
+    if (key != key_menu_forward)
+#else
     if (key != key_menu_confirm)
+#endif
         return;
 
     currentMenu->lastOn = itemOn;
@@ -1246,7 +1298,11 @@ void M_CheckStartCast(void);
 
 static void M_CastCallResponse(int key)
 {
+#ifdef SVE_PLAT_SWITCH
+    if (key != key_menu_forward)
+#else
     if (key != key_menu_confirm)
+#endif
         return;
     M_CheckStartCast();
 }
@@ -1259,6 +1315,7 @@ void M_StartCast(int choice)
         return;
     }
     M_StartMessage(i_seejoysticks ? CASTPROMPTGP : CASTPROMPT, M_CastCallResponse, true);
+    messageHelp = 1;
 }
 
 void M_EndGame(int choice)
@@ -1277,6 +1334,7 @@ void M_EndGame(int choice)
     }
 
     M_StartMessage(DEH_String(i_seejoysticks ? ENDGAMEGP : ENDGAME),M_EndGameResponse,true);
+    messageHelp = 1;
 }
 
 //
@@ -1564,12 +1622,13 @@ M_DrawSelCell
 
 void
 M_StartMessage
-( char*		string,
+( const char*		string,
   void*		routine,
   boolean	input )
 {
     messageLastMenuActive = menuactive;
     messageToPrint = 1;
+    messageHelp = 0;
     messageString = string;
     messageRoutine = routine;
     messageNeedsInput = input;
@@ -1632,17 +1691,19 @@ int M_StringHeight(const char* string)
 
 
 //
-// M_WriteText
+// M_WriteTextEx
 //
 // Write a string using the hu_font
 // haleyjd 09/04/10: [STRIFE]
 // * Rogue made a lot of changes to this for the dialog system.
+// MaxW: [SVE] We need to go to the end of the line sometimes, so there's now a bool for that
 //
 int
-M_WriteText
+M_WriteTextEx
 ( int           x,
   int           y,
-  const char*   string) // haleyjd: made const for safety w/dialog engine
+  const char*   string, // haleyjd: made const for safety w/dialog engine
+  boolean       breakearly)
 {
     int	        w;
     const char* ch;
@@ -1681,7 +1742,7 @@ M_WriteText
         w = SHORT (hu_font[c]->width);
 
         // haleyjd 09/04/10: [STRIFE] Different linebreak handling
-        if (cx + w > SCREENWIDTH - 20)
+        if (cx + w > (breakearly ? SCREENWIDTH - 20 : SCREENWIDTH))
         {
             cx = x;
             cy += 11;
@@ -1696,6 +1757,17 @@ M_WriteText
 
     // [STRIFE] Return final y coordinate.
     return cy + 12;
+}
+
+//
+// M_WriteText
+//
+// MaxW: [SVE] This is now a wrapper because I can't be
+// bothered to redo the calls for 99% of M_WriteText calls
+//
+int M_WriteText(int x, int y, const char *string)
+{
+    return M_WriteTextEx(x, y, string, true);
 }
 
 //
@@ -1909,25 +1981,27 @@ boolean M_Responder (event_t* ev)
     ch = 0;
     key = -1;
 
+    static const int i_deadzone = (32767 / 2);
+
     if(ev->type == ev_joystick && joywait < I_GetTime())
     {
-        if(ev->data3 < 0)
+        if(ev->data3 < -i_deadzone)
         {
             key = key_menu_up;
             joywait = I_GetTime() + 5;
         }
-        else if (ev->data3 > 0)
+        else if (ev->data3 > i_deadzone)
         {
             key = key_menu_down;
             joywait = I_GetTime() + 5;
         }
 
-        if (ev->data2 < 0)
+        if (ev->data2 < -i_deadzone)
         {
             key = key_menu_left;
             joywait = I_GetTime() + 2;
         }
-        else if (ev->data2 > 0)
+        else if (ev->data2 > i_deadzone)
         {
             key = key_menu_right;
             joywait = I_GetTime() + 2;
@@ -2045,16 +2119,57 @@ boolean M_Responder (event_t* ev)
     else if (ev->type == ev_keydown)
     {
         key = ev->data1;
-        ch = ev->data2;
         i_seejoysticks = false; // getting keyboard input, change state
     }
+    else if (ev->type == ev_text)
+    {
+        ch = ev->data1;
+        // TODO: Uncomment below?
+        //i_seejoysticks = false;
+    }
 
-    if(key == -1)
+    if(key == -1 && (ch == 0 && !saveStringEnter))
         return false;
 
     // Save Game string input
     if(saveStringEnter)
     {
+        if (I_HaveSoftwareKeyboard() > 0)
+        {
+            char *t = NULL;
+            char* vkname = NULL;
+            vkname = I_RunSoftwareKeyboard("Name", savegamestrings[quickSaveSlot], SAVESTRINGSIZE - 1);
+
+            if (vkname != NULL && strlen(vkname) > 0)
+            {
+                saveCharIndex = 0;
+                for (t = vkname; *t != '\0'; t++)
+                {
+                    savegamestrings[quickSaveSlot][saveCharIndex++] = *t;
+                    savegamestrings[quickSaveSlot][saveCharIndex] = 0;
+                }
+
+                saveStringEnter = 0;
+
+                if (gameversion == exe_strife_1_31 && !namingCharacter)
+                {
+                    M_DoSave(quickSaveSlot);
+                    return true;
+                }
+                if (savegamestrings[quickSaveSlot][0])
+                    M_DoNameChar(quickSaveSlot);
+
+            }
+            else
+            {
+                saveStringEnter = 0;
+                M_StringCopy(savegamestrings[quickSaveSlot], saveOldString,
+                    sizeof(savegamestrings[quickSaveSlot]));
+
+                return false;
+            }
+        }
+
         switch(key)
         {
         case KEY_BACKSPACE:
@@ -2098,24 +2213,24 @@ boolean M_Responder (event_t* ev)
             {
                 ch = key;
             }
-
-            ch = toupper(ch);
-
-            if (ch != ' '
-                && (ch - HU_FONTSTART < 0 || ch - HU_FONTSTART >= HU_FONTSIZE))
-            {
-                break;
-            }
-
-            if (ch >= 32 && ch <= 127 &&
-                saveCharIndex < SAVESTRINGSIZE-1 &&
-                M_StringWidth(savegamestrings[quickSaveSlot]) <
-                (SAVESTRINGSIZE-2)*8)
-            {
-                savegamestrings[quickSaveSlot][saveCharIndex++] = ch;
-                savegamestrings[quickSaveSlot][saveCharIndex] = 0;
-            }
             break;
+        }
+
+        ch = toupper(ch);
+
+        if (ch != ' '
+         && (ch - HU_FONTSTART < 0 || ch - HU_FONTSTART >= HU_FONTSIZE))
+        {
+            return true;
+        }
+
+        if (ch >= 32 && ch <= 127 &&
+            saveCharIndex < SAVESTRINGSIZE - 1 &&
+            M_StringWidth(savegamestrings[quickSaveSlot]) <
+            (SAVESTRINGSIZE - 2) * 8)
+        {
+            savegamestrings[quickSaveSlot][saveCharIndex++] = ch;
+            savegamestrings[quickSaveSlot][saveCharIndex] = 0;
         }
         return true;
     }
@@ -2125,8 +2240,12 @@ boolean M_Responder (event_t* ev)
     {
         if (messageNeedsInput)
         {
-            if (key != ' ' && key != KEY_ESCAPE
+            if ((key != ' ' && key != KEY_ESCAPE
                 && key != key_menu_confirm && key != key_menu_abort)
+#ifdef SVE_PLAT_SWITCH
+                && (key != key_menu_forward && key != key_menu_back)
+#endif
+                )
             {
                 return false;
             }
@@ -2337,7 +2456,7 @@ boolean M_Responder (event_t* ev)
     // Pop-up menu?
     if (!menuactive)
     {
-        if (key == key_menu_activate)
+        if (key == key_menu_activate && !chat_on)
         {
             M_StartControlPanel ();
             S_StartSound(NULL, sfx_swtchn);
@@ -2517,13 +2636,13 @@ void M_StartControlPanel (void)
 //
 void M_Drawer (void)
 {
-    static short	x;
-    static short	y;
-    unsigned int	i;
-    unsigned int	max;
-    char		string[80];
-    char               *name;
-    int			start;
+    static short x;
+    static short y;
+    unsigned int i;
+    unsigned int max;
+    char         string[80];
+    const char  *name;
+    int          start;
 
     // [SVE]: in help screens?
     if(inhelpscreens)
@@ -2568,11 +2687,22 @@ void M_Drawer (void)
             y += SHORT(hu_font[0]->height);
         }
 
+        if (messageHelp)
+        {
+            FE_NX_DrawToolTips(5);
+        }
+
         return;
     }
 
-    if (!menuactive)
-        return;
+	if (!menuactive)
+	{
+		/// dimitrisg : if theres no menu on NX. let the user know what they need to do to bring it up
+		if (gamestate != GS_LEVEL)
+			FE_NX_DrawToolTips(3);
+
+		return;
+	}
 
     if (currentMenu->routine)
         currentMenu->routine();         // call Draw routine

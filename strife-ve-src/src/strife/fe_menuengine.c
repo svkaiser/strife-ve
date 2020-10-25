@@ -362,13 +362,91 @@ void FE_FreeSlider(void)
 }
 
 //
+// Draw small slider value in box.
+//
+static void FE_DrawSliderValue(femenuitem_t *item, int x, int y)
+{
+    char buf[32];
+
+    fevar_t *var = FE_VariableForName(item->verb);
+    if(!var)
+        return;
+
+    switch(var->type)
+    {
+    case FE_VAR_INT:
+        M_Itoa(M_GetIntVariable(var->name), buf, 10);
+        break;
+    case FE_VAR_INT_PO2:
+        {
+            unsigned int v = (unsigned int)(M_GetIntVariable(var->name));
+            unsigned int r = 0;
+
+            // calculate rational log 2 of integer
+            while(v >>= 1)
+                ++r;
+
+            M_Itoa(r, buf, 10);
+        }
+        break;
+    case FE_VAR_FLOAT:
+        M_snprintf(buf, sizeof(buf), "%.2f", M_GetFloatVariable(var->name));
+        break;
+    default:
+        return;
+    }
+
+    int box_x,  box_y,  box_w,  box_h,  box_y_offs, box_h_offs,
+        text_x, text_y, text_w, text_h, text_y_offs;
+    int (*string_width)(const char *);
+    int (*string_height)(const char *);
+    // Set font-specific width/height functions and offsets
+    switch(item->font)
+    {
+    case FE_FONT_SMALL:
+        string_width  = M_StringWidth;
+        string_height = M_StringHeight;
+        text_y_offs   = -1;
+        box_y_offs    = -4;
+        box_h_offs    = 8;
+        break;
+    case FE_FONT_BIG:
+        string_width  = V_BigFontStringWidth;
+        string_height = V_BigFontStringHeight;
+        text_y_offs   = 2;
+        box_y_offs    = -4 - text_y_offs; // negate text_y_offs' effect on box_y
+        box_h_offs    = 8;
+        break;
+    default:
+        return;
+    }
+
+    text_w = string_width(buf);
+    text_h = string_height(buf);
+    text_x = x - (text_w / 2) + (fesliderwidths[FE_SLIDER_GEM] / 2);
+    text_y = y - (text_h + 4 + 2) + text_y_offs;
+    box_x  = text_x - 4;
+    box_y  = text_y + box_y_offs;
+    box_w  = text_w + 8;
+    box_h  = text_h + box_h_offs;
+
+    FE_DrawBox(box_x, box_y, box_w, box_h);
+    // int (*write_text)(const char *, int, int) cannot be done as
+    // M_WriteText and V_WriteBigText have different parameter orders
+    if(item->font == FE_FONT_SMALL)
+        M_WriteText(text_x, text_y, buf);
+    else if(item->font == FE_FONT_BIG)
+        V_WriteBigText(buf, text_x, text_y);
+}
+
+//
 // Draw small slider.
 //
 static void FE_DrawSlider(femenuitem_t *item, int x, int y, int pct)
 {
     int i;
     int draw_x = x;
-    int slider_width = 0;
+    //int slider_width = 0;
     short wl, wm, wr, ws, hs;
 
     wl = fesliderwidths[FE_SLIDER_LEFT];
@@ -402,6 +480,10 @@ static void FE_DrawSlider(femenuitem_t *item, int x, int y, int pct)
 
     // gem
     V_DrawPatch(x + draw_x, y, feslidergfx[FE_SLIDER_GEM]);
+
+    // if currently selected draw slider value
+    if(item == &(currentFEMenu->items[currentFEMenu->itemon]))
+        FE_DrawSliderValue(item, x + draw_x, y);
 }
 
 //
@@ -514,133 +596,147 @@ static void FE_DrawLobbyTeamValue(femenuitem_t *item, int x, int y)
 //
 void FE_MenuDraw(femenu_t *menu)
 {
-    int i;
-    int x = menu->x;
-    int y = menu->y;
-    int width = 0;
+	int i;
+	int x = menu->x;
+	int y = menu->y;
+	int width = 0;
 
-    // draw background
-    FE_DrawBackground(menu->background);
+	// draw background
+	FE_DrawBackground(menu->background);
 
-    // specific menu drawer?
-    if(menu->Drawer)
-        menu->Drawer();
+	// specific menu drawer?
+	if (menu->Drawer)
+		menu->Drawer();
 
-    // draw title
-    FE_WriteBigTextCentered(menu->titley, menu->title);
+	// draw title
+	if (menu->title)
+		FE_WriteBigTextCentered(menu->titley, menu->title);
 
-    for(i = 0; i < menu->numitems; i++)
-    {
-        femenuitem_t *item = &menu->items[i];
+	for (i = 0; i < menu->numitems; i++)
+	{
+		femenuitem_t *item = &menu->items[i];
 
-        if(i == menu->itemon)
-        {
-            // draw specified cursor if currently selected item
-            switch(menu->cursortype)
-            {
-            case FE_CURSOR_SIGIL:
-                FE_DrawSigilCursor(x, y);
-                break;
-            case FE_CURSOR_LASER:
-                FE_DrawLaserCursor(x, y);
-                break;
-            default:
-                break;
-            }
+		if (i == menu->itemon)
+		{
+			// draw specified cursor if currently selected item
+			switch (menu->cursortype)
+			{
+			case FE_CURSOR_SIGIL:
+				FE_DrawSigilCursor(x, y);
+				break;
+			case FE_CURSOR_LASER:
+				FE_DrawLaserCursor(x, y);
+				break;
+			default:
+				break;
+			}
 
-            if(merchantOn)
-            {
-                FE_DrawBox(0, 160, SCREENWIDTH, 40);
-                FE_DrawMerchant(FE_MERCHANT_X, FE_MERCHANT_Y);
+			if (merchantOn)
+			{
+				FE_DrawBox(0, 160, SCREENWIDTH, 40);
+				FE_DrawMerchant(FE_MERCHANT_X, FE_MERCHANT_Y);
 
-                // draw help string for selected item
-                if(item->verb)
-                {
-                    if(!item->help)
-                        item->help = FE_GetFormattedHelpStr(item->verb, 20, 0);
-                    if(item->help)
-                        HUlib_drawYellowText(4, 164, item->help, true);
-                }
-            }
-        }
+				// draw help string for selected item
+				if (item->verb)
+				{
+					if (!item->help)
+						item->help = FE_GetFormattedHelpStr(item->verb, 20, 0);
+					if (item->help)
+						HUlib_drawYellowText(4, 164, item->help, true);
+				}
+			}
+		}
 
-        switch(item->type)
-        {
-        case FE_MITEM_CMD:
-        case FE_MITEM_TOGGLE:
-        case FE_MITEM_KEYBIND:
-        case FE_MITEM_MBIND:
-        case FE_MITEM_ABIND:
-        case FE_MITEM_JBIND:
-        case FE_MITEM_SLIDER:
-        case FE_MITEM_VIDMODE:
-        case FE_MITEM_MPREADY:
-        case FE_MITEM_MPTEAM:
-        case FE_MITEM_VALUES:
-        case FE_MITEM_MUSIC:
-            item->x = x;
-            item->y = y;
-            // draw description
-            y += FE_DrawDescription(item, x, y);
-            // remember widest width
-            if(item->w > width)
-                width = item->w;
-            break;
-        case FE_MITEM_LOBBY:
-            FE_DrawLobbyItem(item, x, y);
-            y += 12;
-            break;
-        case FE_MITEM_GAP:
-            // Gap - no drawing; just step down by the item gap size
-            y += item->data;
-            break;
-        default:
-            break;
-        }
-    }
+		switch (item->type)
+		{
+		case FE_MITEM_CMD:
+		case FE_MITEM_TOGGLE:
+		case FE_MITEM_KEYBIND:
+		case FE_MITEM_MBIND:
+		case FE_MITEM_ABIND:
+		case FE_MITEM_JBIND:
+		case FE_MITEM_SLIDER:
+		case FE_MITEM_VIDMODE:
+		case FE_MITEM_MPREADY:
+		case FE_MITEM_MPTEAM:
+		case FE_MITEM_VALUES:
+		case FE_MITEM_MUSIC:
+			item->x = x;
+			item->y = y;
+			// draw description
+			y += FE_DrawDescription(item, x, y);
+			// remember widest width
+			if (item->w > width)
+				width = item->w;
+			break;
+		case FE_MITEM_LOBBY:
+			FE_DrawLobbyItem(item, x, y);
+			y += 12;
+			break;
+		case FE_MITEM_GAP:
+			// Gap - no drawing; just step down by the item gap size
+			y += item->data;
+			break;
+		default:
+			break;
+		}
+	}
 
-    // draw values for valued items
-    for(i = 0; i < menu->numitems; i++)
-    {
-        femenuitem_t *item = &menu->items[i];
+	// draw values for valued items
+	for (i = 0; i < menu->numitems; i++)
+	{
+		femenuitem_t *item = &menu->items[i];
 
-        switch(item->type)
-        {
-        case FE_MITEM_TOGGLE:
-            FE_DrawToggleValue(item, item->x + width + 12, item->y);
-            break;
-        case FE_MITEM_KEYBIND:
-            FE_DrawKBValue(item, item->x + width + 12, item->y);
-            break;
-        case FE_MITEM_MBIND:
-            FE_DrawMBValue(item, item->x + width + 12, item->y);
-            break;
-        case FE_MITEM_ABIND:
-            FE_DrawJAValue(item, item->x + width + 12, item->y);
-            break;
-        case FE_MITEM_JBIND:
-            FE_DrawJBValue(item, item->x + width + 12, item->y);
-            break;
-        case FE_MITEM_SLIDER:
-            FE_DrawSlider(item, item->x + width + 12, item->y, FE_CalcPct(item));
-            break;
-        case FE_MITEM_VIDMODE:
-            FE_DrawVideoMode(item, item->x + width + 12, item->y);
-            break;
-        case FE_MITEM_MPREADY:
-            FE_DrawLobbyReadyValue(item, item->x + width + 12, item->y);
-            break;
-        case FE_MITEM_MPTEAM:
-            FE_DrawLobbyTeamValue(item, item->x + width + 12, item->y);
-            break;
-        case FE_MITEM_VALUES:
-        case FE_MITEM_MUSIC:
-            FE_DrawValue(item, item->x + width + 12, item->y);
-            break;
-        default:
-            break;
-        }
-    }
+		switch (item->type)
+		{
+		case FE_MITEM_TOGGLE:
+			FE_DrawToggleValue(item, item->x + width + 12, item->y);
+			break;
+		case FE_MITEM_KEYBIND:
+			FE_DrawKBValue(item, item->x + width + 12, item->y);
+			break;
+		case FE_MITEM_MBIND:
+			FE_DrawMBValue(item, item->x + width + 12, item->y);
+			break;
+		case FE_MITEM_ABIND:
+			FE_DrawJAValue(item, item->x + width + 12, item->y);
+			break;
+		case FE_MITEM_JBIND:
+			FE_DrawJBValue(item, item->x + width + 12, item->y);
+			break;
+		case FE_MITEM_SLIDER:
+			FE_DrawSlider(item, item->x + width + 12, item->y, FE_CalcPct(item));
+			break;
+		case FE_MITEM_VIDMODE:
+			FE_DrawVideoMode(item, item->x + width + 12, item->y);
+			break;
+		case FE_MITEM_MPREADY:
+			FE_DrawLobbyReadyValue(item, item->x + width + 12, item->y);
+			break;
+		case FE_MITEM_MPTEAM:
+			FE_DrawLobbyTeamValue(item, item->x + width + 12, item->y);
+			break;
+		case FE_MITEM_VALUES:
+		case FE_MITEM_MUSIC:
+			FE_DrawValue(item, item->x + width + 12, item->y);
+			break;
+		default:
+			break;
+		}
+	}
+
+	if ((menu->title == "Options") || 
+		(menu->title == "Controller Options") ||
+		(menu->title == "Graphics Options") ||
+		(menu->title == "Axes") ||
+		(menu->title == "Automap") ||
+		(menu->title == "Inventory") ||
+		(menu->title == "Menu") ||
+		(menu->title == "Movement") ||
+        (menu->title == "Gyroscope"))
+		FE_NX_DrawToolTips(4);
+	else if (menu->title == "Veteran Edition" && menu->prevMenu == NULL)
+		FE_NX_DrawToolTips(0);
 }
 
 // Current menu pointer
@@ -661,6 +757,8 @@ void FE_MenuChangeSfx(void)
 void FE_PushMenu(femenu_t *menu)
 {
     menu->prevMenu = currentFEMenu;
+	if(currentFEMenu && currentFEMenu->ExitCallback)
+		currentFEMenu->ExitCallback();
     currentFEMenu  = menu;
     frontend_wipe  = true; // do a transition so it doesn't just flop
     frontend_sgcount = 20;
@@ -697,6 +795,8 @@ void FE_PopMenu(boolean forced)
     if(FE_InAudioMenu()) // audio menu hack
         FE_MusicTestRestoreCurrent();
     
+	if(currentFEMenu->ExitCallback)
+		currentFEMenu->ExitCallback();
     currentFEMenu = currentFEMenu->prevMenu;
     frontend_wipe = true;
     frontend_sgcount = 20;
@@ -837,6 +937,62 @@ boolean FE_IsSelectable(femenuitem_t *item)
 {
     return !(item->type == FE_MITEM_GAP || 
              item->type == FE_MITEM_END);
+}
+
+//
+// dimitrisg: add tooltips to menus on nx
+//
+void FE_NX_DrawToolTips(int type)
+{
+#ifdef SVE_PLAT_SWITCH
+	//type = 0 : only A
+	//type = 1 : only B
+	//type = 2 : Both A and Plus (+)
+	//otherwise both
+
+    int hpos = 178;
+    int htxtpos = 182;
+    if (gamestate == GS_FINALE)
+    {
+        hpos += 8;
+        htxtpos += 8;
+    }
+	 
+	switch (type)
+	{
+	case 0:
+		FE_DrawBox(118, hpos, 68, 14);
+		HUlib_drawYellowText(124, htxtpos, "A - Select", true);
+		break;
+	case 1:
+		FE_DrawBox(118, hpos, 68, 14);
+		HUlib_drawYellowText(124, htxtpos, "B - Back", true);
+		break;
+	case 2:
+		FE_DrawBox(78, hpos, 68, 14);
+		HUlib_drawYellowText(84, htxtpos, "A - Select", true);
+		FE_DrawBox(168, hpos, 68, 14);
+		HUlib_drawYellowText(174, htxtpos, "+ - Back", true);
+		break;
+	case 3:
+		FE_DrawBox(118, hpos, 68, 14);
+		HUlib_drawYellowText(124, htxtpos, "+ - Menu", true);
+		break;
+    case 5:
+        FE_DrawBox(78, hpos, 78, 14);
+        HUlib_drawYellowText(84, htxtpos, "A - Confirm", true);
+        FE_DrawBox(168, hpos, 78, 14);
+        HUlib_drawYellowText(174, htxtpos, "B - Cancel", true);
+        break;
+    case 4:
+	default:
+		FE_DrawBox(78, hpos, 68, 14);
+		HUlib_drawYellowText(84, htxtpos, "A - Select", true);
+		FE_DrawBox(168, hpos, 68, 14);
+		HUlib_drawYellowText(174, htxtpos, "B - Back", true);
+		break;
+	}
+#endif
 }
 
 // EOF

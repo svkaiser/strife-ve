@@ -50,6 +50,9 @@
 #include "w_wad.h"
 #include "z_zone.h"
 
+// edward: SVE
+#include "i_platsystem.h"
+
 #ifdef __MACOSX__
 #include <CoreFoundation/CFUserNotification.h>
 #endif
@@ -211,7 +214,8 @@ boolean I_ConsoleStdout(void)
     // SDL "helpfully" always redirects stdout to a file.
     return 0;
 #else
-    return isatty(fileno(stdout));
+    //return isatty(fileno(stdout));
+	return 0;
 #endif
 }
 
@@ -251,6 +255,11 @@ void I_Quit (void)
         entry = entry->next;
     }
 
+    if (I_DoPlatformQuit())
+    {
+        return;
+    }
+
     exit(0);
 }
 
@@ -261,7 +270,9 @@ void I_Quit (void)
 
 static int ZenityAvailable(void)
 {
-    return system(ZENITY_BINARY " --help >/dev/null 2>&1") == 0;
+    //return system(ZENITY_BINARY " --help >/dev/null 2>&1") == 0;
+
+	return 0;
 }
 
 // Escape special characters in the given string so that they can be
@@ -329,12 +340,12 @@ static int ZenityErrorBox(char *message)
     M_snprintf(errorboxpath, errorboxpath_size, "%s --error --text=%s",
                ZENITY_BINARY, escaped_message);
 
-    result = system(errorboxpath);
+   // result = system(errorboxpath);
 
     free(errorboxpath);
     free(escaped_message);
 
-    return result;
+    return 0;
 }
 
 #endif /* !defined(_WIN32) && !defined(__MACOSX__) */
@@ -346,7 +357,7 @@ static int ZenityErrorBox(char *message)
 
 static boolean already_quitting = false;
 
-void I_Error (char *error, ...)
+void I_Error (const char *error, ...)
 {
     char msgbuf[512];
     va_list argptr;

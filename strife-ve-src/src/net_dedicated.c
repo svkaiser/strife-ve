@@ -66,7 +66,9 @@ void NET_DedicatedServer(void)
     CheckForClientOptions();
 
     NET_SV_Init();
+#ifndef SVE_PLAT_SWITCH
     NET_SV_AddModule(&net_sdl_module);
+#endif
     NET_SV_RegisterWithMaster();
 
     while (true)

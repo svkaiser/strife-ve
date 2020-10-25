@@ -33,6 +33,8 @@ void I_InitAppServices(void)
 #elif defined(GOG_RELEASE)
     // GOG Galaxy build
     gAppServices = &GalaxyAppServices;
+#elif defined(SVE_PLAT_SWITCH)
+    gAppServices = &SwitchAppServices;
 #else
     // Free build
     // Use dummy provider

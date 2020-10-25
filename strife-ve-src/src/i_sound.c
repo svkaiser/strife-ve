@@ -100,7 +100,9 @@ static music_module_t *music_modules[] =
 {
 #ifdef FEATURE_SOUND
     &music_sdl_module,
+#ifndef NO_OPLMUSIC
     &music_opl_module,
+#endif
 #endif
     NULL,
 };

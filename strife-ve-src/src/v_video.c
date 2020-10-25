@@ -41,6 +41,8 @@
 #include "w_wad.h"
 #include "z_zone.h"
 
+extern SDL_Window *windowscreen;
+
 // [SVE] svillarreal - use libpng
 #define HAVE_LIBPNG
 
@@ -187,10 +189,10 @@ void V_DrawPatch(int x, int y, patch_t *patch)
     }
 
 #ifdef RANGECHECK
-    if (x < 0
-     || x + SHORT(patch->width) > SCREENWIDTH
-     || y < 0
-     || y + SHORT(patch->height) > SCREENHEIGHT)
+    if (x + SHORT(patch->width) < 0
+     || x > SCREENWIDTH
+     || y + SHORT(patch->height) < 0
+     || y > SCREENHEIGHT)
     {
         I_Error("Bad V_DrawPatch");
     }
@@ -202,6 +204,20 @@ void V_DrawPatch(int x, int y, patch_t *patch)
     desttop = dest_screen + y * SCREENWIDTH + x;
 
     w = SHORT(patch->width);
+
+	if(x < 0)
+	{
+		// skip leftmost pixels
+		col     -= x;
+		desttop -= x;
+	}
+	if(x + w > SCREENWIDTH)
+	{
+		// skip rightmost pixels
+		const int overhang = x + w - SCREENWIDTH;
+		w       -= overhang;
+		desttop -= overhang;
+	}
 
     for ( ; col<w ; x++, col++, desttop++)
     {
@@ -216,7 +232,11 @@ void V_DrawPatch(int x, int y, patch_t *patch)
 
             while (count--)
             {
-                *dest = *source++;
+				if(dest >= dest_screen + SCREENWIDTH * SCREENHEIGHT)
+					break; // we're not drawing anything else
+				else if(dest >= dest_screen)
+					*dest = *source;
+				source++;
                 dest += SCREENWIDTH;
             }
             column = (column_t *)((byte *)column + column->length + 4);
@@ -402,6 +422,67 @@ void V_DrawXlaPatch(int x, int y, patch_t * patch)
                 dest += SCREENWIDTH;
             }
             column = (column_t *) ((byte *) column + column->length + 4);
+        }
+    }
+}
+
+//
+// V_DrawXlaPatch
+//
+// edward [SVE] Masks a column based translucent masked pic to the screen at 75% transluency.
+//
+
+void V_DrawXlaPatchMore(int x, int y, patch_t * patch)
+{
+    int count, col;
+    column_t *column;
+    byte *desttop, *dest, *source;
+    int w;
+
+    y -= SHORT(patch->topoffset);
+    x -= SHORT(patch->leftoffset);
+
+    if (patchclip_callback)
+    {
+        if (!patchclip_callback(patch, x, y))
+            return;
+    }
+
+    // [SVE] svillarreal - blit patch on the patch buffer texture
+    if (use3drenderer)
+    {
+        RB_BlitPatch(x, y, patch, 0x40);
+        return;
+    }
+
+    col = 0;
+    desttop = dest_screen + y * SCREENWIDTH + x;
+
+    w = SHORT(patch->width);
+    for (; col < w; x++, col++, desttop++)
+    {
+        column = (column_t *)((byte *)patch + LONG(patch->columnofs[col]));
+
+        // step through the posts in a column
+
+        while (column->topdelta != 0xff)
+        {
+            source = (byte *)column + 3;
+            dest = desttop + column->topdelta * SCREENWIDTH;
+            count = column->length;
+
+            while (count--)
+            {
+                if (dest >= dest_screen + SCREENWIDTH * SCREENHEIGHT)
+                    break; // we're not drawing anything else
+                else if (dest >= dest_screen)
+                    *dest = *source;
+
+                *dest = xlatab[(*dest << 8) + *source];
+                source++;
+                dest += SCREENWIDTH;
+            }
+            column = (column_t *)((byte *)column + column->length + 4);
         }
     }
 }
@@ -864,7 +945,7 @@ static void WriteHiResPNG(char *filename, byte *data,
     png_structp     png_ptr;
     png_infop       info_ptr;
     int             i = 0;
-    int             j = 0;
+    //int             j = 0;
     FILE            *handle;
 
     handle = fopen(filename, "wb");
@@ -982,7 +1063,7 @@ void V_ScreenShot(char *format)
     }
     else
     {
-        SDL_Surface *screen = SDL_GetVideoSurface();
+        SDL_Surface *screen = SDL_GetWindowSurface(windowscreen);
         byte *data = RB_GetScreenBufferData();
 
         WriteHiResPNG(lbmname, data, screen->w, screen->h);

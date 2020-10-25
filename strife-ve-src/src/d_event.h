@@ -42,6 +42,12 @@ typedef enum
     ev_mousebutton,
     ev_joybtndown,
     ev_joybtnup,
+
+    // [SVE] MaxW
+    ev_text,
+
+    // [SVE] Edward
+    ev_gyro
 } evtype_t;
 
 // Event structure.
@@ -99,6 +105,8 @@ typedef enum
     BT_CHANGE		= 4,
     // The 3bit weapon mask and shift, convenience.
     BT_WEAPONMASK	= (8+16+32),
+    // edward: [SVE] The 4bit weapon mask to access more slots, uses last free bit in the command
+    BT_WEAPONMASKEX = (8+16+32+64),
     BT_WEAPONSHIFT	= 3,
 
     // Pause the game.

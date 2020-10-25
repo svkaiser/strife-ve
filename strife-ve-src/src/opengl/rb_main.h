@@ -140,6 +140,9 @@ typedef struct
 } rbState_t;
 
 extern rbState_t rbState;
+#ifdef SVE_PLAT_SWITCH
+extern GL_Context ctx;
+#endif
 
 void RB_Init(void);
 void RB_Shutdown(void);

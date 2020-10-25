@@ -128,7 +128,7 @@ static void FE_SanitizeString(char *in, int limit, boolean useyfont)
 
     if(!len)
         return;
-    end = in + len - 1;
+    end = (unsigned char *)(in + len - 1);
 
     // Steam strings are UTF-8, and the Doom engine is a strictly ASCII
     // affair, so prune any apparent control chars or extended ASCII.
@@ -143,12 +143,12 @@ static void FE_SanitizeString(char *in, int limit, boolean useyfont)
     // so limit to a displayable length depending on the font
     if(useyfont)
     {
-        while(HUlib_yellowTextWidth(in) > limit && end != in)
+        while(HUlib_yellowTextWidth(in) > limit && end != (unsigned char *)in)
             *end-- = '\0';
     }
     else
     {
-        while(M_StringWidth(in) > limit && end != in)
+        while(M_StringWidth(in) > limit && end != (unsigned char *)in)
             *end-- = '\0';
     }
 }

@@ -52,10 +52,15 @@ static boolean FindExtension(const char *ext)
 
     extensions = dglGetString(GL_EXTENSIONS);
 
+    if(!extensions)
+    {
+        return false;
+    }
+
     start = extensions;
     for(;;)
     {
-        where = (byte *)strstr(start, ext);
+        where = (byte *)strstr((const char *)start, ext);
         if(!where)
             break;
 
@@ -86,7 +91,7 @@ boolean GL_PreInit(void)
     SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, rbVsync ? 1 : 0);
+    SDL_GL_SetSwapInterval(rbVsync ? 1 : 0);
     return true;
 }
 

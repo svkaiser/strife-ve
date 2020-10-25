@@ -103,7 +103,10 @@ void RB_BlitPatch(int x, int y, patch_t *patch, byte alpha)
     col = 0;
     desttop = (unsigned int*)&patchBuffer[((patchTexture.width * y) + x) * 4];
     
-    for(w = 0; w < SHORT(patch->width); ++w)
+	const int left_overhang  = x < 0 ? -x : 0;
+	const int right_overhang = x + SHORT(patch->width) > patchTexture.width ? x + SHORT(patch->width) - patchTexture.width : 0;
+
+    for(w = left_overhang; w < SHORT(patch->width) - right_overhang; ++w)
     {
         column = (column_t*)((byte*)patch + LONG(patch->columnofs[w]));
         while((ctd = column->topdelta) != 0xff)
@@ -112,7 +115,11 @@ void RB_BlitPatch(int x, int y, patch_t *patch, byte alpha)
             
             for(h = 0; h < column->length; ++h)
             {
-                desttop[patchTexture.width * (ctd+h) + w] = rbPalette[colData[h]] | (alpha << 24);
+				const int index = patchTexture.width * (ctd + h) + w;
+				if(desttop + index >= (unsigned int*)patchBuffer + patchTexture.height * patchTexture.width)
+					break; // we're not drawing anything else
+				else if(desttop + index >= (unsigned int*)patchBuffer)
+					desttop[index] = rbPalette[colData[h]] | (alpha << 24);
             }
             
             column = (column_t*)((byte*)column + column->length + 4);

@@ -34,6 +34,7 @@ enum
     FE_STATE_MBINPUT,     // rebinding a mouse button
     FE_STATE_JAINPUT,     // rebinding a gamepad axis
     FE_STATE_JBINPUT,     // rebinding a gamepad button
+    FE_STATE_RESETCON,    // resetting binds
     FE_STATE_LOBBYCREATE, // trying to create a lobby
     FE_STATE_LOBBYJOIN,   // trying to join a lobby
     FE_STATE_REFRESH,     // refreshing lobby list

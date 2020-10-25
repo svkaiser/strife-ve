@@ -16,6 +16,8 @@
 //      Author: Samuel Villarreal
 //
 
+#if !defined(SVE_USE_THEORAPLAY)
+
 #include "SDL.h"
 #include "SDL_mixer.h"
 
@@ -172,6 +174,8 @@ static double               audioClock;
 // length of the frame in time
 static double               frameTime;
 static double               lastFrameTime;
+
+extern SDL_Window *windowscreen;
 
 //=============================================================================
 //
@@ -1067,7 +1071,7 @@ static void I_AVDrawVideoStream(void)
 
     I_AVProcessNextVideoFrame();
 
-    screen = SDL_GetVideoSurface();
+    screen = SDL_GetWindowSurface(windowscreen);
     ws = screen->w;
     hs = screen->h;
 
@@ -1181,7 +1185,7 @@ void I_AVStartVideoStream(const char *filename)
         return;
     }
     
-    thread = SDL_CreateThread(I_AVIteratePacketsThread, NULL);
+    thread = SDL_CreateThread(I_AVIteratePacketsThread, "I_AVIteratePacketsThread", NULL);
 
     I_SetShowCursor(false);
 
@@ -1239,3 +1243,5 @@ void I_AVStartVideoStream(const char *filename)
     // make sure everything is unbinded
     RB_UnbindTexture();
 }
+
+#endif

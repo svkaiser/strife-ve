@@ -474,7 +474,7 @@ void MTX_MultiplyVector4(matrix m, float *xyzw)
     float _x = xyzw[0];
     float _y = xyzw[1];
     float _z = xyzw[2];
-    float _w = xyzw[3];
+    //float _w = xyzw[3];
     
     xyzw[0] = m[ 4] * _y + m[ 8] * _z + m[ 0] * _x + m[12];
     xyzw[1] = m[ 5] * _y + m[ 9] * _z + m[ 1] * _x + m[13];

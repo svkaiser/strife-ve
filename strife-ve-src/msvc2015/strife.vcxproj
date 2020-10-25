@@ -1,0 +1,674 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="GoG Debug|Win32">
+      <Configuration>GoG Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="GoG Release|Win32">
+      <Configuration>GoG Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>Strife</ProjectName>
+    <ProjectGuid>{FC4DACBA-2A3E-4AF0-804A-AF5FFFD13B08}</ProjectGuid>
+    <RootNamespace>Strife</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GoG Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GoG Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='GoG Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='GoG Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\bin\</OutDir>
+    <IntDir>..\obj\strife\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\bin\</OutDir>
+    <IntDir>..\obj\strife\$(Configuration)\</IntDir>
+    <LinkIncremental />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GoG Release|Win32'">
+    <OutDir>$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GoG Debug|Win32'">
+    <OutDir>$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.;..\src;..\src\opengl;..\src\strife;..\textscreen;..\pcsound;..\opl;$(SDL2_0)\include;$(SDLMIXER2_0)\include;$(SDLNET2_0)\include;..\lpng1612;../libvorbis/include;../libogg/include;../libtheora/include;..\..\steam-service\api\SteamService\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;SVE_USE_THEORAPLAY;_USE_STEAM_;_DEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;PROGRAM_PREFIX="chocolate-";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling />
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <ExpandAttributedSource>true</ExpandAttributedSource>
+      <AssemblerOutput>All</AssemblerOutput>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(SDL2_0)\lib\x86\sdl2.lib;$(SDLMIXER2_0)\lib\x86\sdl2_mixer.lib;$(SDLNET2_0)\lib\x86\sdl2_net.lib;..\lpng1612\projects\visualc71\Win32_LIB_Debug\libpngd.lib;..\lpng1612\projects\visualc71\Win32_LIB_Debug\ZLib\zlibd.lib;opengl32.lib;..\ffmpeg\windows\avcodec.lib;..\ffmpeg\windows\avdevice.lib;..\ffmpeg\windows\avfilter.lib;..\ffmpeg\windows\avformat.lib;..\ffmpeg\windows\avutil.lib;..\ffmpeg\windows\postproc.lib;..\ffmpeg\windows\swresample.lib;..\ffmpeg\windows\swscale.lib;..\..\steam-service\api\SteamService\lib\SteamService.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)strife-ve-dbg.exe</OutputFile>
+      <IgnoreSpecificDefaultLibraries>msvcrt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+    <PostBuildEvent>
+      <Command />
+    </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.;..\src;..\src\opengl;..\src\strife;..\textscreen;..\pcsound;..\opl;$(SDL2_0)\include;$(SDLMIXER2_0)\include;$(SDLNET2_0)\include;..\lpng1612;../libvorbis/include;../libogg/include;../libtheora/include;..\..\steam-service\api\SteamService\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;SVE_USE_THEORAPLAY;_USE_STEAM_;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;PROGRAM_PREFIX="chocolate-";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat />
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(SDL2_0)\lib\x86\sdl2.lib;$(SDLMIXER2_0)\lib\x86\sdl2_mixer.lib;$(SDLNET2_0)\lib\x86\sdl2_net.lib;opengl32.lib;..\ffmpeg\windows\avcodec.lib;..\ffmpeg\windows\avdevice.lib;..\ffmpeg\windows\avfilter.lib;..\ffmpeg\windows\avformat.lib;..\ffmpeg\windows\avutil.lib;..\ffmpeg\windows\postproc.lib;..\ffmpeg\windows\swresample.lib;..\ffmpeg\windows\swscale.lib;..\..\steam-service\api\SteamService\lib\SteamService.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)strife-ve.exe</OutputFile>
+      <IgnoreSpecificDefaultLibraries>msvcrtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <DataExecutionPrevention />
+      <TurnOffAssemblyGeneration>false</TurnOffAssemblyGeneration>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GoG Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.;..\src;..\src\opengl;..\src\strife;..\textscreen;..\pcsound;..\opl;$(SDL2_0)\include;$(SDLMIXER2_0)\include;$(SDLNET2_0)\include;..\lpng1612;../libvorbis/include;../libogg/include;../libtheora/include;..\..\gog-service\api\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;SVE_USE_THEORAPLAY;GOG_RELEASE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;PROGRAM_PREFIX="chocolate-";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat />
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(SDL2_0)\lib\x86\sdl2.lib;$(SDLMIXER2_0)\lib\x86\sdl2_mixer.lib;$(SDLNET2_0)\lib\x86\sdl2_net.lib;..\..\gog-service\api\lib\GoGService.lib;opengl32.lib;..\ffmpeg\windows\avcodec.lib;..\ffmpeg\windows\avdevice.lib;..\ffmpeg\windows\avfilter.lib;..\ffmpeg\windows\avformat.lib;..\ffmpeg\windows\avutil.lib;..\ffmpeg\windows\postproc.lib;..\ffmpeg\windows\swresample.lib;..\ffmpeg\windows\swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)strife-ve.exe</OutputFile>
+      <IgnoreSpecificDefaultLibraries>msvcrtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <DataExecutionPrevention />
+      <TurnOffAssemblyGeneration>false</TurnOffAssemblyGeneration>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command />
+    </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GoG Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.;..\src;..\src\opengl;..\src\strife;..\textscreen;..\pcsound;..\opl;$(SDL2_0)\include;$(SDLMIXER2_0)\include;$(SDLNET2_0)\include;..\lpng1612;../libvorbis/include;../libogg/include;../libtheora/include;..\..\gog-service\api\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;SVE_USE_THEORAPLAY;_DEBUG;GOG_RELEASE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;PROGRAM_PREFIX="chocolate-";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling />
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <ExpandAttributedSource>true</ExpandAttributedSource>
+      <AssemblerOutput>All</AssemblerOutput>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>..\..\SDL\SDL-1.2.15\lib\x86\SDL.lib;..\..\SDL\SDL_mixer-1.2.12\lib\x86\SDL_mixer.lib;..\..\SDL\SDL_net-1.2.8\lib\x86\SDL_net.lib;..\..\SDL\SDL-1.2.15\lib\x86\SDLMain.lib;..\..\gog-service\api\lib\GoGService.lib;..\lpng1612\projects\visualc71\Win32_LIB_Debug\libpngd.lib;..\lpng1612\projects\visualc71\Win32_LIB_Debug\ZLib\zlibd.lib;opengl32.lib;..\ffmpeg\windows\avcodec.lib;..\ffmpeg\windows\avdevice.lib;..\ffmpeg\windows\avfilter.lib;..\ffmpeg\windows\avformat.lib;..\ffmpeg\windows\avutil.lib;..\ffmpeg\windows\postproc.lib;..\ffmpeg\windows\swresample.lib;..\ffmpeg\windows\swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)strife-ve.exe</OutputFile>
+      <IgnoreSpecificDefaultLibraries>msvcrt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command />
+    </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\libogg\include\ogg\ogg.h" />
+    <ClInclude Include="..\libogg\include\ogg\os_types.h" />
+    <ClInclude Include="..\libtheora\lib\apiwrapper.h" />
+    <ClInclude Include="..\libtheora\lib\bitpack.h" />
+    <ClInclude Include="..\libtheora\lib\cpu.h" />
+    <ClInclude Include="..\libtheora\lib\dct.h" />
+    <ClInclude Include="..\libtheora\lib\decint.h" />
+    <ClInclude Include="..\libtheora\lib\dequant.h" />
+    <ClInclude Include="..\libtheora\lib\encint.h" />
+    <ClInclude Include="..\libtheora\lib\enquant.h" />
+    <ClInclude Include="..\libtheora\lib\huffdec.h" />
+    <ClInclude Include="..\libtheora\lib\huffenc.h" />
+    <ClInclude Include="..\libtheora\lib\huffman.h" />
+    <ClInclude Include="..\libtheora\lib\internal.h" />
+    <ClInclude Include="..\libtheora\lib\mathops.h" />
+    <ClInclude Include="..\libtheora\lib\modedec.h" />
+    <ClInclude Include="..\libtheora\lib\ocintrin.h" />
+    <ClInclude Include="..\libtheora\lib\quant.h" />
+    <ClInclude Include="..\libvorbis\lib\backends.h" />
+    <ClInclude Include="..\libvorbis\lib\bitrate.h" />
+    <ClInclude Include="..\libvorbis\lib\codebook.h" />
+    <ClInclude Include="..\libvorbis\lib\codec_internal.h" />
+    <ClInclude Include="..\libvorbis\lib\envelope.h" />
+    <ClInclude Include="..\libvorbis\lib\highlevel.h" />
+    <ClInclude Include="..\libvorbis\lib\lookup.h" />
+    <ClInclude Include="..\libvorbis\lib\lookup_data.h" />
+    <ClInclude Include="..\libvorbis\lib\lpc.h" />
+    <ClInclude Include="..\libvorbis\lib\lsp.h" />
+    <ClInclude Include="..\libvorbis\lib\masking.h" />
+    <ClInclude Include="..\libvorbis\lib\mdct.h" />
+    <ClInclude Include="..\libvorbis\lib\misc.h" />
+    <ClInclude Include="..\libvorbis\lib\os.h" />
+    <ClInclude Include="..\libvorbis\lib\psy.h" />
+    <ClInclude Include="..\libvorbis\lib\registry.h" />
+    <ClInclude Include="..\libvorbis\lib\scales.h" />
+    <ClInclude Include="..\libvorbis\lib\smallft.h" />
+    <ClInclude Include="..\libvorbis\lib\window.h" />
+    <ClInclude Include="..\src\deh_io.h" />
+    <ClInclude Include="..\src\deh_main.h" />
+    <ClInclude Include="..\src\deh_mapping.h" />
+    <ClInclude Include="..\src\deh_str.h" />
+    <ClInclude Include="..\src\doomfeatures.h" />
+    <ClInclude Include="..\src\doomkeys.h" />
+    <ClInclude Include="..\src\doomtype.h" />
+    <ClInclude Include="..\src\d_event.h" />
+    <ClInclude Include="..\src\d_iwad.h" />
+    <ClInclude Include="..\src\d_loop.h" />
+    <ClInclude Include="..\src\d_mode.h" />
+    <ClInclude Include="..\src\d_ticcmd.h" />
+    <ClInclude Include="..\src\gusconf.h" />
+    <ClInclude Include="..\src\i_cpumode.h" />
+    <ClInclude Include="..\src\i_endoom.h" />
+    <ClInclude Include="..\src\i_galaxyservices.h" />
+    <ClInclude Include="..\src\i_glscale.h" />
+    <ClInclude Include="..\src\i_joystick.h" />
+    <ClInclude Include="..\src\i_noappservices.h" />
+    <ClInclude Include="..\src\i_platsystem.h" />
+    <ClInclude Include="..\src\i_scale.h" />
+    <ClInclude Include="..\src\i_social.h" />
+    <ClInclude Include="..\src\i_softkey.h" />
+    <ClInclude Include="..\src\i_sound.h" />
+    <ClInclude Include="..\src\i_steamservices.h" />
+    <ClInclude Include="..\src\i_swap.h" />
+    <ClInclude Include="..\src\i_system.h" />
+    <ClInclude Include="..\src\i_theoraplay.h" />
+    <ClInclude Include="..\src\i_timer.h" />
+    <ClInclude Include="..\src\i_video.h" />
+    <ClInclude Include="..\src\kerning.h" />
+    <ClInclude Include="..\src\memio.h" />
+    <ClInclude Include="..\src\midifile.h" />
+    <ClInclude Include="..\src\mus2mid.h" />
+    <ClInclude Include="..\src\m_argv.h" />
+    <ClInclude Include="..\src\m_bbox.h" />
+    <ClInclude Include="..\src\m_cheat.h" />
+    <ClInclude Include="..\src\m_config.h" />
+    <ClInclude Include="..\src\m_controls.h" />
+    <ClInclude Include="..\src\m_dllist.h" />
+    <ClInclude Include="..\src\m_fixed.h" />
+    <ClInclude Include="..\src\m_misc.h" />
+    <ClInclude Include="..\src\m_parser.h" />
+    <ClInclude Include="..\src\m_qstring.h" />
+    <ClInclude Include="..\src\net_client.h" />
+    <ClInclude Include="..\src\net_common.h" />
+    <ClInclude Include="..\src\net_dedicated.h" />
+    <ClInclude Include="..\src\net_defs.h" />
+    <ClInclude Include="..\src\net_gui.h" />
+    <ClInclude Include="..\src\net_io.h" />
+    <ClInclude Include="..\src\net_loop.h" />
+    <ClInclude Include="..\src\net_packet.h" />
+    <ClInclude Include="..\src\net_query.h" />
+    <ClInclude Include="..\src\net_sdl.h" />
+    <ClInclude Include="..\src\net_server.h" />
+    <ClInclude Include="..\src\net_steamworks.h" />
+    <ClInclude Include="..\src\net_structrw.h" />
+    <ClInclude Include="..\src\opengl\dgl.h" />
+    <ClInclude Include="..\src\opengl\rb_automap.h" />
+    <ClInclude Include="..\src\opengl\rb_bsp.h" />
+    <ClInclude Include="..\src\opengl\rb_clipper.h" />
+    <ClInclude Include="..\src\opengl\rb_common.h" />
+    <ClInclude Include="..\src\opengl\rb_config.h" />
+    <ClInclude Include="..\src\opengl\rb_data.h" />
+    <ClInclude Include="..\src\opengl\rb_decal.h" />
+    <ClInclude Include="..\src\opengl\rb_draw.h" />
+    <ClInclude Include="..\src\opengl\rb_drawlist.h" />
+    <ClInclude Include="..\src\opengl\rb_dynlights.h" />
+    <ClInclude Include="..\src\opengl\rb_fbo.h" />
+    <ClInclude Include="..\src\opengl\rb_geom.h" />
+    <ClInclude Include="..\src\opengl\rb_gl.h" />
+    <ClInclude Include="..\src\opengl\rb_hudtext.h" />
+    <ClInclude Include="..\src\opengl\rb_level.h" />
+    <ClInclude Include="..\src\opengl\rb_lightgrid.h" />
+    <ClInclude Include="..\src\opengl\rb_local.h" />
+    <ClInclude Include="..\src\opengl\rb_main.h" />
+    <ClInclude Include="..\src\opengl\rb_matrix.h" />
+    <ClInclude Include="..\src\opengl\rb_patch.h" />
+    <ClInclude Include="..\src\opengl\rb_shader.h" />
+    <ClInclude Include="..\src\opengl\rb_sky.h" />
+    <ClInclude Include="..\src\opengl\rb_texture.h" />
+    <ClInclude Include="..\src\opengl\rb_things.h" />
+    <ClInclude Include="..\src\opengl\rb_view.h" />
+    <ClInclude Include="..\src\opengl\rb_wallshade.h" />
+    <ClInclude Include="..\src\opengl\rb_wipe.h" />
+    <ClInclude Include="..\src\sha1.h" />
+    <ClInclude Include="..\src\strife\am_map.h" />
+    <ClInclude Include="..\src\strife\deh_misc.h" />
+    <ClInclude Include="..\src\strife\doomdata.h" />
+    <ClInclude Include="..\src\strife\doomdef.h" />
+    <ClInclude Include="..\src\strife\doomstat.h" />
+    <ClInclude Include="..\src\strife\dstrings.h" />
+    <ClInclude Include="..\src\strife\d_englsh.h" />
+    <ClInclude Include="..\src\strife\d_items.h" />
+    <ClInclude Include="..\src\strife\d_main.h" />
+    <ClInclude Include="..\src\strife\d_player.h" />
+    <ClInclude Include="..\src\strife\d_textur.h" />
+    <ClInclude Include="..\src\strife\d_think.h" />
+    <ClInclude Include="..\src\strife\fe_characters.h" />
+    <ClInclude Include="..\src\strife\fe_commands.h" />
+    <ClInclude Include="..\src\strife\fe_frontend.h" />
+    <ClInclude Include="..\src\strife\fe_gamepad.h" />
+    <ClInclude Include="..\src\strife\fe_graphics.h" />
+    <ClInclude Include="..\src\strife\fe_menuengine.h" />
+    <ClInclude Include="..\src\strife\fe_menus.h" />
+    <ClInclude Include="..\src\strife\fe_mouse.h" />
+    <ClInclude Include="..\src\strife\fe_multiplayer.h" />
+    <ClInclude Include="..\src\strife\f_finale.h" />
+    <ClInclude Include="..\src\strife\f_wipe.h" />
+    <ClInclude Include="..\src\strife\g_game.h" />
+    <ClInclude Include="..\src\strife\hu_lib.h" />
+    <ClInclude Include="..\src\strife\hu_stuff.h" />
+    <ClInclude Include="..\src\strife\info.h" />
+    <ClInclude Include="..\src\strife\m_help.h" />
+    <ClInclude Include="..\src\strife\m_menu.h" />
+    <ClInclude Include="..\src\strife\m_random.h" />
+    <ClInclude Include="..\src\strife\m_saves.h" />
+    <ClInclude Include="..\src\strife\p_dialog.h" />
+    <ClInclude Include="..\src\strife\p_inter.h" />
+    <ClInclude Include="..\src\strife\p_local.h" />
+    <ClInclude Include="..\src\strife\p_locations.h" />
+    <ClInclude Include="..\src\strife\p_mobj.h" />
+    <ClInclude Include="..\src\strife\p_pspr.h" />
+    <ClInclude Include="..\src\strife\p_saveg.h" />
+    <ClInclude Include="..\src\strife\p_setup.h" />
+    <ClInclude Include="..\src\strife\p_spec.h" />
+    <ClInclude Include="..\src\strife\p_tick.h" />
+    <ClInclude Include="..\src\strife\r_bsp.h" />
+    <ClInclude Include="..\src\strife\r_data.h" />
+    <ClInclude Include="..\src\strife\r_defs.h" />
+    <ClInclude Include="..\src\strife\r_draw.h" />
+    <ClInclude Include="..\src\strife\r_local.h" />
+    <ClInclude Include="..\src\strife\r_main.h" />
+    <ClInclude Include="..\src\strife\r_plane.h" />
+    <ClInclude Include="..\src\strife\r_segs.h" />
+    <ClInclude Include="..\src\strife\r_sky.h" />
+    <ClInclude Include="..\src\strife\r_state.h" />
+    <ClInclude Include="..\src\strife\r_things.h" />
+    <ClInclude Include="..\src\strife\sounds.h" />
+    <ClInclude Include="..\src\strife\st_lib.h" />
+    <ClInclude Include="..\src\strife\st_stuff.h" />
+    <ClInclude Include="..\src\strife\s_sound.h" />
+    <ClInclude Include="..\src\strife\wi_stuff.h" />
+    <ClInclude Include="..\src\tables.h" />
+    <ClInclude Include="..\src\v_patch.h" />
+    <ClInclude Include="..\src\v_video.h" />
+    <ClInclude Include="..\src\w_checksum.h" />
+    <ClInclude Include="..\src\w_file.h" />
+    <ClInclude Include="..\src\w_main.h" />
+    <ClInclude Include="..\src\w_merge.h" />
+    <ClInclude Include="..\src\w_wad.h" />
+    <ClInclude Include="..\src\z_zone.h" />
+    <ClInclude Include="win_opendir.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libogg\src\bitwise.c" />
+    <ClCompile Include="..\libogg\src\framing.c" />
+    <ClCompile Include="..\libtheora\lib\analyze.c" />
+    <ClCompile Include="..\libtheora\lib\apiwrapper.c" />
+    <ClCompile Include="..\libtheora\lib\bitpack.c" />
+    <ClCompile Include="..\libtheora\lib\cpu.c" />
+    <ClCompile Include="..\libtheora\lib\decapiwrapper.c" />
+    <ClCompile Include="..\libtheora\lib\decinfo.c" />
+    <ClCompile Include="..\libtheora\lib\decode.c" />
+    <ClCompile Include="..\libtheora\lib\dequant.c" />
+    <ClCompile Include="..\libtheora\lib\encapiwrapper.c" />
+    <ClCompile Include="..\libtheora\lib\encfrag.c" />
+    <ClCompile Include="..\libtheora\lib\encinfo.c" />
+    <ClCompile Include="..\libtheora\lib\encode.c" />
+    <ClCompile Include="..\libtheora\lib\enquant.c" />
+    <ClCompile Include="..\libtheora\lib\fdct.c" />
+    <ClCompile Include="..\libtheora\lib\fragment.c" />
+    <ClCompile Include="..\libtheora\lib\huffdec.c" />
+    <ClCompile Include="..\libtheora\lib\huffenc.c" />
+    <ClCompile Include="..\libtheora\lib\idct.c" />
+    <ClCompile Include="..\libtheora\lib\internal.c" />
+    <ClCompile Include="..\libtheora\lib\mathops.c" />
+    <ClCompile Include="..\libtheora\lib\mcenc.c" />
+    <ClCompile Include="..\libtheora\lib\quant.c" />
+    <ClCompile Include="..\libtheora\lib\rate.c" />
+    <ClCompile Include="..\libtheora\lib\state.c" />
+    <ClCompile Include="..\libtheora\lib\theorainfo.c" />
+    <ClCompile Include="..\libtheora\lib\tokenize.c" />
+    <ClCompile Include="..\libvorbis\lib\analysis.c" />
+    <ClCompile Include="..\libvorbis\lib\bitrate.c" />
+    <ClCompile Include="..\libvorbis\lib\block.c" />
+    <ClCompile Include="..\libvorbis\lib\codebook.c" />
+    <ClCompile Include="..\libvorbis\lib\envelope.c" />
+    <ClCompile Include="..\libvorbis\lib\floor0.c" />
+    <ClCompile Include="..\libvorbis\lib\floor1.c" />
+    <ClCompile Include="..\libvorbis\lib\lookup.c" />
+    <ClCompile Include="..\libvorbis\lib\lpc.c" />
+    <ClCompile Include="..\libvorbis\lib\lsp.c" />
+    <ClCompile Include="..\libvorbis\lib\mapping0.c" />
+    <ClCompile Include="..\libvorbis\lib\mdct.c" />
+    <ClCompile Include="..\libvorbis\lib\psy.c" />
+    <ClCompile Include="..\libvorbis\lib\registry.c" />
+    <ClCompile Include="..\libvorbis\lib\res0.c" />
+    <ClCompile Include="..\libvorbis\lib\sharedbook.c" />
+    <ClCompile Include="..\libvorbis\lib\smallft.c" />
+    <ClCompile Include="..\libvorbis\lib\synthesis.c" />
+    <ClCompile Include="..\libvorbis\lib\vorbisenc.c" />
+    <ClCompile Include="..\libvorbis\lib\vorbisfile.c" />
+    <ClCompile Include="..\libvorbis\lib\vorbisinfo.c" />
+    <ClCompile Include="..\libvorbis\lib\window.c" />
+    <ClCompile Include="..\src\deh_io.c" />
+    <ClCompile Include="..\src\deh_main.c" />
+    <ClCompile Include="..\src\deh_mapping.c" />
+    <ClCompile Include="..\src\deh_str.c" />
+    <ClCompile Include="..\src\deh_text.c" />
+    <ClCompile Include="..\src\d_event.c" />
+    <ClCompile Include="..\src\d_iwad.c" />
+    <ClCompile Include="..\src\d_loop.c" />
+    <ClCompile Include="..\src\d_mode.c" />
+    <ClCompile Include="..\src\gusconf.c" />
+    <ClCompile Include="..\src\icon.c" />
+    <ClCompile Include="..\src\i_cpumode.c" />
+    <ClCompile Include="..\src\i_endoom.c" />
+    <ClCompile Include="..\src\i_galaxyservices.c" />
+    <ClCompile Include="..\src\i_glscale.c" />
+    <ClCompile Include="..\src\i_joystick.c" />
+    <ClCompile Include="..\src\i_main.c" />
+    <ClCompile Include="..\src\i_noappservices.c" />
+    <ClCompile Include="..\src\i_oplmusic.c" />
+    <ClCompile Include="..\src\i_pcsound.c" />
+    <ClCompile Include="..\src\i_platsystem.c" />
+    <ClCompile Include="..\src\i_scale.c" />
+    <ClCompile Include="..\src\i_sdlmusic.c" />
+    <ClCompile Include="..\src\i_sdlsound.c" />
+    <ClCompile Include="..\src\i_social.c" />
+    <ClCompile Include="..\src\i_softkey.c" />
+    <ClCompile Include="..\src\i_sound.c" />
+    <ClCompile Include="..\src\i_steamservices.c" />
+    <ClCompile Include="..\src\i_system.c" />
+    <ClCompile Include="..\src\i_theoraplay.c" />
+    <ClCompile Include="..\src\i_timer.c" />
+    <ClCompile Include="..\src\i_video.c" />
+    <ClCompile Include="..\src\kerning.c" />
+    <ClCompile Include="..\src\memio.c" />
+    <ClCompile Include="..\src\midifile.c" />
+    <ClCompile Include="..\src\mus2mid.c" />
+    <ClCompile Include="..\src\m_argv.c" />
+    <ClCompile Include="..\src\m_bbox.c" />
+    <ClCompile Include="..\src\m_cheat.c" />
+    <ClCompile Include="..\src\m_config.c" />
+    <ClCompile Include="..\src\m_controls.c" />
+    <ClCompile Include="..\src\m_fixed.c" />
+    <ClCompile Include="..\src\m_misc.c" />
+    <ClCompile Include="..\src\m_parser.c" />
+    <ClCompile Include="..\src\m_qstring.c" />
+    <ClCompile Include="..\src\net_client.c" />
+    <ClCompile Include="..\src\net_common.c" />
+    <ClCompile Include="..\src\net_dedicated.c" />
+    <ClCompile Include="..\src\net_gui.c" />
+    <ClCompile Include="..\src\net_io.c" />
+    <ClCompile Include="..\src\net_loop.c" />
+    <ClCompile Include="..\src\net_packet.c" />
+    <ClCompile Include="..\src\net_query.c" />
+    <ClCompile Include="..\src\net_sdl.c" />
+    <ClCompile Include="..\src\net_server.c" />
+    <ClCompile Include="..\src\net_steamworks.c" />
+    <ClCompile Include="..\src\net_structrw.c" />
+    <ClCompile Include="..\src\opengl\rb_automap.c" />
+    <ClCompile Include="..\src\opengl\rb_bsp.c" />
+    <ClCompile Include="..\src\opengl\rb_clipper.c" />
+    <ClCompile Include="..\src\opengl\rb_config.c" />
+    <ClCompile Include="..\src\opengl\rb_data.c" />
+    <ClCompile Include="..\src\opengl\rb_decal.c" />
+    <ClCompile Include="..\src\opengl\rb_draw.c" />
+    <ClCompile Include="..\src\opengl\rb_drawlist.c" />
+    <ClCompile Include="..\src\opengl\rb_dynlights.c" />
+    <ClCompile Include="..\src\opengl\rb_fbo.c" />
+    <ClCompile Include="..\src\opengl\rb_geom.c" />
+    <ClCompile Include="..\src\opengl\rb_gl.c" />
+    <ClCompile Include="..\src\opengl\rb_hudtext.c" />
+    <ClCompile Include="..\src\opengl\rb_lightgrid.c" />
+    <ClCompile Include="..\src\opengl\rb_main.c" />
+    <ClCompile Include="..\src\opengl\rb_matrix.c" />
+    <ClCompile Include="..\src\opengl\rb_patch.c" />
+    <ClCompile Include="..\src\opengl\rb_shader.c" />
+    <ClCompile Include="..\src\opengl\rb_sky.c" />
+    <ClCompile Include="..\src\opengl\rb_texture.c" />
+    <ClCompile Include="..\src\opengl\rb_things.c" />
+    <ClCompile Include="..\src\opengl\rb_view.c">
+      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='GoG Release|Win32'">AssemblyAndSourceCode</AssemblerOutput>
+      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AssemblyAndSourceCode</AssemblerOutput>
+    </ClCompile>
+    <ClCompile Include="..\src\opengl\rb_wallshade.c" />
+    <ClCompile Include="..\src\opengl\rb_wipe.c" />
+    <ClCompile Include="..\src\SDL_win32_main.c" />
+    <ClCompile Include="..\src\sha1.c" />
+    <ClCompile Include="..\src\strife\am_map.c" />
+    <ClCompile Include="..\src\strife\deh_ammo.c" />
+    <ClCompile Include="..\src\strife\deh_cheat.c" />
+    <ClCompile Include="..\src\strife\deh_frame.c" />
+    <ClCompile Include="..\src\strife\deh_misc.c" />
+    <ClCompile Include="..\src\strife\deh_ptr.c" />
+    <ClCompile Include="..\src\strife\deh_sound.c" />
+    <ClCompile Include="..\src\strife\deh_strife.c" />
+    <ClCompile Include="..\src\strife\deh_thing.c" />
+    <ClCompile Include="..\src\strife\deh_weapon.c" />
+    <ClCompile Include="..\src\strife\doomdef.c" />
+    <ClCompile Include="..\src\strife\doomstat.c" />
+    <ClCompile Include="..\src\strife\dstrings.c" />
+    <ClCompile Include="..\src\strife\d_items.c" />
+    <ClCompile Include="..\src\strife\d_main.c" />
+    <ClCompile Include="..\src\strife\d_net.c" />
+    <ClCompile Include="..\src\strife\fe_characters.c" />
+    <ClCompile Include="..\src\strife\fe_commands.c" />
+    <ClCompile Include="..\src\strife\fe_frontend.c" />
+    <ClCompile Include="..\src\strife\fe_gamepad.c" />
+    <ClCompile Include="..\src\strife\fe_graphics.c" />
+    <ClCompile Include="..\src\strife\fe_menuengine.c" />
+    <ClCompile Include="..\src\strife\fe_menus.c" />
+    <ClCompile Include="..\src\strife\fe_mouse.c" />
+    <ClCompile Include="..\src\strife\fe_multiplayer.c" />
+    <ClCompile Include="..\src\strife\f_finale.c" />
+    <ClCompile Include="..\src\strife\f_wipe.c" />
+    <ClCompile Include="..\src\strife\g_game.c" />
+    <ClCompile Include="..\src\strife\hu_lib.c" />
+    <ClCompile Include="..\src\strife\hu_stuff.c" />
+    <ClCompile Include="..\src\strife\info.c" />
+    <ClCompile Include="..\src\strife\m_help.c" />
+    <ClCompile Include="..\src\strife\m_menu.c" />
+    <ClCompile Include="..\src\strife\m_random.c" />
+    <ClCompile Include="..\src\strife\m_saves.c" />
+    <ClCompile Include="..\src\strife\p_ceilng.c" />
+    <ClCompile Include="..\src\strife\p_dialog.c" />
+    <ClCompile Include="..\src\strife\p_doors.c" />
+    <ClCompile Include="..\src\strife\p_enemy.c" />
+    <ClCompile Include="..\src\strife\p_floor.c" />
+    <ClCompile Include="..\src\strife\p_inter.c" />
+    <ClCompile Include="..\src\strife\p_lights.c" />
+    <ClCompile Include="..\src\strife\p_locations.c" />
+    <ClCompile Include="..\src\strife\p_map.c" />
+    <ClCompile Include="..\src\strife\p_maputl.c" />
+    <ClCompile Include="..\src\strife\p_mobj.c" />
+    <ClCompile Include="..\src\strife\p_plats.c" />
+    <ClCompile Include="..\src\strife\p_pspr.c" />
+    <ClCompile Include="..\src\strife\p_saveg.c" />
+    <ClCompile Include="..\src\strife\p_setup.c" />
+    <ClCompile Include="..\src\strife\p_sight.c" />
+    <ClCompile Include="..\src\strife\p_spec.c" />
+    <ClCompile Include="..\src\strife\p_switch.c" />
+    <ClCompile Include="..\src\strife\p_telept.c" />
+    <ClCompile Include="..\src\strife\p_tick.c" />
+    <ClCompile Include="..\src\strife\p_user.c" />
+    <ClCompile Include="..\src\strife\r_bsp.c" />
+    <ClCompile Include="..\src\strife\r_data.c" />
+    <ClCompile Include="..\src\strife\r_draw.c" />
+    <ClCompile Include="..\src\strife\r_main.c" />
+    <ClCompile Include="..\src\strife\r_plane.c" />
+    <ClCompile Include="..\src\strife\r_segs.c" />
+    <ClCompile Include="..\src\strife\r_sky.c" />
+    <ClCompile Include="..\src\strife\r_things.c" />
+    <ClCompile Include="..\src\strife\sounds.c" />
+    <ClCompile Include="..\src\strife\st_lib.c" />
+    <ClCompile Include="..\src\strife\st_stuff.c" />
+    <ClCompile Include="..\src\strife\s_sound.c" />
+    <ClCompile Include="..\src\strife\wi_stuff.c" />
+    <ClCompile Include="..\src\tables.c" />
+    <ClCompile Include="..\src\v_video.c" />
+    <ClCompile Include="..\src\w_checksum.c" />
+    <ClCompile Include="..\src\w_file.c" />
+    <ClCompile Include="..\src\w_file_posix.c" />
+    <ClCompile Include="..\src\w_file_stdc.c" />
+    <ClCompile Include="..\src\w_file_win32.c" />
+    <ClCompile Include="..\src\w_main.c" />
+    <ClCompile Include="..\src\w_merge.c" />
+    <ClCompile Include="..\src\w_wad.c" />
+    <ClCompile Include="..\src\z_zone.c" />
+    <ClCompile Include="win_debug.c" />
+    <ClCompile Include="win_opendir.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="win32.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\lpng1612\projects\visualc71\libpng.vcxproj">
+      <Project>{0008960e-e0dd-41a6-8265-00b31ddb4c21}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="libopl.vcxproj">
+      <Project>{fc8d0610-1507-4f36-99bc-6f5a422b6ad3}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="libpcsound.vcxproj">
+      <Project>{66cd7f50-73b9-482f-8b69-1af54983f845}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="libtextscreen.vcxproj">
+      <Project>{35f435db-ac4a-4f28-ba2d-812e638fb01a}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

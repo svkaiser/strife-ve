@@ -49,13 +49,15 @@ static rbTextureData_t  *patchTextures;
 static int playpallump;
 static boolean bInitialized = false;
 
+extern SDL_Window *windowscreen;
+
 //
 // RB_GetScreenBufferData
 //
 
 byte *RB_GetScreenBufferData(void)
 {
-    SDL_Surface *screen = SDL_GetVideoSurface();
+    SDL_Surface *screen = SDL_GetWindowSurface(windowscreen);
     int col;
     int pack;
     int i, j;
