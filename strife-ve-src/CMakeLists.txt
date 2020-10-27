@@ -25,7 +25,8 @@
 
 include(ExternalProject)
 
-cmake_minimum_required(VERSION 3.10)
+# [AM] Needed for target_link_directories
+cmake_minimum_required(VERSION 3.13)
 
 project(strife-ve)
 
@@ -85,6 +86,16 @@ endfunction()
 ## Set up external dependencies
 ##
 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
+# Set up a standard include/lib directory where any dependencies built by
+# this CMake buildfile can shove their libraries into.
+set(STRIFE_LOCAL "${CMAKE_CURRENT_BINARY_DIR}/local")
+make_directory("${STRIFE_LOCAL}/include")
+include_directories("${STRIFE_LOCAL}/include")
+link_directories("${STRIFE_LOCAL}/lib")
+
 # SDL2
 find_package(SDL2 REQUIRED)
 
@@ -94,88 +105,14 @@ find_package(SDL2_mixer REQUIRED)
 # SDL2_net
 find_package(SDL2_net REQUIRED)
 
-# ffmpeg
-if(ENABLE_STEAM_RUNTIME)
-	# Enabling Steam means we want to prefer building a specific version
-	# in the chroot.
-	set(FFMPEG_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/ffmpeg-local")
-	set(FFMPEG_WANTED_LIBS
-		"${FFMPEG_PREFIX}/lib/libavcodec.so.56"
-		"${FFMPEG_PREFIX}/lib/libavdevice.so.56"
-		"${FFMPEG_PREFIX}/lib/libavfilter.so.5"
-		"${FFMPEG_PREFIX}/lib/libavformat.so.56"
-		"${FFMPEG_PREFIX}/lib/libavutil.so.54"
-		"${FFMPEG_PREFIX}/lib/libswresample.so.1"
-		"${FFMPEG_PREFIX}/lib/libswscale.so.3")
-	make_directory("${FFMPEG_PREFIX}/include")
+# TheoraPlay - Ogg
+find_package(OGG REQUIRED)
 
-	# Download and compile ffmpeg at build-time.
-	ExternalProject_Add(
-		ffmpeg-project EXCLUDE_FROM_ALL ON
-		# Download
-		URL "http://ffmpeg.org/releases/ffmpeg-2.5.4.tar.bz2"
-		# Configure
-		CONFIGURE_COMMAND "../ffmpeg-project/configure"
-			"--prefix=${FFMPEG_PREFIX}"
-			"--disable-all"
-			"--disable-debug"
-			"--disable-hwaccels"
-			"--disable-vaapi"
-			"--disable-yasm"
-			"--enable-avcodec"
-			"--enable-avdevice"
-			"--enable-avfilter"
-			"--enable-avformat"
-			"--enable-avutil"
-			"--enable-decoder=theora"
-			"--enable-decoder=vorbis"
-			"--enable-demuxer=ogg"
-			"--enable-protocol=file"
-			"--enable-shared"
-			"--enable-swresample"
-			"--enable-swscale"
-		BUILD_BYPRODUCTS ${FFMPEG_WANTED_LIBS}
-	)
+# TheoraPlay - Theora
+find_package(THEORA REQUIRED)
 
-	# Create imported targets for the shared libraries we are interested in.
-	add_library(FFmpeg::avcodec SHARED IMPORTED)
-	set_target_properties(FFmpeg::avcodec PROPERTIES
-		IMPORTED_LOCATION "${FFMPEG_PREFIX}/lib/libavcodec.so.56")
-	add_library(FFmpeg::avdevice SHARED IMPORTED)
-	set_target_properties(FFmpeg::avdevice PROPERTIES
-		IMPORTED_LOCATION "${FFMPEG_PREFIX}/lib/libavdevice.so.56")
-	add_library(FFmpeg::avfilter SHARED IMPORTED)
-	set_target_properties(FFmpeg::avfilter PROPERTIES
-		IMPORTED_LOCATION "${FFMPEG_PREFIX}/lib/libavfilter.so.5")
-	add_library(FFmpeg::avformat SHARED IMPORTED)
-	set_target_properties(FFmpeg::avformat PROPERTIES
-		IMPORTED_LOCATION "${FFMPEG_PREFIX}/lib/libavformat.so.56")
-	add_library(FFmpeg::avutil SHARED IMPORTED)
-	set_target_properties(FFmpeg::avutil PROPERTIES
-		IMPORTED_LOCATION "${FFMPEG_PREFIX}/lib/libavutil.so.54")
-	add_library(FFmpeg::swresample SHARED IMPORTED)
-	set_target_properties(FFmpeg::swresample PROPERTIES
-		IMPORTED_LOCATION "${FFMPEG_PREFIX}/lib/libswresample.so.1")
-	add_library(FFmpeg::swscale SHARED IMPORTED)
-	set_target_properties(FFmpeg::swscale PROPERTIES
-		IMPORTED_LOCATION "${FFMPEG_PREFIX}/lib/libswscale.so.3")
-
-	# Unite all of the shared library targets under one interface target.
-	add_library(FFmpeg::FFmpeg INTERFACE IMPORTED)
-	add_dependencies(FFmpeg::FFmpeg ffmpeg-project)
-	set_target_properties(
-		FFmpeg::FFmpeg PROPERTIES
-		INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_PREFIX}/include")
-	set_property(TARGET FFmpeg::FFmpeg PROPERTY INTERFACE_LINK_LIBRARIES
-		FFmpeg::avcodec FFmpeg::avdevice FFmpeg::avfilter FFmpeg::avformat
-		FFmpeg::avutil FFmpeg::swresample FFmpeg::swscale)
-else()
-	message(FATAL_ERROR "Not Implemented")
-
-   find_package(FFMPEG REQUIRED)
-   include_directories(${FFMPEG_INCLUDE_DIR})
-   add_link_libraries(${FFMPEG_LIBRARIES})
-endif()
+# TheoraPlay - Vorbis
+find_package(VORBIS REQUIRED)
 
 # Option to use in-tree libpng
 if(PNG_STATIC)
@@ -212,21 +149,57 @@ configure_file("${CMAKE_MODULE_PATH}/config.h.in"
 
 # Libraries when compiling for Steam.
 if(ENABLE_STEAM_SERVICE)
-   add_definitions(-D_USE_STEAM_)
-   # Linux
-   if(NOT APPLE AND NOT WIN32)
-      include_directories(~/steam-service/api/SteamService/source)
-      link_directories(~/steam-service/api/SteamService/build)
-      link_directories(~/steam-sdk/sdk/redistributable_bin/linux32)
-      set(LIB_STEAM steam_api)
-      set(LIB_STEAMSVC SteamService)
-   else()
-      set(LIB_STEAM)
-      set(LIB_STEAMSVC) # TODO: Add your platform.
-   endif()
-else()
-   set(LIB_STEAM)
-   set(LIB_STEAMSVC)
+	set(STEAMWORKS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../steamworks_sdk_150/"
+		CACHE PATH "Path to the root directory of the Steamworks SDK")
+
+	if(NOT EXISTS "${STEAMWORKS_DIR}")
+		message(FATAL_ERROR
+			"SteamService is enabled, but \"${STEAMWORKS_DIR}\" does not exist\n"
+			"Please ensure that the STEAMWORKS_DIR setting points to an extracted "
+			"Steamworks SDK directory.")
+	endif()
+
+	set(STEAM_SERVICE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../steam-service/api/SteamService"
+		CACHE PATH "Path to the root directory of SteamService, containing a CMakeLists.txt")
+
+	if(NOT EXISTS "${STEAM_SERVICE_DIR}/CMakeLists.txt")
+		message(FATAL_ERROR "SteamService is enabled, but \"${STEAM_SERVICE_DIR}\" does not exist")
+	endif()
+
+	# Compile SteamService as an external project on build.
+	ExternalProject_Add(
+		steam-service-project
+		# Point to an existing source checkout
+		SOURCE_DIR "${STEAM_SERVICE_DIR}"
+		# Skip the download step
+		DOWNLOAD_COMMAND ""
+		# Configure step points to the Steamworks SDK and installs it
+		# someplace where we can find it later.
+		CMAKE_ARGS
+			"-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}"
+			"-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
+			"-DCMAKE_LINKER=${CMAKE_LINKER}"
+			"-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
+			"-DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}"
+			"-DSTEAMWORKS_DIR=${STEAMWORKS_DIR}"
+			"-DCMAKE_INSTALL_PREFIX=${STRIFE_LOCAL}"
+		BUILD_BYPRODUCTS
+			"${STRIFE_LOCAL}/lib/libSteamService.so"
+	)
+
+	# Linux
+	if(NOT APPLE AND NOT WIN32)
+		add_library(SteamService INTERFACE IMPORTED)
+		add_dependencies(SteamService steam-service-project)
+		target_compile_definitions(SteamService INTERFACE _USE_STEAM_)
+		target_link_directories(SteamService INTERFACE
+			"${STRIFE_LOCAL}/lib/"
+			"${STEAMWORKS_DIR}/sdk/redistributable_bin/linux64"
+		)
+		target_link_libraries(SteamService INTERFACE steam_api SteamService.so)
+	else()
+		message(FATAL_ERROR "This platform is not implemented")
+	endif()
 endif()
 
 ##------------------------------------------------------------------------------
@@ -308,9 +281,10 @@ add_sources(src
 
 #	i_cdmus.c
 #	i_cdmus.h
+	i_cpumode.c
+	i_cpumode.h
 	i_endoom.c
 	i_endoom.h
-	i_ffmpeg.c
 	i_galaxyservices.c
 	i_galaxyservices.h
 	i_glscale.c
@@ -322,18 +296,24 @@ add_sources(src
 	i_noappservices.h
 	i_oplmusic.c
 	i_pcsound.c
+	i_platsystem.c
+	i_platsystem.h
 	i_scale.c
 	i_scale.h
 	i_sdlmusic.c
 	i_sdlsound.c
 	i_social.c
 	i_social.h
+	i_softkey.c
+	i_softkey.h
 	i_sound.c
 	i_sound.h
 	i_steamservices.c
 	i_steamservices.h
 	i_system.c
 	i_system.h
+	i_theoraplay.c
+	i_theoraplay.h
 	i_timer.c
 	i_timer.h
 	i_video.c
@@ -620,9 +600,39 @@ add_sources(src/strife
 
 include_directories(${SOURCE_ROOT_DIR})
 add_executable(strife-ve ${SOURCES})
-target_link_libraries(strife-ve
-	SDL2::SDL2main SDL2::SDL2 SDL2::mixer SDL2::net FFmpeg::FFmpeg
-	${LIBRARIES} ${LIB_STEAM} ${LIB_STEAMSVC} m)
+set_property(TARGET strife-ve PROPERTY C_STANDARD 99)
+target_compile_definitions(strife-ve PUBLIC SVE_USE_THEORAPLAY)
+target_link_libraries(strife-ve m Threads::Threads ${LIBRARIES}
+	SDL2::SDL2main SDL2::SDL2 SDL2::mixer SDL2::net
+	OGG::OGG THEORA::DEC VORBIS::VORBIS)
+if(ENABLE_STEAM_SERVICE)
+	target_link_libraries(strife-ve SteamService)
+endif()
+
+##------------------------------------------------------------------------------
+## Copy libraries
+##
+
+if(NOT WIN32 AND NOT APPLE)
+	set(STRIFE_DLLS
+		"${CMAKE_CURRENT_SOURCE_DIR}/strife-ve.sh"
+	)
+
+	if(ENABLE_STEAM_SERVICE)
+		list(APPEND STRIFE_DLLS
+			"${STRIFE_LOCAL}/lib/libSteamService.so")
+		list(APPEND STRIFE_DLLS
+			"${STEAMWORKS_DIR}/sdk/redistributable_bin/linux64/libsteam_api.so")
+	endif()
+
+	foreach(STRIFE_DLL ${STRIFE_DLLS})
+		# Copy our libraries and the start script
+		add_custom_command(TARGET strife-ve POST_BUILD
+			COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+			${STRIFE_DLL} "${CMAKE_CURRENT_BINARY_DIR}"
+		)
+	endforeach()
+endif()
 
 ##------------------------------------------------------------------------------
 ## Install target
