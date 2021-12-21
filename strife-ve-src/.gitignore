@@ -7,6 +7,7 @@ aclocal.m4
 autom4te.cache
 autotools
 bin
+/binLuna/
 bin2012
 config.h
 config.hin
@@ -20,11 +21,11 @@ stamp-h
 stamp-h.in
 stamp-h1
 tags
+/.vscode
 
 # Ignore build directories on linux
 /build/
-/build_schroot/
-/build_ext/
+/build*/
 
 # These are the default patterns globally ignored by Subversion:
 *.o
@@ -51,3 +52,5 @@ sdl/lib/nintendoswitch/SDL.a
 sdl/lib/nintendoswitch/SDLmain.a
 nx-vc2017/res/voices.wad
 nx-nonnda/nx-profile.cpp
+/nx-vc2017/res
+/nx-vc2017/*.lnk
