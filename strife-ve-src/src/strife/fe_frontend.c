@@ -1023,8 +1023,11 @@ static void FE_Responder(void)
         }
 
         // poll gamepad
-        if((joybuttons = I_JoystickGetButtons()) != 0)
+        joybuttons = I_JoystickGetButtons();
+        if(joybuttons != 0 && joybuttons != -1)
+        {
             FE_HandleJoyButtons(joybuttons);
+        }
 
         FE_HandleJoyAxes();
     }

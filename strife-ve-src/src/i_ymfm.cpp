@@ -2,7 +2,7 @@
 // Copyright(C) 2019-2020 Nightdive Studios, LLC
 //
 // DESCRIPTION:
-//       Nintendo Switch System Platform code.
+//       ymfmidi player code
 //
 
 #include "i_ymfm.h"

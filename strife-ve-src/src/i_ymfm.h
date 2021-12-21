@@ -2,7 +2,7 @@
 // Copyright(C) 2019-2020 Nightdive Studios, LLC
 //
 // DESCRIPTION:
-//       ymfmidi code.
+//       ymfmidi player C/C++ header code.
 //
 
 #ifdef __cplusplus

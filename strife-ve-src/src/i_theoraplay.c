@@ -1237,6 +1237,8 @@ void I_AVStartVideoStream(const char *fname)
  
 		RB_SetMaxOrtho(ws, hs);
 
+        dglPopAttrib();
+
 		texwidth =  texture.width;
 		texheight =  texture.height;
 
