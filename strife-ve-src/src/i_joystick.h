@@ -62,7 +62,8 @@
 #define HAT_AXIS_VERTICAL   2
 
 // [SVE] svillarreal
-extern float joystick_sensitivity;
+extern float joystick_turnsensitivity;
+extern float joystick_looksensitivity;
 extern float joystick_threshold;
 
 void I_InitJoystick(void);

@@ -824,7 +824,17 @@ void M_SaveSelect(int choice)
 
     M_StringCopy(saveOldString, savegamestrings[choice], sizeof(saveOldString));
     if (!strcmp(savegamestrings[choice],EMPTYSTRING))
-        savegamestrings[choice][0] = 0;
+    {
+        savegamestrings[choice][0] = '\0';
+
+#if defined(LUNA_RELEASE)
+        // [SVE] Allow creating an automatic save name for Luna
+        if (i_seejoysticks)
+        {
+            snprintf(savegamestrings[choice], SAVESTRINGSIZE, "MERCENARY %d", choice + 1);
+        }
+#endif
+    }
     saveCharIndex = strlen(savegamestrings[choice]);
 }
 
@@ -2146,7 +2156,7 @@ boolean M_Responder (event_t* ev)
                 for (t = vkname; *t != '\0'; t++)
                 {
                     savegamestrings[quickSaveSlot][saveCharIndex++] = *t;
-                    savegamestrings[quickSaveSlot][saveCharIndex] = 0;
+                    savegamestrings[quickSaveSlot][saveCharIndex] = '\0';
                 }
 
                 saveStringEnter = 0;
@@ -2697,9 +2707,17 @@ void M_Drawer (void)
 
 	if (!menuactive)
 	{
-		/// dimitrisg : if theres no menu on NX. let the user know what they need to do to bring it up
-		if (gamestate != GS_LEVEL)
-			FE_NX_DrawToolTips(3);
+		// dimitrisg : if theres no menu on NX. let the user know what they need to do to bring it up
+        if (gamestate != GS_LEVEL)
+        {
+            // Edward: If we are on the credits page, don't draw this to prevent covering any of the text.
+            extern int demosequence;
+            if (gamestate == GS_DEMOSCREEN && demosequence == 11)
+            {
+                return;
+            }
+            FE_NX_DrawToolTips(3);
+        }
 
 		return;
 	}

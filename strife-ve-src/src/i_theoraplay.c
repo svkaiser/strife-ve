@@ -381,7 +381,7 @@ static inline void Mutex_Unlock(THEORAPLAY_MUTEX_T mutex)
 
 static int FeedMoreOggData(THEORAPLAY_Io *io, ogg_sync_state *sync)
 {
-	long buflen = 1024 * 1024;
+	long buflen = 4096 * 2;
 	char *buffer = ogg_sync_buffer(sync, buflen);
 	if (buffer == NULL)
 		return -1;
@@ -1101,7 +1101,11 @@ void I_AVStartVideoStream(const char *fname)
 	int xoffs = 0, yoffs = 0;
  
 	decoder = THEORAPLAY_startDecodeFile(fname, 30, THEORAPLAY_VIDFMT_RGB);
- 
+	if (decoder == NULL) {
+		printf("I_AVStartVideoStream: Could not decode %s, skipping...\n", fname);
+		return;
+	}
+
 	while (!audio || !video) {
 		if (!audio) audio = THEORAPLAY_getAudio(decoder);
 		if (!video) video = THEORAPLAY_getVideo(decoder);
@@ -1227,6 +1231,9 @@ void I_AVStartVideoStream(const char *fname)
 		v[0].z = v[1].z = v[2].z = v[3].z = 0;
  
 		SDL_GetWindowSize(windowscreen, &ws, &hs);
+
+        dglPushAttrib(GL_VIEWPORT_BIT);
+        dglViewport(0, 0, ws, hs);
  
 		RB_SetMaxOrtho(ws, hs);
 

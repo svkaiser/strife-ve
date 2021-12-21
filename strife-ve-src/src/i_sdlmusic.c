@@ -43,6 +43,8 @@
 #include "w_wad.h"
 #include "z_zone.h"
 
+#include "i_ymfm.h"
+
 #define MAXMIDLENGTH (96 * 1024)
 #define MID_HEADER_MAGIC "MThd"
 #define MUS_HEADER_MAGIC "MUS\x1a"
@@ -1012,6 +1014,7 @@ static void UpdateMusicVolume(void)
         vol = (current_music_volume * MIX_MAX_VOLUME) / 127;
     }
 
+    //I_ymfmSetGain((current_music_volume * 100) / 127);
     Mix_VolumeMusic(vol);
 }
 
@@ -1038,6 +1041,14 @@ static void I_SDL_PlaySong(void *handle, boolean looping)
 
     if (handle == NULL)
     {
+#ifdef USE_YMFMOPL
+        if (snd_musicdevice == SNDDEVICE_OPL)
+        {
+            Mix_HookMusic(I_ymfmGenerate, NULL);
+            I_ymfmSetLooping(looping == true ? 1 : 0);
+            //I_ymfmSetGain((current_music_volume * 100) / 127);
+        }
+#endif
         return;
     }
 
@@ -1099,6 +1110,7 @@ static void I_SDL_StopSong(void)
         return;
     }
 
+    Mix_HookMusic(NULL, NULL);
     Mix_HaltMusic();
     playing_substitute = false;
     current_track_music = NULL;
@@ -1172,6 +1184,19 @@ static void *I_SDL_RegisterSong(void *data, int len)
     {
         return NULL;
     }
+
+#ifdef USE_YMFMOPL
+    if (snd_musicdevice == SNDDEVICE_OPL)
+    {
+        const int lumpNum = W_GetNumForName("GENMIDI");
+        byte *patchData = W_CacheLumpNum(lumpNum, PU_STATIC);
+        const int patchLen = W_LumpLength(lumpNum);
+
+        I_ymfmLoad(data, len, patchData, patchLen, snd_samplerate);
+
+        return NULL;
+    }
+#endif
 
     playing_substitute = false;
 
@@ -1340,6 +1365,9 @@ static snddevice_t music_sdl_devices[] =
     SNDDEVICE_SOUNDCANVAS,
     SNDDEVICE_GENMIDI,
     SNDDEVICE_AWE32,
+#ifdef USE_YMFMOPL
+    SNDDEVICE_OPL,
+#endif
 };
 
 music_module_t music_sdl_module =

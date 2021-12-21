@@ -352,7 +352,9 @@ void RB_SwapBuffers(void)
         RB_Printf(0, 84, "Drawn Vertices: %i", rbState.numDrawnVertices);
     }
 
+#ifndef SVE_PLAT_SWITCH
     if(rbForceSync)
+#endif
     {
         // force a gl sync
         dglFinish();

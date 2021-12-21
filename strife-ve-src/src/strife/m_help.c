@@ -617,21 +617,25 @@ void M_HelpDrawerGL(void)
     if(!use3drenderer || !helpWideScreenActive)
         return;
 
-    // push identity matrices
-    dglMatrixMode(GL_PROJECTION);
-    dglPushMatrix();
-    dglMatrixMode(GL_MODELVIEW);
-    dglPushMatrix();
-    
-    // set max ortho mode (hires fullscreen) and draw bg
-    RB_SetMaxOrtho(screen_width, screen_height);
-    RB_DrawStretchPic("PANEL0", 0, 0, screen_width, screen_height);
-
     // pop back to normal HUD projection
     dglMatrixMode(GL_PROJECTION);
     dglPopMatrix();
     dglMatrixMode(GL_MODELVIEW);
     dglPopMatrix();
+
+    patch_t* patch = W_CacheLumpName("HELP0", PU_CACHE);
+    const int xoff = -((patch->width - 320) / 2);
+    if (xoff < 0)
+    {
+        static rbTexture_t* rbPageTexture = NULL;
+
+        if (rbPageTexture == NULL)
+        {
+            rbPageTexture = RB_GetTexture(RDT_PATCH, W_GetNumForName("HELP0"), 0);
+        }
+
+        RB_DrawTexture(rbPageTexture, xoff, 0, 0, 0, 0xff);
+    }
 
     // render background
     M_HelpDrawLowBG();

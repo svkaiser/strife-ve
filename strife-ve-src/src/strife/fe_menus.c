@@ -20,6 +20,8 @@
 //    Samuel Villarreal (Hi-Res BG code, mouse pointer)
 //
 
+#include <stdlib.h>
+
 #include "SDL.h"
 #include "z_zone.h"
 
@@ -39,6 +41,24 @@
 #include "fe_menuengine.h"
 #include "fe_mouse.h"
 #include "fe_multiplayer.h"
+
+//
+// Return a different menu in the standard path versus the Luna Release path.
+//
+static femenu_t *LunaAltMenu(femenu_t *stdMenu, femenu_t *lunaMenu)
+{
+	const char* mode;
+
+	mode = getenv("SOLSTICE_LAUNCH_MODE");
+	if (mode && !strcasecmp(mode, "RELEASE"))
+	{
+		return lunaMenu;
+	}
+	else
+	{
+		return stdMenu;
+	}
+}
 
 //
 // Menus
@@ -91,10 +111,12 @@ static femenuitem_t optionsMenuMainItems[] =
 #else
     { FE_MITEM_CMD,"Controller","gamepad",  FE_FONT_BIG },
 #endif
-    { FE_MITEM_CMD, "Graphics", "graphics", FE_FONT_BIG },
 #ifndef SVE_PLAT_SWITCH
-    { FE_MITEM_CMD, "Audio",    "audio",    FE_FONT_BIG },
+    { FE_MITEM_CMD, "Graphics", "graphics", FE_FONT_BIG },
+#else
+    { FE_MITEM_CMD, "Graphics", "gfxbasic", FE_FONT_BIG },
 #endif
+    { FE_MITEM_CMD, "Audio",    "audio",    FE_FONT_BIG },
     { FE_MITEM_CMD, "About",    "about",    FE_FONT_BIG },
     { FE_MITEM_END, "",     "" }
 };
@@ -553,9 +575,17 @@ static femenuitem_t optionsGraphicsBasicItems[] =
     { FE_MITEM_TOGGLE,  "Linear Filtering", "gl_linear_filtering" },
     { FE_MITEM_TOGGLE,  "Interpolation",    "interpolate_frames"  },
     { FE_MITEM_TOGGLE,  "Cap Framerate",    "d_fpslimit"          },
-    { FE_MITEM_TOGGLE,  "Textured Automap", "gl_textured_automap" },  
 #endif
+    { FE_MITEM_TOGGLE,  "Textured Automap", "gl_textured_automap" },
     { FE_MITEM_SLIDER,  "Field of View",    "gl_fov"              },
+#ifdef SVE_PLAT_SWITCH
+    { FE_MITEM_TOGGLE, "Dynamic Lights",     "gl_dynamic_lights"  },
+    { FE_MITEM_VALUES, "Dynamic Light Type", "gl_dynamic_light_fast_blend" },
+    { FE_MITEM_TOGGLE, "Lightmaps",          "gl_lightmaps",      FE_FONT_SMALL, FE_TOGGLE_DEFAULT },
+    { FE_MITEM_TOGGLE, "Decals",             "gl_decals"          },
+    { FE_MITEM_SLIDER, "Max Decals",         "gl_max_decals"      },
+    { FE_MITEM_TOGGLE, "Outline Items",      "gl_outline_sprites" },
+#endif
     { FE_MITEM_END,     "", "" }
 };
 
@@ -574,10 +604,34 @@ static femenu_t optionsGraphicsBasic =
     true
 };
 
+static femenuitem_t optionsGraphicsBasicLunaItems[] =
+{
+	{ FE_MITEM_TOGGLE,  "High Quality",     "gl_enable_renderer", FE_FONT_SMALL, FE_TOGGLE_DEFAULT },
+	{ FE_MITEM_TOGGLE,  "Interpolation",    "interpolate_frames" },
+	{ FE_MITEM_TOGGLE,  "Textured Automap", "gl_textured_automap" },
+	{ FE_MITEM_SLIDER,  "Field of View",    "gl_fov" },
+	{ FE_MITEM_END,     "", "" }
+};
+
+static femenu_t optionsGraphicsBasicLuna =
+{
+	optionsGraphicsBasicLunaItems,
+	arrlen(optionsGraphicsBasicLunaItems),
+	60,
+	40,
+	2,
+	"Graphics - Basic",
+	FE_BG_RSKULL,
+	NULL,
+	FE_CURSOR_LASER,
+	0,
+	true
+};
+
 // "gfxbasic" command
 void FE_CmdGfxBasic(void)
 {
-    FE_PushMenu(&optionsGraphicsBasic);
+	FE_PushMenu(LunaAltMenu(&optionsGraphicsBasic, &optionsGraphicsBasicLuna));
 }
 
 static femenuitem_t optionsGraphicsLightItems[] =
@@ -668,10 +722,34 @@ static femenu_t optionsGraphicsAdvanced =
     true
 };
 
+static femenuitem_t optionsGraphicsAdvancedLunaItems[] =
+{
+	{ FE_MITEM_TOGGLE, "Fullscreen AA",       "gl_enable_fxaa" },
+	{ FE_MITEM_TOGGLE, "Motion Blur",         "gl_enable_motion_blur" },
+	{ FE_MITEM_SLIDER, "Motion Blur Samples", "gl_motion_blur_samples" },
+	{ FE_MITEM_SLIDER, "Motion Blur Speed",   "gl_motion_blur_ramp_speed" },
+	{ FE_MITEM_END,     "", "" }
+};
+
+static femenu_t optionsGraphicsAdvancedLuna =
+{
+	optionsGraphicsAdvancedLunaItems,
+	arrlen(optionsGraphicsAdvancedLunaItems),
+	40,
+	40,
+	2,
+	"Graphics - Advanced",
+	FE_BG_RSKULL,
+	NULL,
+	FE_CURSOR_LASER,
+	0,
+	true
+};
+
 // "gfxadvanced" command
 void FE_CmdGfxAdvanced(void)
 {
-    FE_PushMenu(&optionsGraphicsAdvanced);
+    FE_PushMenu(LunaAltMenu(&optionsGraphicsAdvanced, &optionsGraphicsAdvancedLuna));
 }
 
 // Options - Audio -----------------------------------------
@@ -681,10 +759,8 @@ static femenuitem_t optionsAudioItems[] =
     { FE_MITEM_SLIDER, "Sfx Volume",   "sfx_volume"      },
     { FE_MITEM_SLIDER, "Voice Volume", "voice_volume"    },
     { FE_MITEM_SLIDER, "Music Volume", "music_volume"    },
-#ifndef SVE_PLAT_SWITCH
     { FE_MITEM_VALUES, "Music Type",   "snd_musicdevice" },
     { FE_MITEM_MUSIC,  "Music Test",   "fe_musicnum"     },
-#endif
     { FE_MITEM_END, "", "" }
 };
 
@@ -737,7 +813,8 @@ enum
    CAT_SWITCHPORT2,
    CAT_SWITCHPORT3,
    CAT_SWITCHPORT4,
-   CAT_ARTWORK,
+   CAT_ARTWORK1,
+   CAT_ARTWORK2,
    CAT_QALEAD,
    CAT_QATEST1,
    CAT_QATEST2,
@@ -760,6 +837,7 @@ static const char *cat_strs[NUMCATS] =
 	"",
 	"",
     "Artwork:",
+    "",
     "QA Lead:",
     "QA Testers:",
     "",
@@ -781,6 +859,7 @@ static const char *val_strs[NUMCATS] =
 	"Edward Richardson",
 	"Max Waine",
     "Sven Ruthner",
+    "Nash Muhandes",
     "Leo Mikkola",
     "James Ager",
     "Adam Grayshon",
@@ -902,7 +981,7 @@ static const char *licText =
 "https://github.com/NightDive-Studio\n\n"
 "Based on \"Chocolate Strife\", (c) 2015 Simon Howard et al.\n"
 #if defined(SVE_PLAT_SWITCH)
-"Permission obtained for use on Nintendo Switch.\n\n"
+"Permission obtained for use on\nNintendo Switch.\n\n" // Need an explicit newline here or the word wrapping gets us in trouble.
 #else
 "\n"
 #endif
@@ -919,13 +998,18 @@ static char *licCopy;
 
 static void FE_DrawAboutMenu2(void)
 {
+    int y = 1;
+#if !defined(SVE_PLAT_SWITCH)
+    y += 13;
+#endif
+
     if(!licCopy)
     {
         licCopy = M_Strdup(licText);
-        M_DialogDimMsg(30, 1, licCopy, true);
+        M_DialogDimMsg(30, y, licCopy, true);
     }
 
-    HUlib_drawYellowText(30, 1, licCopy, true);
+    HUlib_drawYellowText(30, y, licCopy, true);
 
 }
 

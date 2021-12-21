@@ -55,6 +55,7 @@
 // [SVE] svillarreal
 #include "doomstat.h"
 #include "rb_main.h"
+#include "rb_config.h"
 #include "rb_draw.h"
 #include "rb_wipe.h"
 #include "fe_frontend.h"
@@ -387,7 +388,13 @@ void I_SetShowCursor(boolean show)
     // hack has to be Windows-only. (Thanks to entryway for this)
 
 #ifdef _WIN32
-    if (show && !show_visual_cursor) // [SVE]
+    boolean shouldshow = show;
+
+#if !defined(LUNA_RELEASE) // always show hardware cursor on Luna
+    shouldshow = shouldshow && !show_visual_cursor; // [SVE]
+#endif
+
+    if (shouldshow) // [SVE]
     {
         SDL_SetCursor(cursors[1]);
     }
@@ -1281,7 +1288,9 @@ void I_FinishUpdate (void)
             if(i_seemouses || !i_seejoysticks) // haleyjd 20141202: this is overtime work.
             {
                 SDL_GetMouseState(&mouse_x, &mouse_y);
+#if !defined(LUNA_RELEASE) // only use hardware cursor on Luna
                 RB_DrawMouseCursor(mouse_x, mouse_y);
+#endif
             }
         }
 
@@ -1992,9 +2001,11 @@ static void SetVideoMode(screen_mode_t *mode, int w, int h)
 
     if (fullscreen)
     { 
-#ifndef SVE_PLAT_SWITCH
+#if 0//defined(SVE_PLAT_SWITCH)
         flags |= SDL_WINDOW_FULLSCREEN;
-#endif		
+#else
+        flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;	
+#endif
     }
     else if (window_noborder)
     {
@@ -2021,24 +2032,50 @@ static void SetVideoMode(screen_mode_t *mode, int w, int h)
     // [SVE] svillarreal - from gl scale branch
     if (using_opengl)
     {
-#ifndef SVE_PLAT_SWITCH
         flags |= SDL_WINDOW_OPENGL;
+    }
+
+    windowscreen = SDL_CreateWindow("",  SDL_WINDOWPOS_CENTERED,  SDL_WINDOWPOS_CENTERED, w, h, flags);
+    if (windowscreen == NULL)
+    {
+        I_Error("Could not construct window: %s\n", SDL_GetError());
+    }
+
+    if (using_opengl)
+    {
+        if (renderer)
+        {
+            SDL_DestroyRenderer(renderer);
+        }
+        renderer = NULL;
+
+#ifdef SVE_PLAT_SWITCH
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+#endif
+
+        GlContext = SDL_GL_CreateContext(windowscreen);
+        if (GlContext == NULL)
+        {
+            I_Error("Error getting GL context: %s\n", SDL_GetError());
+        }
+#ifdef SVE_PLAT_SWITCH
+        LoadContext(&ctx);
 #endif
     }
     else
     {
-        flags |= SDL_GL_DOUBLEBUFFER;
+        if (GlContext)
+        {
+            SDL_GL_DeleteContext(GlContext);
+        }
+        GlContext = NULL;
+
+        renderer = SDL_CreateRenderer(windowscreen, -1, SDL_RENDERER_PRESENTVSYNC);
+        if (!renderer)
+        {
+            I_Error("Error getting renderer: %s\n", SDL_GetError());
+        }
     }
- 
-    SDL_CreateWindowAndRenderer(w, h, flags, &windowscreen, &renderer);
-#ifdef SVE_PLAT_SWITCH
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-	SDL_SetWindowSize(windowscreen, 1280,720);
-#endif;
-    GlContext = SDL_GL_CreateContext(windowscreen);
-#ifdef SVE_PLAT_SWITCH
-	LoadContext(&ctx);
-#endif
  
     if (windowscreen == NULL)
     {
@@ -2167,6 +2204,33 @@ void I_InitGraphics(void)
     SDL_Event dummy;
     byte *doompal;
     char *env;
+	const char *luna_width, *luna_height;
+
+#if defined(SVE_PLAT_SWITCH)
+    screen_width = 1280;
+    screen_height = 720;
+#elif LUNA_RELEASE
+	// Ensure that no matter what is in the config file, we always use the
+	// proper settings.
+	fullscreen = 1;
+	rbVsync = true;
+
+	// On Luna, our fullscreen resolution is always our environment vars.
+	luna_width = getenv("SOLSTICE_DISPLAY_RESOLUTION_WIDTH");
+	luna_height = getenv("SOLSTICE_DISPLAY_RESOLUTION_HEIGHT");
+	if (!luna_width || !luna_height)
+	{
+        luna_width  = "1920";
+        luna_height = "1080";
+	}
+
+	screen_width = atoi(luna_width);
+	screen_height = atoi(luna_height);
+	if (!screen_width || !screen_height)
+	{
+		I_Error("Unknown display resolution");
+	}
+#endif
 
     // Pass through the XSCREENSAVER_WINDOW environment variable to 
     // SDL_WINDOWID, to embed the SDL window into the Xscreensaver
@@ -2223,7 +2287,7 @@ void I_InitGraphics(void)
     // screen dimensions (don't change video mode)
     //
 
-    if (screensaver_mode)
+      if (screensaver_mode)
     {
         SetVideoMode(NULL, 0, 0);
     }
@@ -2236,8 +2300,13 @@ void I_InitGraphics(void)
             I_AutoAdjustSettings();
         }
 
+#if defined(SVE_PLAT_SWITCH)
+        w = screen_width = 1280;
+        h = screen_height = 720;
+#else
         w = screen_width;
         h = screen_height;
+#endif
 
         screen_mode = I_FindScreenMode(w, h);
 

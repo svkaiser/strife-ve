@@ -185,6 +185,8 @@ static femenuitem_t gamepadAxisItems[] =
     { FE_MITEM_TOGGLE, "Invert Turn Axis",   "joystick_x_invert"      },
     { FE_MITEM_TOGGLE, "Invert Strafe Axis", "joystick_strafe_invert" },
     { FE_MITEM_TOGGLE, "Invert Look Axis",   "joystick_look_invert"   },
+    { FE_MITEM_SLIDER, "Turn Sensitivity",   "joystick_turnsensitivity"},
+    { FE_MITEM_SLIDER, "Look Sensitivity",   "joystick_looksensitivity"},
     { FE_MITEM_END, "", "" }
 };
 
@@ -723,323 +725,53 @@ typedef struct fepad_s
     const int   *profile;
 } fepad_t;
 
+#if defined(WIN32) || defined(_WIN32) || defined(__linux__) || defined(__APPLE__) || defined(__MACOSX__)
+// All platforms using SDL_GameController:
 
-#if defined(WIN32) || defined(_WIN32)
-// Windows Pad Mappings
-
-static const char *x360Buttons[] =
+static const char *XInputButtons[] =
 {
-    "A", "B", "X", "Y", "L", "R", "BACK", "START", "L STICK", "R STICK"
+    "A", "B", "X", "Y", "VIEW", "GUIDE", "MENU", "L STICK", "R STICK", "L", "R", "UP", "DOWN", "LEFT", "RIGHT"
 };
 
-static const char *x360Axes[] =
-{
-    "Left X", "Left Y", "Trigger", "Right Y", "Right X"
-};
-
-static const int x360Profile[FE_JOYPROF_MAX] =
-{
-     1,  4,  0,  3, // axes
-     0,  0,  0,  0, // invert
-
-     6, 21, 16, 15, // map
-    20, 22, 17,  9, 
-    -1, -1,  
-
-     7, 25, 27, 28, // menus
-    26,  1,  0,  0, 
-     1,            
-    
-    -1, -1, -1, 22, // gameplay
-     0, -1,  5,  9, 
-     2,  3, 28, 26, 
-     1, 27, 25,  4, 
-    -1
-};
-
-static const char *afterglowButtons[] =
-{
-    "SQUARE", "X", "O", "TRIANGLE", "L1", "R1", "L2", "R2", "SELECT", "START", "L STICK", "R STICK", "GUIDE"
-};
-
-static const char *afterglowAxes[] =
-{
-    "Left X", "Left Y", "Right X", "Right Y"
-};
-
-static const int afterglowProfile[FE_JOYPROF_MAX] =
-{
-     1,  0,  2,  3, // axes
-     0,  0,  0,  0, // invert
-
-     8, 21, 16, 15, // map
-    20,  6,  7, 11,
-    -1, -1,
-
-     9, -1, -1, -1, // menus
-    -1,  1,  2,  2,
-     1,
-
-    -1, -1, -1,  7, // gameplay
-     1, -1,  5, 11,
-     0,  3, 28, 26, 
-     2, 27, 25,  4,
-    -1
-};
-
-static const char *F710Buttons[] =
-{
-    "X", "A", "B", "Y", "L", "R", "LT", "RT", "BACK", "START", "L STICK", "R STICK"
-};
-
-static const char *F710Axes[] =
-{
-    "Left X", "Left Y", "Right X", "Right Y"
-};
-
-static const int F710Profile[] =
-{
-     1,  2,  0,  3, // axes
-     0,  0,  0,  0, // invert
-
-     8, 21, 16, 15, // map
-    20,  6,  7, 11, 
-    -1, -1,  
-
-     9, -1, -1, -1, // menus
-    -1,  2,  1,  1, 
-     2,            
-    
-    -1, -1, -1,  7, // gameplay
-     1, -1,  5, 10, 
-     0,  3, 28, 26, 
-     2, 27, 25,  4, 
-    -1
-};
-
-static const char *PS3DualShockButtons[] =
-{
-    "SQUARE", "X", "O", "TRIANGLE", "L2", "R2", "L1", "R1", "START", "SELECT", "L STICK", "R STICK", "GUIDE"
-};
-
-static const char *PS3DualShockAxes[] =
-{
-    "Left X", "Left Y", "Right X", "Right Y"
-};
-
-static const char *PS4Buttons[] =
-{
-    "SQUARE", "X", "O", "TRIANGLE", "L1", "R1", "6", "7", "SHARE", "OPTIONS", "L STICK", "R STICK", "GUIDE"    
-};
-
-static const char *PS4Axes[] =
-{
-    "Left X", "Left Y", "Right X", "Left Trigger", "Right Trigger", "Right Y"
-};
-
-static const char *RumblePadButtons[] =
-{
-    "1", "2", "3", "4", "L1", "R1", "L2", "R2", "9", "10", "L STICK", "R STICK"
-};
-
-static const char *RumblePadAxes[] =
-{
-    "Left X", "Left Y", "Right X", "Right Y"
-};
-
-static const char *OUYAButtons[] =
-{
-    "O", "U", "Y", "A", "L1", "R1", "L STICK", "R STICK", "UP", "DOWN", "LEFT", "RIGHT", "LT", "RT", 
-    "HOME", "HOME-ALT"
-};
-
-static const char *OUYAAxes[] =
-{
-    "Left X", "Left Y", "2", "Right X", "Right Y"
-};
-
-static const char *RetroPortButtons[] =
-{
-    "Y", "B", "SELECT", "START", "X", "A", "L", "R"
-};
-
-static const char *RetroPortAxes[] =
-{
-    "X", "Y"
-};
-
-static const char *GamepadProButtons[] =
-{
-    "RED", "YELLOW", "GREEN", "BLUE", "L1", "R1", "L2", "R2", "SELECT", "START"
-};
-
-static const char *GamepadProAxes[] =
-{
-    "X", "Y"
-};
-
-static fepad_t pads[] =
-{
-    { 
-        "XBOX 360",
-        x360Buttons, arrlen(x360Buttons),
-        x360Axes,    arrlen(x360Axes),
-        x360Profile
-    },
-    { 
-        "Afterglow PS3",
-        afterglowButtons, arrlen(afterglowButtons),
-        afterglowAxes,    arrlen(afterglowAxes),
-        afterglowProfile
-    },
-    { 
-        // F310/F510 allegedly the same
-        "Logitech Dual Action",
-        F710Buttons, arrlen(F710Buttons),
-        F710Axes,    arrlen(F710Axes),
-        F710Profile
-    }, 
-    { 
-        // Cover also for safety
-        "F710",
-        F710Buttons, arrlen(F710Buttons),
-        F710Axes,    arrlen(F710Axes),
-        F710Profile
-    }, 
-    {
-        "DualShock",
-        PS3DualShockButtons, arrlen(PS3DualShockButtons),
-        PS3DualShockAxes,    arrlen(PS3DualShockAxes),
-        NULL
-    },
-    { 
-        "PS4",
-        PS4Buttons, arrlen(PS4Buttons),
-        PS4Axes,    arrlen(PS4Axes),
-        NULL
-    },
-    { 
-        "RumblePad 2",
-        RumblePadButtons, arrlen(RumblePadButtons),
-        RumblePadAxes,    arrlen(RumblePadAxes),
-        NULL
-    },
-    { 
-        "OUYA",
-        OUYAButtons, arrlen(OUYAButtons),
-        OUYAAxes,    arrlen(OUYAAxes),
-        NULL
-    },
-    { 
-        "Super RetroPort",
-        RetroPortButtons, arrlen(RetroPortButtons),
-        RetroPortAxes,    arrlen(RetroPortAxes),
-        NULL
-    },
-    {
-        "GamePad Pro",
-        GamepadProButtons, arrlen(GamepadProButtons),  
-        GamepadProAxes,    arrlen(GamepadProAxes),
-        NULL
-    }
-};
-#elif defined(__linux__)
-// Linux Pad Mappings
-
-static const char *x360Buttons[] =
-{
-    "A", "B", "X", "Y", "L", "R", "BACK", "START", "GUIDE", "L STICK", "R STICK"
-};
-
-static const char *x360Axes[] =
-{
-    "Left X", "Left Y", "L Trigger", "Right X", "Right Y", "R Trigger"
-};
-
-static const int x360Profile[FE_JOYPROF_MAX] =
-{
-     1,  3,  0,  4, // axes     LY RX LX RY
-     0,  0,  0,  0, // invert 
-
-     6, 21, 16, 15, // map      BACK A1- A1+ A0+
-    20, 29, 17, 10, //          A0-  A5+ A2+ RSTICK
-    -1, -1,
-
-     7, -1, -1, -1, // menus    START
-    -1,  1,  0,  0, //          - B A A
-     1,             //          B
-    
-    -1, -1, -1, 29, // gameplay - -  -  A5+
-     0, -1,  5, 10, //          A -  R  RSTICK
-     2,  3, 28, 26, //          X Y  HL HR
-     1, 27, 25,  4, //          B HD HU L
-    -1
-};
-
-static fepad_t pads[] =
-{
-    { 
-        "X-Box 360",
-        x360Buttons, arrlen(x360Buttons),
-        x360Axes,    arrlen(x360Axes),
-        x360Profile
-    },
-    {
-        "Xbox 360", // wireless version
-        x360Buttons, arrlen(x360Buttons),
-        x360Axes,    arrlen(x360Axes),
-        x360Profile
-    },
-};
-#elif defined(__APPLE__) || defined(__MACOSX__)
-// Apple Pad Mappings
-
-static const char *x360Buttons[] =
-{
-    "DPAD U", "DPAD D", "DPAD R", "DPAD L", "START", "BACK", "L STICK", "R STICK",
-    "L", "R", "GUIDE", "A", "B", "X", "Y"
-};
-
-static const char *x360Axes[] =
+static const char *XInputAxes[] =
 {
     "Left X", "Left Y", "Right X", "Right Y", "L Trigger", "R Trigger"
 };
 
-static const int x360Profile[FE_JOYPROF_MAX] =
+static const int XInputProfile[FE_JOYPROF_MAX] =
 {
-     1,  2,  0,  3, // axes     LY RX LX RY
-     0,  0,  0,  0, // invert 
+    1,  2,  0,  3, // axes     LY RX LX RY
+    0,  0,  0,  0, // invert 
 
-     5, 21, 16, 15, // map      BACK A1- A1+ A0+
-    20, 29, 17,  7, //          A0-  A5+ A2+ RSTICK
-    -1, -1,
+    4,  11, 12, 14,
+    13,  0,  1,  8,
+    2,   3,
 
-     4, -1, -1, -1, // menus    START
-    -1, 12, 11, 11, //          - B A A
-    12,             //          B
-    
-    -1, -1, -1, 29, // gameplay - -  -  A5+
-    11, -1,  9,  7, //          A -  R  RSTICK
-    13, 14,  3,  2, //          X Y  HL HR
-    12,  1,  0,  8, //          B HD HU L
-    -1
+    6,  11, 12, 13,
+    14,  1,  0,  0,
+    1,
+
+    -1, -1, -1, 31,
+     1, 30,  0, -1,
+     9, 10, 13, 14,
+     2, 12, 11,  7,
+     3
 };
 
 static fepad_t pads[] =
 {
     { 
-        "Controller",
-        x360Buttons, arrlen(x360Buttons),
-        x360Axes,    arrlen(x360Axes),
-        x360Profile
+        "$XINPUT", // this will match anything by starting with '$'
+        XInputButtons, arrlen(XInputButtons),
+        XInputAxes,    arrlen(XInputAxes),
+        XInputProfile
     },
 };
-
 #elif SVE_PLAT_SWITCH
 
 static const char *nxButtons[] =
 {
-	"Up", "Down", "Left", "Right", "A","B","X","Y","L", "R", "ZL", "ZR", "L Stick", "R Stick","+","-",
+	"Up", "Down", "Left", "Right", "A","B","X","Y","L", "R", "ZL", "ZR", "Press L Stick", "Press R Stick","+","-",
 };
 
 static const char *nxAxes[] =
@@ -1090,7 +822,6 @@ static fepad_t pads[] =
 
 	
 };
- 
 #else
 // No platform
 static const char *noPadButtons[] =
@@ -1118,7 +849,7 @@ const char *FE_ButtonNameForNum(int button)
     {
         for(i = 0; i < arrlen(pads); i++)
         {
-            if(strstr(name, pads[i].name))
+            if(strstr(name, pads[i].name) || pads[i].name[0] == '$' /*match anything*/)
             {
                 if(button >= 0 && button < pads[i].numbuttons)
                     return pads[i].buttons[button];
@@ -1130,7 +861,7 @@ const char *FE_ButtonNameForNum(int button)
     {
         static const char *axisUp[5]   = { "A0+", "A1+", "A2+", "A3+", "A4+" };
         static const char *axisDown[5] = { "A0-", "A1-", "A2-", "A3-", "A4-" };
-        static const char *hatPos[4]   = { "HAT UP", "HAT RIGHT", "HAT DOWN", "HAT LEFT" };
+        static const char *hatPos[4]   = { "UP", "RIGHT", "DOWN", "LEFT" };
         static const char *axis6UD[2]  = { "A5+", "A5-" };
         if(button >= NUM_VIRTUAL_BUTTONS && button < NUM_VIRTUAL_BUTTONS + 5)
         {
@@ -1168,7 +899,7 @@ const char *FE_AxisNameForNum(int axis)
     {
         for(i = 0; i < arrlen(pads); i++)
         {
-            if(strstr(name, pads[i].name))
+            if(strstr(name, pads[i].name) || pads[i].name[0] == '$' /*match anything*/)
             {
                 if(axis >= 0 && axis < pads[i].numaxes)
                     return pads[i].axes[axis];
@@ -1220,7 +951,7 @@ int FE_PadHasProfile(void)
         int i;
         for(i = 0; i < arrlen(pads); i++)
         {
-            if(strstr(name, pads[i].name))
+            if(strstr(name, pads[i].name) || pads[i].name[0] == '$' /*match anything*/)
             {
                 if(pads[i].profile)
                     return i;  // pad exists and has profile
@@ -1256,8 +987,14 @@ void FE_AutoApplyPadProfile(void)
 {
     int index = FE_PadHasProfile();
 
-    if(index >= 0 && pads[index].profile)
+    if (index >= 0 && pads[index].profile)
+    {
         FE_applyGamepadProfile(pads[index].profile);
+    }
+    else
+    {
+        FE_applyGamepadProfile(pads[0].profile);
+    }
 }
 
 //=============================================================================
@@ -1272,7 +1009,7 @@ static femenuitem_t gamepadMenuItems[] =
 	{ FE_MITEM_CMD, "Automap",       "gpautomap",  FE_FONT_BIG    },
 	{ FE_MITEM_CMD, "Inventory",     "gpinv",      FE_FONT_BIG    },
 	{ FE_MITEM_CMD, "Movement",      "gpmovement", FE_FONT_BIG    },
-    { FE_MITEM_CMD, "Gyroscope",     "gpgyro",      FE_FONT_BIG    },
+    { FE_MITEM_CMD, "Gyroscope",     "gpgyro",     FE_FONT_BIG    },
     { FE_MITEM_CMD, "Default",       "gpdefault",  FE_FONT_BIG    },
 	{ FE_MITEM_END, "", "" }
 #else
@@ -1283,6 +1020,7 @@ static femenuitem_t gamepadMenuItems[] =
     { FE_MITEM_CMD, "Inventory",     "gpinv",      FE_FONT_BIG    },
     { FE_MITEM_CMD, "Menus",         "gpmenus",    FE_FONT_BIG    },
     { FE_MITEM_CMD, "Movement",      "gpmovement", FE_FONT_BIG    },
+    { FE_MITEM_CMD, "Default",       "gpdefault",  FE_FONT_BIG    },
     { FE_MITEM_END, "", "" }
 #endif
 };

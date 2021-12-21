@@ -253,6 +253,12 @@ void D_Display (void)
     if (nodrawers)
         return;                    // for comparative timing / profiling
 
+    // edward 20201028: [SVE] reinit the 3D scene if the resolution changed
+    if (use3drenderer)
+    {
+        RB_CheckReInitDrawer();
+    }
+
     // haleyjd 20140902: [SVE] interpolation
     I_TimerStartDisplay();
 
@@ -668,8 +674,7 @@ void D_DoomLoop (void)
         S_UpdateSounds(players[consoleplayer].mo);// move positional sounds
 
         // Update display, next frame, with current state.
-        if(screenvisible)
-            D_Display();
+        D_Display();
 
         // Must cap framerate if interpolating
         if(d_interpolate && d_fpslimit)
@@ -767,10 +772,22 @@ static void D_TextWrite(void)
 // D_PageDrawer
 //
 // haleyjd 08/22/2010: [STRIFE] verified unmodified
+// edward 09/26/2021: [SVE] Widescreen page support
 //
+void RB_PageDrawer(const char* szPagename, const int xoff);
 void D_PageDrawer (void)
 {
-    V_DrawPatch (0, 0, W_CacheLumpName(pagename, PU_CACHE));
+    patch_t* patch = W_CacheLumpName(pagename, PU_CACHE);
+    const int xoff = -((patch->width - SCREENWIDTH) / 2);
+
+    if (use3drenderer && (xoff < 0))
+    {
+        RB_PageDrawer(pagename, xoff);
+    }
+    else
+    {
+        V_DrawPatch(xoff, 0, patch);
+    }
 
     if(!strcmp(pagename, "STRBACK"))
         D_TextWrite();

@@ -29,9 +29,11 @@
 #include "i_joystick.h"
 #include "i_system.h"
 #include "i_video.h"
+#include "z_zone.h"
 
 #include "m_config.h"
 #include "m_misc.h"
+#include "m_saves.h"
 #include "fe_gamepad.h"
 
 // [SVE] svillarreal
@@ -46,9 +48,10 @@ boolean i_seejoysticks;
 // This is 5% of the full range:
 
 #define INVOKE_DEAD_ZONE (32768 / 4)
-#define DIRECT_DEAD_ZONE (0)
+#define DIRECT_DEAD_ZONE (32768 / 8)
 
-float joystick_sensitivity = 0.005f;
+float joystick_turnsensitivity = 0.5f;
+float joystick_looksensitivity = 0.5f;
 float joystick_threshold = 10.0f;
 
 static SDL_GameController *controller = NULL;
@@ -122,7 +125,7 @@ void I_ShutdownJoystick(void)
     I_CloseJoystickDevice();
     if(joystickInit)
     {
-        SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
+        SDL_QuitSubSystem(SDL_INIT_GAMECONTROLLER);
     }
 }
 
@@ -153,6 +156,35 @@ static boolean IsValidAxis(int axis)
 #endif
 
 //
+// Load the SDL controller database file if it is available
+//
+static void I_LoadSDLControllerDB(void)
+{
+#if !defined(SVE_PLAT_SWITCH)
+    const char *hint = SDL_GetHint(SDL_HINT_GAMECONTROLLERCONFIG);
+    if(!(hint && *hint))
+    {
+        char *filename = M_SafeFilePath(SDL_GetBasePath(), "gamecontrollerdb.txt");
+        char *buffer   = NULL;
+        int   length   = M_ReadFileAsString(filename, &buffer);
+        if(buffer != NULL)
+        {
+            if(length > 0)
+            {
+                SDL_RWops *rw;
+                if((rw = SDL_RWFromConstMem(buffer, length)))
+                {
+                    SDL_GameControllerAddMappingsFromRW(rw, 1);
+                }
+            }
+            Z_Free(buffer);
+        }
+        Z_Free(filename);
+    }
+#endif
+}
+
+//
 // I_InitJoystick
 //
 
@@ -164,18 +196,30 @@ void I_InitJoystick(void)
     }
 
     // init subsystem
-    if(SDL_Init(SDL_INIT_JOYSTICK) != 0)
+    if(SDL_Init(SDL_INIT_GAMECONTROLLER) != 0)
     {
         return;
     }
 
+    // load up controller database
+    I_LoadSDLControllerDB();
+
     joystickInit = true; // subsystem initialized
     I_AtExit(I_ShutdownJoystick, true);
 
-    // auto open first device if one is available and nothing is configured
+    // auto open first valid device if one is available and nothing is configured
     if(joystick_index == -1 && SDL_NumJoysticks() >= 1)
     {
-        joystick_index = 0;
+        int max = SDL_NumJoysticks();
+        int i;
+        for(i = 0; i < max; i++)
+        {
+            if(SDL_IsGameController(i))
+            {
+                joystick_index = i;
+                break;
+            }
+        }
     }
 
     // open initial device if valid
@@ -244,30 +288,6 @@ const char *I_QueryActiveJoystickName(void)
 }
 
 //
-// I_JoystickCalibrateAxis
-//
-
-static void I_JoystickCalibrateAxis(void)
-{
-    int numaxis;
-    int i;
-
-    if(!controller)
-    {
-        return;
-    }
-
-    // [Edward] 04082020: We shouldn't be doing this on modern gamepads in SDL2.
-    /*
-    numaxis = MIN(SDL_JoystickNumAxes(joystick), 6);
-
-    for(i = 0; i < numaxis; ++i)
-    {
-        joystick_axisoffset[i] = SDL_JoystickGetAxis(joystick, i);
-    }*/
-}
-
-//
 // I_GetJoystickAxis
 //
 
@@ -310,7 +330,6 @@ void I_ActivateJoystickDevice(int index)
 
     // allow event polling
     SDL_JoystickEventState(SDL_ENABLE);
-    I_JoystickCalibrateAxis();
 }
 
 static boolean IsAxisButton(int physbutton)
@@ -409,13 +428,8 @@ int I_GetJoystickEventID(void)
     }
 
     // check for axis movement
-    for(i = 0; i < 6; ++i)
+    for(i = 0; i < SDL_CONTROLLER_AXIS_MAX; ++i)
     {
-        if(i >= SDL_CONTROLLER_AXIS_MAX)
-        {
-            break;
-        }
-
         axis = I_GetJoystickAxis(i);
 
         if(axis > INVOKE_DEAD_ZONE *2 || axis < -INVOKE_DEAD_ZONE *2)
@@ -432,12 +446,13 @@ int I_GetJoystickEventID(void)
 
     if(greatest_axis == -1)
         return -1;
+    else if(greatest_axis == 4)
+    {
+        return NUM_VIRTUAL_BUTTONS + 14;
+    }
     else if(greatest_axis == 5)
     {
-        if(greatest_axissign > 0)
-            return NUM_VIRTUAL_BUTTONS + 14;
-        else
-            return NUM_VIRTUAL_BUTTONS + 15;
+        return NUM_VIRTUAL_BUTTONS + 15;
     }
     else
     {
@@ -505,14 +520,8 @@ static int GetButtonsState(void)
         }
     }
 
-    // I am going to assume, at most, that the most number of axis a joystick can have is 5
-    for(i = 0; i < 5; ++i)
+    for(i = 0; i < 4; ++i)
     {
-        if(i >= SDL_CONTROLLER_AXIS_MAX)
-        {
-            break;
-        }
-
         axis = I_GetJoystickAxis(i);
 
         if(axis > INVOKE_DEAD_ZONE || axis < -INVOKE_DEAD_ZONE)
@@ -528,21 +537,14 @@ static int GetButtonsState(void)
         }
     }
 
-    // haleyjd: axis 6 is needed for Xbox 360 on Linux 9_9
-    if(SDL_CONTROLLER_AXIS_MAX >= 6)
+    // Treat the final two axis (triggers) as buttons
+    for (; i < 6; ++i)
     {
-        axis = I_GetJoystickAxis(5);
+        axis = I_GetJoystickAxis(i);
 
-        if(axis > INVOKE_DEAD_ZONE || axis < -INVOKE_DEAD_ZONE)
+        if (axis > INVOKE_DEAD_ZONE || axis < -INVOKE_DEAD_ZONE)
         {
-            if(axis > 0)
-            {
-                result |= 1 << (NUM_VIRTUAL_BUTTONS + 14);
-            }
-            else
-            {
-                result |= 1 << (NUM_VIRTUAL_BUTTONS + 15);
-            }
+            result |= 1 << (NUM_VIRTUAL_BUTTONS + i + 10);
         }
     }
 
@@ -733,9 +735,14 @@ void I_JoystickGetAxes(int *x_axis, int *y_axis, int *s_axis, int *l_axis)
 
     if(controller)
     {
-        if(joystick_sensitivity < 0.001f)
+        if(joystick_turnsensitivity < 0.1f)
         {
-            joystick_sensitivity = 0.001f;
+            joystick_turnsensitivity = 0.1f;
+        }
+
+        if(joystick_looksensitivity < 0.1f)
+        {
+            joystick_looksensitivity = 0.1f;
         }
 
         if(joystick_threshold < 1.0f)
@@ -760,9 +767,14 @@ void I_UpdateJoystick(void)
     // [SVE] svillarreal
     // clamp cvar values
     //
-    if(joystick_sensitivity < 0.001f)
+    if(joystick_turnsensitivity < 0.1f)
     {
-        joystick_sensitivity = 0.001f;
+        joystick_turnsensitivity = 0.1f;
+    }
+
+    if(joystick_looksensitivity < 0.1f)
+    {
+        joystick_looksensitivity = 0.1f;
     }
 
     if(joystick_threshold < 1.0f)
@@ -815,7 +827,8 @@ void I_BindJoystickVariables(void)
     M_BindVariable("joystick_strafe_invert",&joystick_strafe_invert);
     M_BindVariable("joystick_look_invert",  &joystick_look_invert);
 
-    M_BindVariable("joystick_sensitivity",   &joystick_sensitivity);
+    M_BindVariable("joystick_turnsensitivity", &joystick_turnsensitivity);
+    M_BindVariable("joystick_looksensitivity", &joystick_looksensitivity);
     M_BindVariable("joystick_threshold",     &joystick_threshold);
 
     for (i = 0; i < NUM_VIRTUAL_BUTTONS; ++i)

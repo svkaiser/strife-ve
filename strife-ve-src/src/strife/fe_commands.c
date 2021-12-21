@@ -94,7 +94,11 @@ static fehelpstr_t helpStrs[] =
     },
     {
         "fe_musicnum",
+#ifdef SVE_PLAT_SWITCH
+        "Use left or right to choose a track, and select to play. "
+#else
         "Use left or right to choose a track, and click or press confirm to play. "
+#endif
         "In memory of composer Morey Goldstein."
     },
     {
@@ -197,23 +201,35 @@ static fehelpstr_t helpStrs[] =
     },
     {
         "gl_show_crosshair",
+#ifdef SVE_PLAT_SWITCH
+        "A persistent crosshair will be displayed for better aiming."
+#else
         "A persistent crosshair will be displayed for better aiming. Requires "
         "the high quality renderer."
+#endif
     },
     {
         "gl_textured_automap",
+#ifdef SVE_PLAT_SWITCH
+        "Toggle display of floor textures on the automap."
+#else
         "Toggle display of floor textures on the automap in the high quality "
         "renderer."
+#endif
     },
     {
         "gl_wall_shades",
+#ifdef SVE_PLAT_SWITCH
+        "Toggle shading effects on walls, floors, ceilings, and sprites."
+#else
         "Toggle shading effects on walls, floors, ceilings, and sprites in the "
         "high quality renderer."
+#endif
     },
     {
         "interpolate_frames",
-        "When enabled, the renderer will update at a high framerate. If "
-        "turned off, it will use the original 35 FPS rate."
+        "When enabled, moving objects will change positions smoothly, "
+        "even between animation frames."
     },
     {
         "invite",
@@ -387,8 +403,12 @@ static fehelpstr_t helpStrs[] =
     },
     {
         "snd_musicdevice",
+#ifdef USE_YMFMOPL
+        "Select high quality Roland Sound Canvas or emulated OPL music."
+#else
         "Select high quality Roland Sound Canvas or emulated OPL music. You must "
         "restart for this setting to take effect."
+#endif
     },
     {
         "startgame",
@@ -583,8 +603,10 @@ static fevar_t feVariables[] =
     { "sfx_volume",                FE_VAR_INT,     0,   15, 1, 0.0f, 0.0f, 0.0f,   FE_SetSfxVolume   },
     { "timelimit",                 FE_VAR_INT,     0,   15, 1                      },
     { "voice_volume",              FE_VAR_INT,     0,   15, 1, 0.0f, 0.0f, 0.0f,   FE_SetVoiceVolume },
-    { "joy_gyrosensitivityh",      FE_VAR_FLOAT,   0,    0, 0, 0.1f, 1.0f, 0.1f    },
-    { "joy_gyrosensitivityv",      FE_VAR_FLOAT,   0,    0, 0, 0.1f, 1.0f, 0.1f    },
+    { "joy_gyrosensitivityh",      FE_VAR_FLOAT,   0,    0, 0, 0.0f, 4.0f, 0.1f    },
+    { "joy_gyrosensitivityv",      FE_VAR_FLOAT,   0,    0, 0, 0.0f, 4.0f, 0.1f    },
+    { "joystick_turnsensitivity",  FE_VAR_FLOAT,   0,    0, 0, 0.1f, 1.0f, 0.1f    },
+    { "joystick_looksensitivity",  FE_VAR_FLOAT,   0,    0, 0, 0.1f, 1.0f, 0.1f    },
     { NULL,                        FE_VAR_INT,     0,    0, 0                      },
 };
 
@@ -969,7 +991,11 @@ static const char *dmTypeNames[] =
 static const char *musDeviceNames[] =
 {
     "Roland SC-55",
+#ifdef USE_YMFMOPL
+    "OPL3"
+#else
     "OPL2"
+#endif
 };
 
 static const char *dynLightTypes[] =
@@ -1043,17 +1069,22 @@ static const char *feMusicNames[FE_NUMMUSIC] =
 
 static int FE_doChangeMusicEngine(fevaluerange_t *vr, int dir)
 {
+    int returnValue = 0;
     if(dir != 0) // toggling
     {
         if(default_snd_musicdevice == SNDDEVICE_GENMIDI)
         {
+#ifdef USE_YMFMOPL
+            default_snd_musicdevice = SNDDEVICE_OPL;
+#else
             default_snd_musicdevice = SNDDEVICE_SB;
-            return 1;
+#endif
+            returnValue = 1;
         }
         else
         {
             default_snd_musicdevice = SNDDEVICE_GENMIDI;
-            return 0;
+            returnValue = 0;
         }
     }
     else // just getting value
@@ -1063,6 +1094,17 @@ static int FE_doChangeMusicEngine(fevaluerange_t *vr, int dir)
         else
             return 1;
     }
+
+#ifdef USE_YMFMOPL
+    // Restart the music track
+    int saveMus, saveLoop;
+    S_GetCurrentMusic(&saveMus, &saveLoop);
+    S_StopMusic();
+    snd_musicdevice = default_snd_musicdevice;
+    S_ChangeMusic(saveMus, saveLoop);
+#endif
+
+    return returnValue;
 }
 
 static fevaluerange_t values[] =

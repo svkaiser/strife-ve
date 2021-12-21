@@ -205,19 +205,31 @@ void V_DrawPatch(int x, int y, patch_t *patch)
 
     w = SHORT(patch->width);
 
-	if(x < 0)
-	{
-		// skip leftmost pixels
-		col     -= x;
-		desttop -= x;
-	}
-	if(x + w > SCREENWIDTH)
-	{
-		// skip rightmost pixels
-		const int overhang = x + w - SCREENWIDTH;
-		w       -= overhang;
-		desttop -= overhang;
-	}
+    // If the image is wider than the display area on both sides
+    if (x < 0 && x + w > SCREENWIDTH)
+    {
+        const int overhang = x + w - SCREENWIDTH;
+        col -= x;
+        w -= overhang;
+
+        desttop = dest_screen + y * SCREENWIDTH;
+    }
+    else
+    {
+        if (x < 0)
+        {
+            // skip leftmost pixels
+            col -= x;
+            desttop -= x;
+        }
+        if (x + w > SCREENWIDTH)
+        {
+            // skip rightmost pixels
+            const int overhang = x + w - SCREENWIDTH;
+            w -= overhang;
+            desttop -= overhang;
+        }
+    }
 
     for ( ; col<w ; x++, col++, desttop++)
     {

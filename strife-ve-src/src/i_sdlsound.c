@@ -990,6 +990,10 @@ static boolean I_SDL_InitSound(boolean _use_sfx_prefix)
 
     use_sfx_prefix = _use_sfx_prefix;
 
+#if defined(SVE_PLAT_SWITCH)
+    snd_samplerate = 48000;
+#endif
+
     // No sounds yet
 
     for (i=0; i<NUM_CHANNELS; ++i)

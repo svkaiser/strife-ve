@@ -99,6 +99,9 @@ typedef enum
     SNDDEVICE_GENMIDI = 8,
     SNDDEVICE_AWE32 = 9,
     SNDDEVICE_CD = 10,
+#ifdef USE_YMFMOPL
+    SNDDEVICE_OPL = 11,
+#endif
 } snddevice_t;
 
 // Interface for sound modules

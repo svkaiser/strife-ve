@@ -242,6 +242,11 @@ static void FE_Drawer(void)
 {
     boolean wipe = false;
 
+    if (use3drenderer)
+    {
+        RB_CheckReInitDrawer();
+    }
+
     if(frontend_wipe)
     {
         frontend_wipe = false;
@@ -603,7 +608,7 @@ static void FE_HandleJoyButtons(int joybuttons)
         }
         return;
     }
-    else if (frontend_state == FE_STATE_RESETCON)
+    else if(frontend_state == FE_STATE_RESETCON)
     {
         if (joybmenu_back >= 0 && (joybuttons & (1 << joybmenu_back)))
         {
@@ -613,6 +618,22 @@ static void FE_HandleJoyButtons(int joybuttons)
         {
             frontend_state = FE_STATE_MAINMENU;
             FE_AutoApplyPadProfile();
+            joy_gyrosensitivityh = 0.8f;
+            joy_gyrosensitivityv = 0.5f;
+            joy_gyroscope = 1;
+            joy_gyrostyle = 0;
+        }
+        return;
+    }
+    else if(frontend_state == FE_STATE_KEYINPUT || frontend_state == FE_STATE_MBINPUT)
+    {
+        // cancel keyboard or mouse key binding
+        if(joybmenu_back >= 0 && (joybuttons & (1 << joybmenu_back)))
+        {
+            S_StartSound(NULL, sfx_swtchn);
+            if(merchantOn)
+                FE_MerchantSetState(S_MRNO_00);
+            frontend_state = FE_STATE_MAINMENU;
         }
         return;
     }
@@ -685,15 +706,9 @@ static boolean FE_MouseInValueRect(Uint32 mx, Uint32 my, femenuitem_t *item)
 //
 static void FE_TransformCoordinates(Uint16 mx, Uint16 my, Uint32 *sx, Uint32 *sy)
 {
-#ifndef SVE_PLAT_SWITCH
-    SDL_Surface *display = SDL_GetWindowSurface(windowscreen);
-	int w = display->w;
-	int h = display->h;
-#else
 	int w;
 	int h;
 	SDL_GetWindowSize(windowscreen, &w, &h);	
-#endif
     
     fixed_t aspectRatio = w * FRACUNIT / h;
 
@@ -1008,7 +1023,7 @@ static void FE_Responder(void)
         }
 
         // poll gamepad
-        if((joybuttons = I_JoystickGetButtons()) >= 0)
+        if((joybuttons = I_JoystickGetButtons()) != 0)
             FE_HandleJoyButtons(joybuttons);
 
         FE_HandleJoyAxes();

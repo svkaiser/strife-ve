@@ -221,6 +221,10 @@ static void FE_DrawMBValue(femenuitem_t *item, int x, int y)
     }
 }
 
+const char* gamepadTextToPatch[] =
+    { "Press L Stick", "STICKLEF", 
+    "Press R Stick", "STICKRIG" };
+
 //
 // Draw gamepad button binding value
 //
@@ -232,12 +236,33 @@ static void FE_DrawJBValue(femenuitem_t *item, int x, int y)
     item->valx = x;
     item->valy = y;
 
+    int i;
+
     switch(item->font)
     {
     case FE_FONT_SMALL:
-        item->valw = M_StringWidth(name);
-        item->valh = 12;
-        M_WriteText(x, y, name);
+        {
+#ifdef SVE_PLAT_SWITCH
+            for (i = 0; i < arrlen(gamepadTextToPatch); i += 2)
+            {
+                if (strcmp(name, gamepadTextToPatch[i]) == 0)
+                {
+                    // draw graphic instead.
+                    patch_t* patch = W_CacheLumpName(gamepadTextToPatch[i+1], PU_CACHE);
+
+                    item->valw = patch->width;
+                    item->valh = 12;
+
+                    V_DrawPatch(x, y, patch);
+                    return;
+                }
+            }
+#endif // SVE_PLAT_SWITCH
+
+            item->valw = M_StringWidth(name);
+            item->valh = 12;
+            M_WriteText(x, y, name);
+        }
         break;
     case FE_FONT_BIG:
         item->valw = V_BigFontStringWidth(name);
@@ -371,6 +396,12 @@ static void FE_DrawSliderValue(femenuitem_t *item, int x, int y)
     fevar_t *var = FE_VariableForName(item->verb);
     if(!var)
         return;
+
+    // Clamp it if we get too far to the edge
+    if(x > 280)
+    {
+        x = 280;
+    }
 
     switch(var->type)
     {
@@ -952,7 +983,17 @@ void FE_NX_DrawToolTips(int type)
 
     int hpos = 178;
     int htxtpos = 182;
-    if (gamestate == GS_FINALE)
+    int wpos = 118;
+    int wtxtpos = 124;
+
+    if (gamestate == GS_DEMOSCREEN && type == 3)
+    {
+        hpos = 4;
+        htxtpos = 8;
+        wpos = 240;
+        wtxtpos = 246;
+    }
+    else if (gamestate == GS_FINALE)
     {
         hpos += 8;
         htxtpos += 8;
@@ -962,34 +1003,34 @@ void FE_NX_DrawToolTips(int type)
 	{
 	case 0:
 		FE_DrawBox(118, hpos, 68, 14);
-		HUlib_drawYellowText(124, htxtpos, "A - Select", true);
+		HUlib_drawYellowText(124, htxtpos, "A = Select", true);
 		break;
 	case 1:
 		FE_DrawBox(118, hpos, 68, 14);
-		HUlib_drawYellowText(124, htxtpos, "B - Back", true);
+		HUlib_drawYellowText(124, htxtpos, "B = Back", true);
 		break;
 	case 2:
 		FE_DrawBox(78, hpos, 68, 14);
-		HUlib_drawYellowText(84, htxtpos, "A - Select", true);
+		HUlib_drawYellowText(84, htxtpos, "A = Select", true);
 		FE_DrawBox(168, hpos, 68, 14);
-		HUlib_drawYellowText(174, htxtpos, "+ - Back", true);
+		HUlib_drawYellowText(174, htxtpos, "+ = Back", true);
 		break;
 	case 3:
-		FE_DrawBox(118, hpos, 68, 14);
-		HUlib_drawYellowText(124, htxtpos, "+ - Menu", true);
+		FE_DrawBox(wpos, hpos, 68, 14);
+		HUlib_drawYellowText(wtxtpos, htxtpos, "+ = Menu", true);
 		break;
     case 5:
         FE_DrawBox(78, hpos, 78, 14);
-        HUlib_drawYellowText(84, htxtpos, "A - Confirm", true);
+        HUlib_drawYellowText(84, htxtpos, "A = Confirm", true);
         FE_DrawBox(168, hpos, 78, 14);
-        HUlib_drawYellowText(174, htxtpos, "B - Cancel", true);
+        HUlib_drawYellowText(174, htxtpos, "B = Cancel", true);
         break;
     case 4:
 	default:
 		FE_DrawBox(78, hpos, 68, 14);
-		HUlib_drawYellowText(84, htxtpos, "A - Select", true);
+		HUlib_drawYellowText(84, htxtpos, "A = Select", true);
 		FE_DrawBox(168, hpos, 68, 14);
-		HUlib_drawYellowText(174, htxtpos, "B - Back", true);
+		HUlib_drawYellowText(174, htxtpos, "B = Back", true);
 		break;
 	}
 #endif

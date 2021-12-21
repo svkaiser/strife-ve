@@ -247,8 +247,8 @@ int             joyymove;
 static int      joystrafemove;
 static int      joylookmove;
 
-// [SVE] svillarreal - add by 14 to account for non-joystick buttons
-static boolean  joyarray[MAX_JOY_BUTTONS + 14 + 1];
+// [SVE] svillarreal - add by 16 to account for non-joystick buttons
+static boolean  joyarray[MAX_JOY_BUTTONS + 16 + 1];
 
 static boolean *joybuttons = &joyarray[1];		// allow [-1] 
 static float    joyturnthreshold = 0;
@@ -925,19 +925,17 @@ void G_DoLoadLevel(void)
 // [SVE] svillarreal
 static void SetJoyTurnThreshold(int turn, int look)
 {
-    float turnspeed = joystick_sensitivity / joystick_threshold;
-
     if(turn == 0)
     {
         joyturnthreshold = 0;
     }
     else
     {
-        joyturnthreshold += turnspeed;
+        joyturnthreshold += ((joystick_turnsensitivity / 100.0f) / joystick_threshold);
 
-        if(joyturnthreshold >= joystick_sensitivity)
+        if(joyturnthreshold >= (joystick_turnsensitivity / 100.0f))
         {
-            joyturnthreshold = joystick_sensitivity;
+            joyturnthreshold = (joystick_turnsensitivity / 100.0f);
         }
     }
 
@@ -947,11 +945,11 @@ static void SetJoyTurnThreshold(int turn, int look)
     }
     else
     {
-        joylookthreshold += turnspeed;
+        joylookthreshold += ((joystick_looksensitivity / 100.0f) / joystick_threshold);
 
-        if(joylookthreshold >= joystick_sensitivity)
+        if(joylookthreshold >= (joystick_looksensitivity / 100.0f))
         {
-            joylookthreshold = joystick_sensitivity;
+            joylookthreshold = (joystick_looksensitivity / 100.0f);
         }
     }
 

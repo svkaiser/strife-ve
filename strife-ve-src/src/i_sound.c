@@ -33,7 +33,11 @@
 
 // Sound sample rate to use for digital output (Hz)
 
+#if defined(SVE_PLAT_SWITCH)
+int snd_samplerate = 48000;
+#else
 int snd_samplerate = 44100;
+#endif
 
 // Maximum number of bytes to dedicate to allocated sound effects.
 // (Default: 64MB)
@@ -100,7 +104,7 @@ static music_module_t *music_modules[] =
 {
 #ifdef FEATURE_SOUND
     &music_sdl_module,
-#ifndef NO_OPLMUSIC
+#ifndef USE_YMFMOPL
     &music_opl_module,
 #endif
 #endif

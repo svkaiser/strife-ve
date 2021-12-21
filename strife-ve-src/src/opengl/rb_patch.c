@@ -159,6 +159,11 @@ void RB_DrawPatchBuffer(void)
 {
     vtx_t v[4];
     float tx;
+
+    if (patchTexture.texid == 0)
+    {
+        RB_UploadTexture(&patchTexture, patchBuffer, TC_CLAMP_BORDER, TF_NEAREST);
+    }
     
     RB_SetOrtho();
     

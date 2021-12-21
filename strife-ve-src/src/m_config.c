@@ -26,6 +26,8 @@
 #include <errno.h>
 #include <sys/stat.h>
 
+#include <SDL.h>
+
 #include "config.h"
 
 #include "doomtype.h"
@@ -1245,7 +1247,8 @@ static default_t extra_defaults_list[] =
     // XInput right stick sensitivity
     //
 
-    CONFIG_VARIABLE_FLOAT(joystick_sensitivity),
+    CONFIG_VARIABLE_FLOAT(joystick_turnsensitivity),
+    CONFIG_VARIABLE_FLOAT(joystick_looksensitivity),
 
     //!
     // XInput right stick threshold
@@ -2581,6 +2584,11 @@ static char *GetDefaultConfigDir(void)
     }
 #endif
 
+#ifdef SVE_PLAT_SWITCH
+    // dimitrisg : 20201506 use the default mount path for NX
+    return "save://";
+#endif
+
 #if defined(__APPLE__)
     // On Apple, try to create a folder under "~/Library/Application Support".
     // This is not guaranteed to work, and there is no way to get the proper path when
@@ -2610,10 +2618,28 @@ static char *GetDefaultConfigDir(void)
     }
     else
 #endif // #elif defined(__linux__)
+#else // #if !defined(_WIN32)
+#if defined(LUNA_RELEASE)
+	// Luna needs a standard savegame directory.
+	{
+		char *pref = SDL_GetPrefPath("Nightdive Studios", "Strife");
+		if (pref == NULL)
+		{
+			I_Error("Could not create user directory.");
+		}
+
+		// Switch to the proper allocator.
+		char *dup = M_Strdup(pref);
+		SDL_free(pref);
+
+		return dup;
+	}
+#else
+	{
+		return M_Strdup("");
+	}
+#endif // #if defined(LUNA_RELEASE)
 #endif // #if !defined(_WIN32)
-    {
-        return M_Strdup("");
-    }
 }
 
 // 
@@ -2636,18 +2662,14 @@ void M_SetConfigDir(char *dir)
         configdir = GetDefaultConfigDir();
     }
 
+
     if (strcmp(configdir, "") != 0)
     {
         printf("Using %s for configuration and saves\n", configdir);
     }
 
-#ifdef SVE_PLAT_SWITCH
-	// dimitrisg : 20201506 use the default mount path for NX
-	configdir = "save://";
-#else
-
+#ifndef SVE_PLAT_SWITCH
     // Make the directory if it doesn't already exist:
-
     M_MakeDirectory(configdir);
 #endif
 }

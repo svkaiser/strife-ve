@@ -31,7 +31,7 @@ boolean rbDynamicLights = true;
 boolean rbDynamicLightFastBlend = false;
 boolean rbForceSync = false;
 boolean rbCrosshair = false;
-#ifdef SVE_PLAT_SWITCH
+#if defined(SVE_PLAT_SWITCH)
 boolean rbVsync = true;
 #else
 boolean rbVsync = false;

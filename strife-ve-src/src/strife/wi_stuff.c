@@ -236,10 +236,21 @@ int WI_PlayersOnTeam(int team)
     return count;
 }
 
+void RB_PageDrawer(const char* szPagename, const int xoff);
 void WI_Drawer(void)
 {
     // draw background
-    V_DrawPatch(0, 0, W_CacheLumpName("HELP0", PU_CACHE));
+    patch_t *background = W_CacheLumpName("HELP0", PU_CACHE);
+    const int xoff = -((background->width - SCREENWIDTH) / 2);
+
+    if(use3drenderer && (xoff < 0))
+    {
+        RB_PageDrawer("HELP0", xoff);
+    }
+    else
+    {
+        V_DrawPatch(xoff, 0, background);
+    }
 
     // draw title
     WI_writeBigTextCentered(8, "Capture the Chalice");

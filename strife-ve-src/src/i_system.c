@@ -402,7 +402,11 @@ void I_Error (const char *error, ...)
         entry = entry->next;
     }
 
-    exit_gui_popup = !M_ParmExists("-nogui");
+#ifdef LUNA_RELEASE
+	exit_gui_popup = false;
+#else
+	exit_gui_popup = !M_ParmExists("-nogui");
+#endif
 
     // Pop up a GUI dialog box to show the error message, if the
     // game was not run from the console (and the user will

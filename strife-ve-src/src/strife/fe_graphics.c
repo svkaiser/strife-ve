@@ -214,26 +214,27 @@ static febackground_t backgrounds[FE_NUM_BGS] =
 //
 static void FE_InitTexture(rbTexture_t *texture, const char *pic)
 {
-    byte *data = (byte*)W_CacheLumpName((char *)pic, PU_STATIC);
+    int lumpnum = W_CheckNumForName(pic);
+    byte *data = (byte*)W_CacheLumpNum(lumpnum, PU_STATIC);
     int w, h;
     
     texture->colorMode  = TCR_RGB;
-    texture->origwidth  = SCREENWIDTH;
+    texture->origwidth  = (W_LumpLength(lumpnum) / SCREENHEIGHT) / 3;
     texture->origheight = SCREENHEIGHT;
-    texture->width      = SCREENWIDTH;
+    texture->width      = texture->origwidth;
     texture->height     = SCREENHEIGHT;
 
     for(h = 0; h < SCREENHEIGHT; ++h)
     {
-        for(w = 0; w < SCREENWIDTH; ++w)
+        for(w = 0; w < texture->origwidth; ++w)
         {
-            byte r = data[(h * SCREENWIDTH + w) * 3 + 0];
-            byte g = data[(h * SCREENWIDTH + w) * 3 + 1];
-            byte b = data[(h * SCREENWIDTH + w) * 3 + 2];
+            byte r = data[(h * texture->origwidth + w) * 3 + 0];
+            byte g = data[(h * texture->origwidth + w) * 3 + 1];
+            byte b = data[(h * texture->origwidth + w) * 3 + 2];
 
-            data[(h * SCREENWIDTH + w) * 3 + 0] = gammatable[usegamma][r];
-            data[(h * SCREENWIDTH + w) * 3 + 1] = gammatable[usegamma][g];
-            data[(h * SCREENWIDTH + w) * 3 + 2] = gammatable[usegamma][b];
+            data[(h * texture->origwidth + w) * 3 + 0] = gammatable[usegamma][r];
+            data[(h * texture->origwidth + w) * 3 + 1] = gammatable[usegamma][g];
+            data[(h * texture->origwidth + w) * 3 + 2] = gammatable[usegamma][b];
         }
     }
     
@@ -303,8 +304,10 @@ static void FE_DrawTexture(rbTexture_t *texture)
         v[i].r = v[i].g = v[i].b = v[i].a = 0xff;
         v[i].z = 0;
     }
+
+    const int xoff = -((texture->origwidth - SCREENWIDTH) / 2);
     
-    RB_SetQuadAspectDimentions(v, 0, 0, SCREENWIDTH, SCREENHEIGHT);
+    RB_SetQuadAspectDimentions(v, xoff, 0, texture->origwidth, SCREENHEIGHT);
 
     v[0].tu = v[2].tu = 0;
     v[0].tv = v[1].tv = 0;

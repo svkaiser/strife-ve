@@ -276,7 +276,7 @@ void RB_InitWallShades(void)
                     else if(M_ParserMatches(lexer, "color"))
                     {
                         M_ParserGetString(lexer);
-                        sscanf(M_ParserStringToken(lexer), "%i %i %i",
+                        sscanf(M_ParserStringToken(lexer), "%hhi %hhi %hhi",
                             &shade->r, &shade->g, &shade->b);
                     }
                     else if(lexer->tokentype == TK_PLUS)

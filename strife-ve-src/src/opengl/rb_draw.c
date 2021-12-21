@@ -234,12 +234,7 @@ void RB_InitDrawer(void)
     RB_InitLightPointTexture();
     RB_InitMouseCursor();
 
-#if 1
 	SDL_GetWindowSize(windowscreen, &w, &h);
-#else
-    w = SDL_GetWindowSurface(windowscreen)->w;
-    h = SDL_GetWindowSurface(windowscreen)->h;
-#endif
 
     FBO_InitColorAttachment(&spriteFBO, 0, w, h);
     FBO_InitColorAttachment(&fxaaFBO, 0, w, h);
@@ -280,6 +275,46 @@ void RB_ShutdownDrawer(void)
     RB_DeleteTexture(&mouseCursorTexture);
     
     RB_PatchBufferShutdown();
+}
+
+//
+// RB_CheckReInitDrawer
+//
+
+void RB_CheckReInitDrawer(void)
+{
+    int w;
+    int h;
+
+    SDL_GetWindowSize(windowscreen, &w, &h);
+
+    if (!spriteFBO.bLoaded || (w == spriteFBO.fboWidth && h == spriteFBO.fboHeight))
+    {
+        return;
+    }
+
+    FBO_Delete(&spriteFBO);
+    FBO_Delete(&blurFBO[0]);
+    FBO_Delete(&blurFBO[1]);
+    FBO_Delete(&bloomFBO);
+
+    RB_DeleteTexture(&frameBufferTexture);
+    RB_DeleteTexture(&depthBufferTexture);
+
+    screen_width = w;
+    screen_height = h;
+
+    FBO_InitColorAttachment(&spriteFBO, 0, w, h);
+    FBO_InitColorAttachment(&fxaaFBO, 0, w, h);
+    FBO_InitColorAttachment(&bloomFBO, 0, w, h);
+    FBO_InitColorAttachment(&bloomFBO, 0, w, h);
+
+    FBO_InitColorAttachment(&blurFBO[0], 0, w >> 1, h >> 1);
+    FBO_InitColorAttachment(&blurFBO[1], 0, w >> 3, h >> 3);
+
+    // reset projection
+    dglPushAttrib(GL_VIEWPORT_BIT);
+    dglViewport(0, 0, screen_width, screen_height);
 }
 
 //=============================================================================
@@ -531,7 +566,12 @@ void RB_DrawMouseCursor(const int x, const int y)
     dglMatrixMode(GL_MODELVIEW);
     dglPushMatrix();
 
-    MTX_SetOrtho(mtx, 0, (float)screen_width, (float)screen_height, 0, -1, 1);
+    int w;
+    int h;
+
+    SDL_GetWindowSize(windowscreen, &w, &h);
+
+    MTX_SetOrtho(mtx, 0, (float)w, (float)h, 0, -1, 1);
     dglLoadMatrixf(mtx);
 
     // bind texture
@@ -541,8 +581,8 @@ void RB_DrawMouseCursor(const int x, const int y)
     RB_SetVertexColor(v, 0xff, 0xff, 0xff, 0xff, 4);
     v[0].z = v[1].z = v[2].z = v[3].z = 0;
     
-    scale = (float)screen_width / (float)SCREENWIDTH;
-    yscale = (float)screen_height / (float)SCREENHEIGHT;
+    scale = (float)w / (float)SCREENWIDTH;
+    yscale = (float)h / (float)SCREENHEIGHT;
 
     v[0].x = v[2].x = x;
     v[0].y = v[1].y = y - (3.95f * yscale);
@@ -1660,4 +1700,29 @@ void RB_DrawScene(void)
         // visually render what light grid cell the player view is in (debugging)
         RB_DrawLightGridCell(lightGridIndex);
     }
+}
+
+//
+// RB_PageDrawer
+//
+// Draws a widescreen compatible page
+//
+void RB_PageDrawer(const char* szPagename, const int xoff)
+{
+    static rbTexture_t* rbPageTexture = NULL;
+    static const char* szLastPage = NULL;
+    if (rbPageTexture != NULL && szLastPage != szPagename)
+    {
+        RB_DeleteTexture(rbPageTexture);
+        szLastPage = NULL;
+        rbPageTexture = NULL;
+    }
+
+    if (rbPageTexture == NULL)
+    {
+        rbPageTexture = RB_GetTexture(RDT_PATCH, W_GetNumForName(szPagename), 0);
+        szLastPage = szPagename;
+    }
+
+    RB_DrawTexture(rbPageTexture, xoff, 0, 0, 0, 0xff);
 }

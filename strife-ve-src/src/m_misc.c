@@ -215,7 +215,9 @@ char *M_TempFile(char *s)
 {
     char *tempdir;
 
-#ifdef _WIN32
+#ifdef SVE_PLAT_SWITCH
+    tempdir = "ram:";
+#elif _WIN32
 
     // Check the TEMP environment variable to find the location.
 

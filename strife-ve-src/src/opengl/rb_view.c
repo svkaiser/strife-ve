@@ -50,16 +50,11 @@ static void RB_SetupMatrices(rbView_t *view, const float fov)
     matrix transform;
 
     // setup projection matrix
-#ifdef SVE_PLAT_SWITCH 
-	MTX_ViewFrustum(view->projection, (float)1280, (float)720, fov, Z_NEAR);
-#else
     int w;
 	int h;
 	SDL_GetWindowSize(windowscreen, &w, &h);
     //screen = SDL_GetWindowSurface(windowscreen);
 	MTX_ViewFrustum(view->projection, (float)w, (float)h, fov, Z_NEAR);
-#endif
-    
 
     // setup rotation matrix
     // start off with the matrix on it's z-axis and then rotate it along the x-axis
@@ -446,10 +441,10 @@ void RB_RenderPlayerView(player_t *player)
     RB_ResetViewPort();
 
     // fancy post-process stuff
+    // dimitrisg 20201806 : broken on NX 
+#ifndef SVE_PLAT_SWITCH
     RB_RenderMotionBlur();
     RB_RenderBloom();
-#ifndef SVE_PLAT_SWITCH
-	// dimitrisg 20201806 : broken on NX 
     RB_RenderFXAA();
 #endif
     

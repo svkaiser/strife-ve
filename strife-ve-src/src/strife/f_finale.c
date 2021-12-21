@@ -1000,6 +1000,28 @@ void F_CastPrint (const char* text)
 
 }
 
+//
+// F_DrawWideSlide
+//
+// [SVE]
+// draws widescreen compatible slides
+//
+void RB_PageDrawer(const char* szPagename, const int xoff);
+void F_DrawWideSlide(const char* slidepanel)
+{
+    patch_t *slide = W_CacheLumpName(slidepanel, PU_CACHE);
+    const int xoff = -((slide->width - SCREENWIDTH) / 2);
+
+    if (use3drenderer && (xoff < 0))
+    {
+        RB_PageDrawer(slidepanel, xoff);
+    }
+    else
+    {
+        V_DrawPatch(xoff, 0, slide);
+    }
+}
+
 // haleyjd 09/13/10: [STRIFE] Unfortunately they removed whatever was
 // partway finished of this function from the binary, as there is no
 // trace of it. This means we cannot know for sure what the cast call
@@ -1018,7 +1040,7 @@ void F_CastDrawer (void)
     int           x = 160, y = 170;
     
     // erase the entire screen to a background
-    V_DrawPatch(0, 0, W_CacheLumpName(DEH_String("HELP0"), PU_CACHE));
+    F_DrawWideSlide(DEH_String("HELP0"));
 
     // draw the current frame in the middle of the screen
     sprdef = &sprites[caststate->sprite];
@@ -1157,16 +1179,14 @@ void F_Drawer (void)
     case F_STAGE_TEXT:
         // Draw slideshow panel
         {
-            patch_t *slide = W_CacheLumpName(slideshow_panel, PU_CACHE);
-            V_DrawPatch(0, 0, slide);
+            F_DrawWideSlide(slideshow_panel);
         }
         break;
     case F_STAGE_ARTSCREEN:
         if(gamemap <= 29)
         {
             // draw credits
-            patch_t *credits = W_CacheLumpName(DEH_String("CREDIT"), PU_CACHE);
-            V_DrawPatch(0, 0, credits);
+            F_DrawWideSlide(DEH_String("CREDIT"));
         }
         else if(gamemap == 34)
         {
