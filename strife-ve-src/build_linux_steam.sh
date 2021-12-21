@@ -47,11 +47,12 @@ function install_chroot {
 }
 
 function build_game {
-    echo "==> Generating build files..."
-
+    echo "==> Configuring build..."
     schroot --chroot steamrt_scout_amd64 -- \
-        mkdir -p build && cd build && \
-        cmake .. -GNinja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_STEAM=On
+        mkdir -p build_steam && cd build_steam && \
+        cmake .. -GNinja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_STEAM=On && \
+        echo "==> Building..." && \
+        cmake --build . --parallel
 }
 
 install_chroot

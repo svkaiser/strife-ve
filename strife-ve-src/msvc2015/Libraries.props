@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <SDL2_0>h:\code\nds\SDL2-2.0.18</SDL2_0>
+    <SDLMIXER2_0>h:\code\nds\SDL2_mixer-2.0.4</SDLMIXER2_0>
+    <SDLNET2_0>h:\code\nds\SDL2_net-2.0.1</SDLNET2_0>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemDefinitionGroup />
+  <ItemGroup>
+    <BuildMacro Include="SDL2_0">
+      <Value>$(SDL2_0)</Value>
+    </BuildMacro>
+    <BuildMacro Include="SDLMIXER2_0">
+      <Value>$(SDLMIXER2_0)</Value>
+    </BuildMacro>
+    <BuildMacro Include="SDLNET2_0">
+      <Value>$(SDLNET2_0)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

@@ -44,6 +44,7 @@ set(PROGRAM_PREFIX "chocolate-")
 
 option(ENABLE_STEAM "Build with Steamworks support." OFF)
 option(ENABLE_GOG "Build GOG version for Linux." OFF)
+option(ENABLE_LUNA "Build with Luna support" OFF)
 
 if(ENABLE_STEAM)
    set(ENABLE_STEAM_RUNTIME ON)
@@ -95,6 +96,71 @@ set(STRIFE_LOCAL "${CMAKE_CURRENT_BINARY_DIR}/local")
 make_directory("${STRIFE_LOCAL}/include")
 include_directories("${STRIFE_LOCAL}/include")
 link_directories("${STRIFE_LOCAL}/lib")
+
+# Use prebuilt versions of libraries if none has been passed.
+if(WIN32)
+   if(NOT SDL2_INCLUDE_DIR AND NOT SDL2_LIBRARY)
+      message(STATUS "Using internal SDL2")
+
+      file(DOWNLOAD
+         "https://www.libsdl.org/release/SDL2-devel-2.0.16-VC.zip"
+         "${CMAKE_CURRENT_BINARY_DIR}/SDL2-VC.zip"
+         EXPECTED_HASH SHA256=f83651227229e059a570aac26be24f5070352c0d23aaf3d2cfbd3eb2c9599334)
+      execute_process(COMMAND "${CMAKE_COMMAND}" -E tar xf
+         "${CMAKE_CURRENT_BINARY_DIR}/SDL2-VC.zip"
+         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+
+      set(SDL2_DIR "${CMAKE_CURRENT_BINARY_DIR}/SDL2-2.0.16")
+      set(SDL2_INCLUDE_DIR "${SDL2_DIR}/include" CACHE PATH "")
+      if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+         set(SDL2_LIBRARY "${SDL2_DIR}/lib/x64/SDL2.lib" CACHE FILEPATH "")
+         set(SDL2MAIN_LIBRARY "${SDL2_DIR}/lib/x64/SDL2main.lib" CACHE FILEPATH "")
+      else()
+         set(SDL2_LIBRARY "${SDL2_DIR}/lib/x86/SDL2.lib" CACHE FILEPATH "")
+         set(SDL2MAIN_LIBRARY "${SDL2_DIR}/lib/x86/SDL2main.lib" CACHE FILEPATH "")
+      endif()
+   endif()
+
+   if(NOT SDL2_MIXER_INCLUDE_DIR AND NOT SDL2_MIXER_LIBRARY)
+      message(STATUS "Using internal SDL2_mixer")
+
+      file(DOWNLOAD
+         "https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.4-VC.zip"
+         "${CMAKE_CURRENT_BINARY_DIR}/SDL2_mixer-VC.zip"
+         EXPECTED_HASH SHA256=258788438b7e0c8abb386de01d1d77efe79287d9967ec92fbb3f89175120f0b0)
+      execute_process(COMMAND "${CMAKE_COMMAND}" -E tar xf
+         "${CMAKE_CURRENT_BINARY_DIR}/SDL2_mixer-VC.zip"
+         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+
+      set(SDL2_MIXER_DIR "${CMAKE_CURRENT_BINARY_DIR}/SDL2_mixer-2.0.4")
+      set(SDL2_MIXER_INCLUDE_DIR "${SDL2_MIXER_DIR}/include" CACHE PATH "")
+      if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+         set(SDL2_MIXER_LIBRARY "${SDL2_MIXER_DIR}/lib/x64/SDL2_mixer.lib" CACHE FILEPATH "")
+      else()
+         set(SDL2_MIXER_LIBRARY "${SDL2_MIXER_DIR}/lib/x86/SDL2_mixer.lib" CACHE FILEPATH "")
+      endif()
+   endif()
+
+   if(NOT SDL2_NET_INCLUDE_DIR AND NOT SDL2_NET_LIBRARY)
+      message(STATUS "Using internal SDL2_net")
+
+      file(DOWNLOAD
+         "https://www.libsdl.org/projects/SDL_net/release/SDL2_net-devel-2.0.1-VC.zip"
+         "${CMAKE_CURRENT_BINARY_DIR}/SDL2_net-VC.zip"
+         EXPECTED_HASH SHA256=c1e423f2068adc6ff1070fa3d6a7886700200538b78fd5adc36903a5311a243e)
+      execute_process(COMMAND "${CMAKE_COMMAND}" -E tar xf
+         "${CMAKE_CURRENT_BINARY_DIR}/SDL2_net-VC.zip"
+         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+
+      set(SDL2_NET_DIR "${CMAKE_CURRENT_BINARY_DIR}/SDL2_net-2.0.1")
+      set(SDL2_NET_INCLUDE_DIR "${SDL2_NET_DIR}/include" CACHE PATH "")
+      if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+         set(SDL2_NET_LIBRARY "${SDL2_NET_DIR}/lib/x64/SDL2_net.lib" CACHE FILEPATH "")
+      else()
+         set(SDL2_NET_LIBRARY "${SDL2_NET_DIR}/lib/x86/SDL2_net.lib" CACHE FILEPATH "")
+      endif()
+   endif()
+endif()
 
 # SDL2
 find_package(SDL2 REQUIRED)
@@ -607,6 +673,9 @@ target_link_libraries(strife-ve m Threads::Threads ${LIBRARIES}
 	OGG::OGG THEORA::DEC VORBIS::VORBIS)
 if(ENABLE_STEAM_SERVICE)
 	target_link_libraries(strife-ve SteamService)
+endif()
+if(ENABLE_LUNA)
+	target_compile_definitions(strife-ve PUBLIC SVE_USE_LUNA)
 endif()
 
 ##------------------------------------------------------------------------------
