@@ -2618,6 +2618,9 @@ static char *GetDefaultConfigDir(void)
     }
     else
 #endif // #elif defined(__linux__)
+	{
+		return M_Strdup("");
+	}
 #else // #if !defined(_WIN32)
 #if defined(LUNA_RELEASE)
 	// Luna needs a standard savegame directory.
