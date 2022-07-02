@@ -254,7 +254,7 @@ if(ENABLE_STEAM_SERVICE)
 	)
 
 	# Linux
-	if(NOT APPLE AND NOT WIN32)
+	if(NOT APPLE AND NOT WIN32 AND ENABLE_STEAM_SERVICE)
 		add_library(SteamService INTERFACE IMPORTED)
 		add_dependencies(SteamService steam-service-project)
 		target_compile_definitions(SteamService INTERFACE _USE_STEAM_)
